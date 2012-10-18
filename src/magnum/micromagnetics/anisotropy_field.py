@@ -42,6 +42,7 @@ class AnisotropyField(module.Module):
   
       if   not have_uni and not have_cub:
         H_aniso.fill((0.0, 0.0, 0.0))
+        state.cache.E_aniso_sum = 0.0
       elif not have_uni and have_cub:
         state.cache.E_aniso_sum = magneto.cubic_anisotropy(axis1, axis2, k_cub, Ms, state.M, H_aniso)
       elif have_uni and not have_cub:
