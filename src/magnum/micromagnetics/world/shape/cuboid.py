@@ -1,6 +1,12 @@
 from .shape import Shape
 
 class Cuboid(Shape):
+  """
+  A cuboid shape. It is defined by the coordinates of two
+  (arbitrary) diagonally opposite cuboid vertices. The cuboid is always
+  orthogonal to the coordinate axes.
+  """
+
   def __init__(self, p1, p2):
     super(Cuboid, self).__init__()
 

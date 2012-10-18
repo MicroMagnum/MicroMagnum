@@ -12,6 +12,22 @@ except:
   logger.warn("-> This means that the ImageShapeCreator and related classes are not available!")
 
 class ImageShape(Shape):
+  """
+  This class can create a shape with an image. The image defines the shape between the x-y-axes and z is filled in the whole world.
+
+  To use the ImageShape take the *ImageShapeCreator*. For example:
+
+  .. code-block:: python
+    
+      isc = ImageShapeCreator("phi.png", mesh)
+      world = World(mesh, Body("phi", Material.Py(), isc.pick("black")))
+
+  You can use the following colors:
+  *black, green, blue, red, yellow, grey, white.*
+
+  It is not necessary to use a color exactly. Every pixel is interpreted as the nearest color.
+
+  """
   def __init__(self, isc, color):
     if not _found_image_lib: raise NotImplementedError("ImageShape class is not implemented because the Python Imaging Library was not found")
     super(ImageShape, self).__init__()

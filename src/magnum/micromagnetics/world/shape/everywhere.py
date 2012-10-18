@@ -1,6 +1,10 @@
 from .shape import *
 
 class Everywhere(Shape):
+  """
+  This shape describes the whole simulation volume, i.e. *isPointInside* always returns true.
+  """
+
   def __init__(self):
     super(Everywhere, self).__init__()
 
