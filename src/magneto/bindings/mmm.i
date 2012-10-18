@@ -1,0 +1,7 @@
+%include "mmm/exchange.i"
+%include "mmm/llge.i"
+%include "mmm/demag.i"
+%include "mmm/anisotropy.i"
+%include "mmm/zhangli.i"
+%include "mmm/slonchewski.i"
+%include "mmm/io.i"

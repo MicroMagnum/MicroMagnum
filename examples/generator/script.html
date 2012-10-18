@@ -1,0 +1,208 @@
+<html>
+
+<head>
+<title>Test</title>
+
+<!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>-->
+<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.8.20.custom.min.js"></script>
+
+<link type="text/css" href="css/ui-lightness/jquery-ui-1.8.20.custom.css" rel="stylesheet"/>
+
+<script type="text/javascript">
+
+  function callExpr(func, args)
+  {
+    return func + "(" + args.join(", ") + ")"
+  }
+
+  function worldExpr(cfg)
+  {
+    return callExpr("World", [cfg.mesh_var, "Body(\"all\", Material.Py(), Everywhere()))"])
+  }
+
+  function meshExpr(cfg)
+  {
+    var nm_to_m = function(x) { return x*1e-9; }
+
+    var args = [
+      "(" + [cfg.nx, cfg.ny, cfg.nz]             .join(", ") + ")",
+      "(" + [cfg.dx, cfg.dy, cfg.dz].map(nm_to_m).join(", ") + ")"
+    ];
+    if (cfg.pbc_x || cfg.pbc_y) {
+      args.push("\"" + [cfg.pbc_x ? "x" : "", cfg.pbc_y ? "y" : ""].join("") + "\"")
+      args.push("25")
+    }
+    return callExpr("RectangularMesh", args)
+  }
+
+  function solverExpr(cfg)
+  {
+    var modules = [];
+    if (cfg.exchange) modules.push("Exchange");
+    if (cfg.demag   ) modules.push("StrayField");
+    if (cfg.zeeman  ) modules.push("ExternalField");
+
+    var args = [
+      cfg.world_var,
+      "[" + modules.join(", ") + "]",
+      "log=True",
+      "evolver=\"rkf45\"", "eps_abs=1e-4", "eps_rel=1e-2"
+    ];
+    return callExpr("create_solver", args)
+  }
+
+  function initMagExpr(cfg)
+  {
+    args = [
+      "core_x=" + (cfg.nx * cfg.dx) / 2.0,
+      "core_y=" + (cfg.ny * cfg.dy) / 2.0,
+      "polarization=" + cfg.polarization, 
+      "chirality=" + cfg.chirality, 
+      "core_radius=10e-9"
+    ];
+    return callExpr("vortex.magnetizationFunction", args);
+  }
+
+  function GenCode()
+  {
+    var cfg = {
+      mesh_var: "mesh",
+      world_var: "world",
+      solver_var: "solver",
+  
+      nx: $('#nx').val(),
+      ny: $('#ny').val(),
+      nz: $('#nz').val(),
+
+      dx: $('#dx').val(),
+      dy: $('#dy').val(),
+      dz: $('#dz').val(),
+
+      pbc_x: $('#pbc_x').is(":checked"),
+      pbc_y: $('#pbc_y').is(":checked"),
+
+      exchange: $('#exchange').is(':checked'),
+      demag:    $('#demag').is(':checked'),
+      zeeman:   $('#zeeman').is(':checked'),
+
+      polarization: $('input[name=initial]:checked').val().split(",")[0],
+      chirality:    $('input[name=initial]:checked').val().split(",")[1],
+
+      omf_save_file: "\"" + document.Script.filename.value + "\"",
+    }
+
+    var code = [
+      "#!/usr/bin/python",
+      "from magnum import *",
+      "",
+      cfg.mesh_var   + " = " + meshExpr(cfg),
+      cfg.world_var  + " = " + worldExpr(cfg),
+      cfg.solver_var + " = " + solverExpr(cfg),
+      "",
+      cfg.solver_var + ".state.M = " + initMagExpr(cfg),
+      "",
+      cfg.solver_var + ".relax(0.01)",
+      callExpr("writeOMF", [cfg.omf_save_file, cfg.solver_var + ".state.M"])
+    ]
+    document.Script.Code.value = code.join("\n");
+  }
+
+  $(document).ready(function () {
+    $('form#myform input').change(GenCode);
+    $('textbox#codetext').resizable();
+    //$('div#inputbox').draggable();
+    GenCode();
+  });
+
+</script>
+
+<style type="text/css">
+#inputbox {
+	width: 100%;
+	border-style: dotted;
+}
+#codebox {
+	/*float: left;
+	width: 50%;*/
+}
+#codetext {
+	width: 100%;
+	
+}
+</style>
+
+</head>
+
+<body>
+	<center><h1>MicroMagnum Script Generator</h1></center>
+
+	<form id="myform" name="Script" action="">
+	
+	<!-- Please choose the parameters of your system.
+	(Note that javascript has to be enabled in your broser) -->
+
+	<h3>Parameters</h3>
+	<div id="inputbox">
+		<table>
+		<tr>
+			<th><label for="dx">cell size in x/y/z direction:</label></th>
+			<td>
+				<input name="dx" type="text" id="dx" value="1e-9" size="2"> nm x 
+				<input name="dy" type="text" id="dy" value="1e-9" size="2"> nm x 
+				<input name="dz" type="text" id="dz" value="1e-9" size="2"> nm
+			</td>
+		</tr>
+
+		<tr>
+			<th><label for="nx">number of cells in x/y/z direction:</label></th>
+			<td>
+				<input name="nx" type="text" id="nx" value="100" size="2"> x 
+				<input name="ny" type="text" id="ny" value="100" size="2"> x 
+				<input name="nz" type="text" id="nz" value= "10" size="2">
+			</td>
+		</tr>
+
+		<tr>
+			<th>periodic boundary conditions:</th>
+			<td>
+				<input type="checkbox" id="pbc_x"> x direction
+				<input type="checkbox" id="pbc_y"> y direction
+			</td>
+		</tr>
+
+		<tr>
+			<th>enable energies:</th>
+			<td>
+				<input type="checkbox" id="exchange"> exchange energy
+				<input type="checkbox" id="demag"> demag energy
+				<input type="checkbox" id="zeeman"> Zeeman energy
+			</td>
+		</tr>
+
+		<tr>
+			<th>initial state:</th>
+			<td>
+				<input type="radio" name="initial" value="+1,+1" checked="checked"> vortex with c = +1 and p = +1<br>
+				<input type="radio" name="initial" value="+1,-1"> vortex with c = +1 and p = -1<br>
+				<input type="radio" name="initial" value="-1,+1"> vortex with c = -1 and p = +1<br>
+				<input type="radio" name="initial" value="-1,-1"> vortex with c = -1 and p = -1
+			</td>
+		</tr>
+
+		<tr>
+			<th>save end result:</th>
+			<td><input type="text" name="filename" value="static.omf"></td>
+		</tr>
+
+		</table>
+	</div>
+
+	<h3>Script</h3>
+	<div id="codebox">
+		<textarea id="codetext" name="Code" rows="50" cols="100"></textarea>
+	</div>
+
+	</form>
+</body>
+</html>

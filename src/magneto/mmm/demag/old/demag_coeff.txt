@@ -1,0 +1,72 @@
+From OOMMF source code documentation:
+-------------------------------------
+
+ Demag coefficients.
+ 
+ Constant magnetization demag routines, based on formulae presented in
+ "A Generalization of the Demagnetizing Tensor for Nonuniform
+ Magnetization," by Andrew J. Newell, Wyn Williams, and David
+ J. Dunlop, Journal of Geophysical Research - Solid Earth, vol 98,
+ p 9551-9555, June 1993.  This formulae clearly satisfy necessary
+ symmetry and scaling properties, which is not true of the formulae
+ presented in "Magnetostatic Energy Calculations in Two- and
+ Three-Dimensional Arrays of Ferromagnetic Prisms," M. Maicas,
+ E. Lopez, M. CC. Sanchez, C. Aroca and P. Sanchez, IEEE Trans Mag,
+ vol 34, May 1998, p601-607.  (Side note: The units in the latter
+ paper are apparently cgs.)  It appears likely that there is an error
+ in the latter paper (attempts to implement the formulae presented
+ there did not produce the proper symmetries), as well as in the older
+ paper, "Magnetostatic Interaction Fields for a Three-Dimensional
+ Array of Ferromagnetic Cubes," Manfred E. Schabes and Amikam Aharoni,
+ IEEE Trans Mag, vol 23, November 1987, p3882-3888.  (Note: The Newell
+ paper deals with uniformly sized rectangular prisms, the Maicas paper
+ allows non-uniformly sized rectangular prisms, and the Schabes paper
+ only considers cubes.)
+ 
+   The kernel here is based on an analytically derived energy, and the
+ effective (discrete) demag field is calculated from the (discrete)
+ energy.
+ 
+ Check values: Below are several values for Nxx and Nxy, calculated
+  using Maple 7.0 with 100 decimal digits precision, rounded to 50
+  digits for display.  Normal double precision IEEE floating point
+  provides approximately 16 decimal digits of accuracy, and so-called
+  "quadruple" precision provides about 34 decimal digits.
+ 
+   x  y  z  dx dy dz |  Nxx(x,y,z,dx,dy,dz)
+  -------------------+-------------------------------------------------------
+   0  0  0  50 10  1 |  0.021829576458713811627717362556500594396802771830582
+   0  0  0   1  1  1 |  0.33333333333333333333333333333333333333333333333333
+   0  0  0   1  1  2 |  0.40084192360558096752690050789034014000452668298259
+   0  0  0   2  1  1 |  0.19831615278883806494619898421931971999094663403481
+   0  0  0   1  2  3 |  0.53879030592371444784959040590642585972177691027128
+   0  0  0   2  1  3 |  0.27839171603589255540904462483920117770716945564364
+   0  0  0   3  2  1 |  0.18281797804039299674136496925437296257105363408509
+   1  0  0   1  1  1 | -0.13501718054449526838713434911401361334238669929852
+   0  1  0   1  1  1 |  0.067508590272247634193567174557006806671193349649259
+   1  1  0   1  2  3 | -0.083703755298020462084677435631518487669613050161980
+   1  1  1   1  1  1 |  0
+   1  1  1   1  2  3 | -0.056075776617493854142226134670956166201885395511639
+   1  2  3   1  2  3 |  0.0074263570277919738841364667668809954237071479183522
+  10  1  1   1  2  3 | -0.00085675752896240944969766580856030369571736381174932
+  10  4  6   1  2  3 | -0.00025381260722622800624859078080421562302790329870984
+   3  6  9   1  2  3 |  0.00027042781311956323573639739731014558846864626288393
+   6  6  6   1  2  3 | -0.000017252712652486259473939673630209925239022411008957
+ 
+   x  y  z  dx dy dz |  Nxy(x,y,z,dx,dy,dz)
+  -------------------+-------------------------------------------------------
+   0  0  0  50 10  1 |  0
+   0  0  0   1  1  1 |  0
+   0  0  0   1  1  2 |  0
+   0  0  0   2  1  1 |  0
+   1  0  0   1  1  1 |  0
+   0  1  0   1  1  1 |  0
+   1  1  0   1  2  3 | -0.077258075615212400146921495217230818857603260305042
+   1  1  1   1  1  1 | -0.016062127810508233979724830686189874772059681376565
+   1  1  1   1  2  3 | -0.060966146490263272608967587158170018091418469887162
+   1  2  3   1  2  3 | -0.0088226536707711039322880437795490754270432698781039
+  10  1  1   1  2  3 | -0.00012776400247172360221892601892504762520639604467656
+  10  4  6   1  2  3 | -0.00020004764005741154294387738750612412053502841766241
+   3  6  9   1  2  3 | -0.00015720240165711869024193166157368874130207143569916
+   6  6  6   1  2  3 | -0.00043908646098482886546108269881031774163900540796564
+ 

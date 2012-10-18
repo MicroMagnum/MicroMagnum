@@ -1,0 +1,10 @@
+Das Quellpaket wird aus dem Ordner micromagnum heraus mit:
+	dpkg-buildpackage -S -us -uc
+Wenn man -us -uc weglässt, wird das Paket signiert.
+
+Das fertige .deb Paket wird erstellt mit:
+	dpkg-buildpackage -us -uc 
+Für die Signatur gilt das gleiche.
+
+Details gibt es unter:
+http://wiki.ubuntuusers.de/Grundlagen_der_Paketerstellung

@@ -1,0 +1,27 @@
+List of examples:
+-----------------
+
+System tests:
+  sp0                   simple larmor precession test
+  sp4                   muMAG standard problem #4 [0]
+  sp5                   proposed spin torque problem [1]
+
+Examples:
+  flowerstate           create a flowerstate
+  vortex                vortex excitation
+  coupled-vortices      simulate two vortices coupled by stray field interaction
+  domainwall            domain wall simulation
+
+  demag_field           compute demag field from magnetization
+  relax                 perform relaxation of a magnetization pattern
+
+  imageshape            use an graphical image (png, ...) to define geometry
+
+  amr                   (experimental) calculate current paths through a magnetic vortex
+  macro-spintorque      (doesn't work) simulate macro spin torque
+  periodic_bc           ...
+
+[0] http://www.ctcms.nist.gov/~rdm/std4/spec4.html
+[1] http://www.southampton.ac.uk/~fangohr/publications/2009-proposal-for-a-standard-problem-for-micromagnetic-simulations-including-spin-transfer-torque/index.html
+    http://micromagnum-tis.informatik.uni-hamburg.de/examples/sp5
+

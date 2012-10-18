@@ -1,0 +1,13 @@
+Convolution classes:
+
+ - MatrixVectorConvolution_FFT (abstract)
+    |- AsymmetricMatrixVectorConvolution_FFT            CPU and CUDA FFT implementation
+    \- SymmetricMatrixVectorConvolution_FFT             CPU and CUDA FFT implementation
+ - SymmetricMatrixVectorConvolution_Simple              CPU naive implementation
+
+ - VectorVectorConvolution_Simple
+ - VectorVectorConvolution_FFT
+
+TODO:
+ - look at optimized 2d cuda transpose kernels in alt/*.cu
+ - some 3d cuda kernels are still "naive"..

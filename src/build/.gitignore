@@ -1,0 +1,12 @@
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+config.h
+magneto_cuda.py
+_magneto_cuda.so
+magneto_cpu.py
+_magneto_cpu.so
+magneto/
+libmagneto_cu_parts.a
+install_manifest.txt
