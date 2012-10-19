@@ -1,7 +1,7 @@
 from .shape import Shape
 
 from magnum.logger import logger
-from magnum.meshes import RectangularMesh
+from magnum.mesh import RectangularMesh
 
 try:
   import Image

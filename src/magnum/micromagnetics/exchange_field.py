@@ -1,6 +1,6 @@
 import magnum.module as module
 import magnum.magneto as magneto
-from magnum.meshes import VectorField, Field
+from magnum.mesh import VectorField, Field
 from .constants import MU0
 
 class ExchangeField(module.Module):

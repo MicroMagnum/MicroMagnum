@@ -1,6 +1,6 @@
 import magnum.module as module
 import magnum.evolver as evolver
-from magnum.meshes import Field, VectorField
+from magnum.mesh import Field, VectorField
 from magnum.logger import logger
 
 import numbers

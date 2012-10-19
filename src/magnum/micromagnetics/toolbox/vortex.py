@@ -1,4 +1,4 @@
-from magnum.meshes import RectangularMesh
+from magnum.mesh import RectangularMesh
 
 import math
 

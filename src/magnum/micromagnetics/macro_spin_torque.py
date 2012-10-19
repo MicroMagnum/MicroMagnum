@@ -1,6 +1,6 @@
 import magnum.module as module
 import magnum.magneto as magneto
-from magnum.meshes import VectorField, Field
+from magnum.mesh import VectorField, Field
 
 # void fdm_slonchewski(
 # 	int dim_x, int dim_y, int dim_z,

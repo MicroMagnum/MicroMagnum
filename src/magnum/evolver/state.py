@@ -1,4 +1,4 @@
-from magnum.meshes import VectorField
+from magnum.mesh import VectorField
 
 import copy
 

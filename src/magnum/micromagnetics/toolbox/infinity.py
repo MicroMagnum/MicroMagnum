@@ -1,5 +1,5 @@
 import magnum.magneto as magneto
-from magnum.meshes import RectangularMesh, VectorField
+from magnum.mesh import RectangularMesh, VectorField
 
 def calculate_strayfield(mesh, M, object_list):
   # mesh number of nodes and node size

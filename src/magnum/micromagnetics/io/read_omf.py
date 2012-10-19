@@ -1,7 +1,7 @@
 import magnum.magneto as magneto
 
 from magnum.logger import logger
-from magnum.meshes import RectangularMesh, VectorField
+from magnum.mesh import RectangularMesh, VectorField
 
 def readOMF(path):
   # Read OMF file

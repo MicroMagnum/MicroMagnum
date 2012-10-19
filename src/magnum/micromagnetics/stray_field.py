@@ -1,4 +1,4 @@
-from magnum.meshes import VectorField
+from magnum.mesh import VectorField
 from magnum.module import Module
 
 from .stray_field_calculator import DemagTensorField, StrayFieldCalculator

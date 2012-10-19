@@ -1,4 +1,4 @@
-from magnum.meshes import VectorField
+from magnum.mesh import VectorField
 from magnum.logger import logger
 
 import magnum.magneto as magneto

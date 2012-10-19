@@ -1,4 +1,4 @@
-from magnum.meshes import RectangularMesh
+from magnum.mesh import RectangularMesh
 
 from .body import Body
 from .shape import Everywhere

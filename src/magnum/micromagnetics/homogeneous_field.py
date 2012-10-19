@@ -1,5 +1,5 @@
 import magnum.module as module
-from magnum.meshes import Field, VectorField
+from magnum.mesh import Field, VectorField
 import numbers
 
 class HomogeneousField(module.Module):

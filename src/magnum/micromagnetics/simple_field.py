@@ -1,5 +1,5 @@
 import magnum.module as module
-from magnum.meshes import VectorField
+from magnum.mesh import VectorField
 from magnum.logger import logger
 
 class SimpleVectorField(module.Module):

@@ -12,14 +12,14 @@ from . import evolver
 
 # III. Import submodules
 from . import controller
-from . import meshes
+from . import mesh
 from . import solver
 from . import micromagnetics
 
 # V. Prepare exports for "from magnum import *"
-__all__ = controller.__all__ + meshes.__all__ + solver.__all__ + micromagnetics.__all__
+__all__ = controller.__all__ + mesh.__all__ + solver.__all__ + micromagnetics.__all__
 from .controller import *
-from .meshes import *
+from .mesh import *
 from .solver import *
 from .micromagnetics import *
 

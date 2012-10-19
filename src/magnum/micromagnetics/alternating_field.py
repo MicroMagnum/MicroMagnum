@@ -1,5 +1,5 @@
 import magnum.module as module
-from magnum.meshes import VectorField, Field
+from magnum.mesh import VectorField, Field
 from magnum.logger import logger
 from math import sin
 

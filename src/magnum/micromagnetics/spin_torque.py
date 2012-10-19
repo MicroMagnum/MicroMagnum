@@ -1,6 +1,6 @@
 import magnum.module as module
 import magnum.magneto as magneto
-from magnum.meshes import VectorField, Field
+from magnum.mesh import VectorField, Field
 
 class SpinTorque(module.Module):
   def __init__(self, do_precess = True):
