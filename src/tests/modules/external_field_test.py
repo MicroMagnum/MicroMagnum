@@ -41,9 +41,13 @@ class ExternalFieldTest(unittest.TestCase):
     self.solver.state.H_ext_freq  = (0.0, 0.0, 0.0)
     self.solver.state.H_ext_offs  = (0.0, 0.0, 0.0)
     self.solver.state.H_ext_fn    = lambda t: (1,2,3)
-    with self.assertRaises(ValueError):
+    try: 
       # Error: Can't have H_ext_fn and other parameters non-zero at the same time.
       foo = self.solver.state.H_ext.average()
+    except ValueError as e: # this is expected
+      pass 
+    else:
+      self.fail()
 
 if __name__ == '__main__':
   unittest.main()
