@@ -369,66 +369,68 @@ double fdm_exchange_cuda_impl(
 	const VectorMatrix &M,
 	VectorMatrix &H)
 {
-	typename Matrix_const_cuda_accessor<real>::t Ms_acc(Ms), A_acc(A); 
-	typename VectorMatrix_const_cuda_accessor<real>::t M_acc(M);
-	typename VectorMatrix_cuda_accessor<real>::t H_acc(H);
+	{
+		typename Matrix_const_cuda_accessor<real>::t Ms_acc(Ms), A_acc(A); 
+		typename VectorMatrix_const_cuda_accessor<real>::t M_acc(M);
+		typename VectorMatrix_cuda_accessor<real>::t H_acc(H);
 
-	const real *Mx = M_acc.ptr_x(); real *Hx = H_acc.ptr_x();
-	const real *My = M_acc.ptr_y(); real *Hy = H_acc.ptr_y();
-	const real *Mz = M_acc.ptr_z(); real *Hz = H_acc.ptr_z();
+		const real *Mx = M_acc.ptr_x(); real *Hx = H_acc.ptr_x();
+		const real *My = M_acc.ptr_y(); real *Hy = H_acc.ptr_y();
+		const real *Mz = M_acc.ptr_z(); real *Hz = H_acc.ptr_z();
 
-	// Precalculate weights that are used in the kernels.
-	const real wx = static_cast<real>(2.0/MU0) / (delta_x * delta_x);
-	const real wy = static_cast<real>(2.0/MU0) / (delta_y * delta_y);
-	const real wz = static_cast<real>(2.0/MU0) / (delta_z * delta_z);
+		// Precalculate weights that are used in the kernels.
+		const real wx = static_cast<real>(2.0/MU0) / (delta_x * delta_x);
+		const real wy = static_cast<real>(2.0/MU0) / (delta_y * delta_y);
+		const real wz = static_cast<real>(2.0/MU0) / (delta_z * delta_z);
 
-	const bool is_2d = (dim_z == 1);
-	if (is_2d) { // call 2d kernel
-		const dim3 grid_dim(
-			(dim_x + BLOCK_2D_SIZE_X-1) / BLOCK_2D_SIZE_X, 
-			(dim_y + BLOCK_2D_SIZE_Y-1) / BLOCK_2D_SIZE_Y,
-			1
-		);
-		const dim3 block_dim(BLOCK_2D_SIZE_X, BLOCK_2D_SIZE_Y, 1);
+		const bool is_2d = (dim_z == 1);
+		if (is_2d) { // call 2d kernel
+			const dim3 grid_dim(
+				(dim_x + BLOCK_2D_SIZE_X-1) / BLOCK_2D_SIZE_X, 
+				(dim_y + BLOCK_2D_SIZE_Y-1) / BLOCK_2D_SIZE_Y,
+				1
+			);
+			const dim3 block_dim(BLOCK_2D_SIZE_X, BLOCK_2D_SIZE_Y, 1);
 
-		#define EXCH_2D(bx,by) if (periodic_x == bx && periodic_y == by) kernel_exchange_2d<real, bx, by><<<grid_dim, block_dim>>>(Mx, My, Mz, Hx, Hy, Hz, Ms_acc.ptr(), A_acc.ptr(), dim_x, dim_y, wx, wy);
-		EXCH_2D(false, false)
-		EXCH_2D(false,  true)
-		EXCH_2D( true, false)
-		EXCH_2D( true,  true)
-		#undef EXCH_2D
+			#define EXCH_2D(bx,by) if (periodic_x == bx && periodic_y == by) kernel_exchange_2d<real, bx, by><<<grid_dim, block_dim>>>(Mx, My, Mz, Hx, Hy, Hz, Ms_acc.ptr(), A_acc.ptr(), dim_x, dim_y, wx, wy);
+			EXCH_2D(false, false)
+			EXCH_2D(false,  true)
+			EXCH_2D( true, false)
+			EXCH_2D( true,  true)
+			#undef EXCH_2D
 
-		checkCudaLastError("gpu_exchange(): kernel_exchange_2d execution failed!");
+			checkCudaLastError("gpu_exchange(): kernel_exchange_2d execution failed!");
 
-		CUDA_THREAD_SYNCHRONIZE();
+			CUDA_THREAD_SYNCHRONIZE();
 
-	} else { // call 3d kernel
-		dim3 block_dim(BLOCK_3D_SIZE_X, BLOCK_3D_SIZE_Y, BLOCK_3D_SIZE_Z);
-		dim3 grid_dim(
-			(dim_x + BLOCK_3D_SIZE_X-1) / BLOCK_3D_SIZE_X, 
-			(dim_y + BLOCK_3D_SIZE_Y-1) / BLOCK_3D_SIZE_Y,
-			(dim_z + BLOCK_3D_SIZE_Z-1) / BLOCK_3D_SIZE_Z
-		);
+		} else { // call 3d kernel
+			dim3 block_dim(BLOCK_3D_SIZE_X, BLOCK_3D_SIZE_Y, BLOCK_3D_SIZE_Z);
+			dim3 grid_dim(
+				(dim_x + BLOCK_3D_SIZE_X-1) / BLOCK_3D_SIZE_X, 
+				(dim_y + BLOCK_3D_SIZE_Y-1) / BLOCK_3D_SIZE_Y,
+				(dim_z + BLOCK_3D_SIZE_Z-1) / BLOCK_3D_SIZE_Z
+			);
 
-		// Only 2-dimensional grids are supported, so ...
-		const int logical_grid_dim_y = grid_dim.y;
-		grid_dim.y *= grid_dim.z;
-		grid_dim.z = 1;
+			// Only 2-dimensional grids are supported, so ...
+			const int logical_grid_dim_y = grid_dim.y;
+			grid_dim.y *= grid_dim.z;
+			grid_dim.z = 1;
 
-		#define EXCH_3D(bx,by,bz) if (periodic_x == bx && periodic_y == by && periodic_z == bz) kernel_exchange_3d<real, bx, by, bz><<<grid_dim, block_dim>>>(Mx, My, Mz, Hx, Hy, Hz, Ms_acc.ptr(), A_acc.ptr(), dim_x, dim_y, dim_z, wx, wy, wz, logical_grid_dim_y);
-		EXCH_3D(false, false, false)
-		EXCH_3D(false, false,  true)
-		EXCH_3D(false,  true, false)
-		EXCH_3D(false,  true,  true)
-		EXCH_3D( true, false, false)
-		EXCH_3D( true, false,  true)
-		EXCH_3D( true,  true, false)
-		EXCH_3D( true,  true,  true)
-		#undef EXCH_3D
+			#define EXCH_3D(bx,by,bz) if (periodic_x == bx && periodic_y == by && periodic_z == bz) kernel_exchange_3d<real, bx, by, bz><<<grid_dim, block_dim>>>(Mx, My, Mz, Hx, Hy, Hz, Ms_acc.ptr(), A_acc.ptr(), dim_x, dim_y, dim_z, wx, wy, wz, logical_grid_dim_y);
+			EXCH_3D(false, false, false)
+			EXCH_3D(false, false,  true)
+			EXCH_3D(false,  true, false)
+			EXCH_3D(false,  true,  true)
+			EXCH_3D( true, false, false)
+			EXCH_3D( true, false,  true)
+			EXCH_3D( true,  true, false)
+			EXCH_3D( true,  true,  true)
+			#undef EXCH_3D
 
-		checkCudaLastError("gpu_exchange(): kernel_exchange_3d execution failed!");
+			checkCudaLastError("gpu_exchange(): kernel_exchange_3d execution failed!");
 
-		CUDA_THREAD_SYNCHRONIZE();
+			CUDA_THREAD_SYNCHRONIZE();
+		}
 	}
 
 	// and calculate exchange energy
