@@ -2,12 +2,14 @@
 #include "anisotropy_cuda.h"
 #include "mmm/constants.h"
 
+#include <stdexcept>
+
 static const int GRID_SIZE = 32; // TODO: Setze auf Anzahl Cores pro Multiprozessor
 static const int BLOCK_SIZE = 128;
 
 // hack: use sum routines from matrix library..
 template <typename real> 
-double cuda_compute_sum(const real *src, int N);
+double cuda_compute_sum(const real *src, int N)
 {
 	extern double cuda_sum(const real *src, int N);
 	return cuda_sum(src, N);
@@ -124,11 +126,10 @@ double uniaxial_anisotropy_cuda_impl(
 	      real *Hz_ptr = H_acc.ptr_z();
 
 	real *E_ptr;
-	const int N = M.getShape().getNumEl();
+	const int N = M.size();
 	const cudaError_t err = cudaMalloc((void**)&E_ptr, N * sizeof(real));
 	if (err != cudaSuccess) throw std::runtime_error("cubic_anisotropy_cuda_impl: could not allocate memory on GPU");
 
-	const int N = H.size();
 	kernel_uniaxial_anisotropy<<<GRID_SIZE, BLOCK_SIZE>>>(
 		Mx_ptr, My_ptr, Mz_ptr, 
 		ax_ptr, ay_ptr, az_ptr, Ms_ptr, k_ptr,
@@ -172,11 +173,10 @@ double cubic_anisotropy_cuda_impl(
 	      real *Hz_ptr = H_acc.ptr_z();
 
 	real *E_ptr = 0;
-	const int N = M.getShape().getNumEl();
+	const int N = M.size();
 	const cudaError_t err = cudaMalloc((void**)&E_ptr, N * sizeof(real));
 	if (err != cudaSuccess) throw std::runtime_error("cubic_anisotropy_cuda_impl: could not allocate memory on GPU");
 
-	const int N = H.size();
 	kernel_cubic_anisotropy<<<GRID_SIZE, BLOCK_SIZE>>>(
 		Mx_ptr, My_ptr, Mz_ptr, 
 		ax1_ptr, ay1_ptr, az1_ptr, ax2_ptr, ay2_ptr, az2_ptr, Ms_ptr, k_ptr,

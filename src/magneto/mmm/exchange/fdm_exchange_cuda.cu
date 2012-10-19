@@ -432,7 +432,7 @@ double fdm_exchange_cuda_impl(
 	}
 
 	// and calculate exchange energy
-	return energy *= -MU0/2.0 * M.dotSum(H) * delta_x * delta_y * delta_z;
+	return -MU0/2.0 * M.dotSum(H) * delta_x * delta_y * delta_z;
 }
 
 double fdm_exchange_cuda(
