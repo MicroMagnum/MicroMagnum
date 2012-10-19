@@ -37,7 +37,8 @@ double uniaxial_anisotropy_cpu(
 			const Vector3d H = ((2.0 / MU0) * k * d / Ms) * axis;
 
 			H_acc.set(i, H);
-			energy_sum += -k*d*d;
+			//energy_sum += -k*d*d;
+			energy_sum += k*(1.0 - d*d);
 		}
 	}
 
