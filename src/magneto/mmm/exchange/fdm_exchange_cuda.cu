@@ -431,7 +431,8 @@ double fdm_exchange_cuda_impl(
 		CUDA_THREAD_SYNCHRONIZE();
 	}
 
-	return -1.0; // TODO: Calculate exchange energy
+	// and calculate exchange energy
+	return energy *= -MU0/2.0 * M.dotSum(H) * delta_x * delta_y * delta_z;
 }
 
 double fdm_exchange_cuda(
