@@ -14,7 +14,7 @@ else:
     cfg.skip_long_tests = True
   else:
     cfg.skip_long_tests = bool(int(input("Skip long tests (0=no,1=yes)? ")))
-argv = list(filter(lambda p: p != '--with-long-tests' and p != '--skip-long-tests', sys.argv))
+#argv = list(filter(lambda p: p != '--with-long-tests' and p != '--skip-long-tests', sys.argv))
 
 # include all tests here...
 from controller import *
@@ -23,4 +23,4 @@ from mesh import *
 from world import *
 from magneto import *
 from modules import *
-unittest.main(argv = argv)
+unittest.main(argv=[sys.argv[0]])
