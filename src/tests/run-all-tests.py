@@ -3,12 +3,17 @@ import magnum
 from magnum.config import cfg
 
 import sys
-if   "--with-long-tests" in sys.argv:
+import unittest
+if not hasattr(unittest, "skipIf"): # defined in unittest since Python 2.7
+  unittest.skipIf = lambda cond, reason: lambda fn: fn
   cfg.skip_long_tests = False
-elif "--skip-long-tests" in sys.argv:
-  cfg.skip_long_tests = True
 else:
-  cfg.skip_long_tests = bool(int(input("Skip long tests (0=no,1=yes)? ")))
+  if "--with-long-tests" in sys.argv:
+    cfg.skip_long_tests = False
+  elif "--skip-long-tests" in sys.argv:
+    cfg.skip_long_tests = True
+  else:
+    cfg.skip_long_tests = bool(int(input("Skip long tests (0=no,1=yes)? ")))
 argv = list(filter(lambda p: p != '--with-long-tests' and p != '--skip-long-tests', sys.argv))
 
 # include all tests here...
