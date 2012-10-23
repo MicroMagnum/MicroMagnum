@@ -1,18 +1,18 @@
-#      Class name                             Part of user API?
-#
-# StepHandler [abstract]                            yes
+# StepHandler [abstract]
 #  |- LogStepHandler [abstract]
-#  |   |- ScreenLog                                 yes
-#  |   |- DataTableLog                              yes
+#  |   |- ScreenLog
+#  |   |- DataTableLog
 #  |- StorageStepHandler [abstract]
-#  |   |- VTKStorage                                yes
-#  |   |- OOMMFStorage                              yes
-#  |- FancyScreenLog                                yes
+#  |   |- VTKStorage
+#  |   |- OOMMFStorage
+#  |   |- ImageStorage
+#  |- FancyScreenLog
 
 from .oommf_storage    import OOMMFStorage
+from .image_storage    import ImageStorage
 from .vtk_storage      import VTKStorage
 from .screen_log       import ScreenLog
 from .data_table_log   import DataTableLog
 from .fancy_screen_log import FancyScreenLog
 
-__all__ = ["OOMMFStorage", "VTKStorage", "ScreenLog", "DataTableLog", "FancyScreenLog"]
+__all__ = ["OOMMFStorage", "ImageStorage", "VTKStorage", "ScreenLog", "DataTableLog", "FancyScreenLog"]
