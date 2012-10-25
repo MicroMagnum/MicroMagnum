@@ -1,5 +1,6 @@
 import os, re, sys, socket, gc, atexit
 
+import magnum
 from magnum.logger import logger
 import magnum.magneto as magneto
 
@@ -209,11 +210,13 @@ class MagnumConfig(object):
     ll_map = [logging.DEBUG, logging.INFO, logging.WARN, logging.ERROR, logging.CRITICAL]
     logger.setLevel(ll_map[options.loglevel])
 
-    logger.info("MicroMagnum 0.2 Copyright (C) 2012 by the MicroMagnum team.")
+    logger.info("----------------------------------------------------------------------")
+    logger.info("MicroMagnum %s" % magnum.__version__)
+    logger.info("Copyright (C) 2012 by the MicroMagnum team.")
     logger.info("This program comes with ABSOLUTELY NO WARRANTY.")
-    logger.info("This is free software, and you are welcome to redistribute it")
-    logger.info("under certain conditions; see the file COPYING in the distribution package.")
-    logger.info("----------")
+    logger.info("This is free software, and you are welcome to redistribute it under")
+    logger.info("certain conditions; see the file COPYING in the distribution package.")
+    logger.info("----------------------------------------------------------------------")
 
     # -g, -G
     def parse_gpu_id(arg):
