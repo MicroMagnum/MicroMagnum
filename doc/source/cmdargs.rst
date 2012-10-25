@@ -79,7 +79,7 @@ Example 2: (Inside Python script)
 
 .. code-block:: python
 
-   from magnum import *
    import sys; sys.environ["MAGNUM_OMF_NOSCALE"] = "1"
+   from magnum import *
    # do stuff
 
