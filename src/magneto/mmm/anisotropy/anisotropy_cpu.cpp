@@ -59,6 +59,8 @@ double cubic_anisotropy_cpu(
 	VectorMatrix::const_accessor axis2_acc(axis2);
 	Matrix::ro_accessor Ms_acc(Ms), k_acc(k);
 
+	double energy_sum = 0.0;
+
 	// Compute field
 	const size_t num_nodes = M.size();
 	for (size_t i=0; i<num_nodes; ++i) {
@@ -82,11 +84,11 @@ double cubic_anisotropy_cpu(
 			const Vector3d H = (-2/MU0)*k/Ms * ((a2sq+a3sq)*m1 + (a1sq+a3sq)*m2 + (a1sq+a2sq)*m3);
 			H_acc.set(i, H);
 
-			//energy += k * (a1sq*a2sq+a1sq*a3sq+a2sq*a3sq);
+			energy_sum += k * (a1sq*a2sq+a1sq*a3sq+a2sq*a3sq);
 		}
 	}
 
-	return 0.0;
+	return energy_sum;
 }
 
 /*

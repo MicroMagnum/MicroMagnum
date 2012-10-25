@@ -47,7 +47,6 @@ double cubic_anisotropy(
 	const VectorMatrix &M,
 	VectorMatrix &H)
 {
-// #warning "TODO: Test cubic anisotropy for cuda"
 	const bool use_cuda = isCudaEnabled();
 
 	double energy_sum = 0.0;
@@ -55,7 +54,7 @@ double cubic_anisotropy(
 	if (use_cuda) {
 #ifdef HAVE_CUDA
 		CUTIC("cubic_anisotropy");
-		cubic_anisotropy_cuda(axis1, axis2, k, Ms, M, H, isCuda64Enabled());
+		energy_sum = cubic_anisotropy_cuda(axis1, axis2, k, Ms, M, H, isCuda64Enabled());
 		CUTOC("cubic_anisotropy");
 #else
 		assert(0);

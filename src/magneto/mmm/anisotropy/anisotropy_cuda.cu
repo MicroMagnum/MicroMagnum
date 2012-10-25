@@ -92,7 +92,7 @@ __global__ void kernel_cubic_anisotropy(
 			Hx_ptr[i] = Hx;
 			Hy_ptr[i] = Hy;
 			Hz_ptr[i] = Hz;
-	 		 E_ptr[i] = 0.0; // TODO
+			 E_ptr[i] = k * (a1sq*a2sq+a1sq*a3sq+a2sq*a3sq);
 		}
 	}
 }
