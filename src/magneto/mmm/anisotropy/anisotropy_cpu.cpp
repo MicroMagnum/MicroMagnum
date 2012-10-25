@@ -4,6 +4,9 @@
 
 #include <cstddef>
 
+// see comments at the end of the file
+#define USE_CROSS_PRODUCT_LIKE_OOMMF 1
+
 double uniaxial_anisotropy_cpu(
 	const VectorMatrix &axis,
 	const Matrix &k,
@@ -27,18 +30,23 @@ double uniaxial_anisotropy_cpu(
 	for (size_t i=0; i<num_nodes; ++i) {
 		const double     Ms = Ms_acc.at(i);
 		const double      k = k_acc.at(i);
-		const Vector3d    M = M_acc.get(i);
-		const Vector3d axis = axis_acc.get(i);
 
-		if (Ms == 0.0) {
+		if (Ms == 0.0 || k == 0.0) {
 			H_acc.set(i, Vector3d(0.0, 0.0, 0.0));
 		} else {
-			const double d = dot(M, axis) / Ms;
-			const Vector3d H = ((2.0 / MU0) * k * d / Ms) * axis;
+			const Vector3d axis = axis_acc.get(i);
+			const Vector3d spin = M_acc.get(i) / Ms;
 
+			const double d = dot(spin, axis);
+
+			const Vector3d H = (2.0 * k * d / Ms / MU0) * axis;
 			H_acc.set(i, H);
-			//energy_sum += -k*d*d;
-			energy_sum += k*(1.0 - d*d);
+
+#ifdef USE_CROSS_PRODUCT_LIKE_OOMMF
+			energy_sum += k * cross(axis, spin).abs_squared();
+#else
+			energy_sum += k * (1.0 - d*d);
+#endif
 		}
 	}
 
@@ -126,5 +134,75 @@ double cubic_anisotropy_cpu(
     // evaluation to get u3 is not that expensive, and appears
     // to be more accurate.  At a minimum, in the above expressions
     // one should at least insure that a3^2 is non-negative.
+
+    REAL8m k = K1[i];
+    REAL8m field_mult = (-2/MU0)*k*Ms_inverse[i];
+    if(field_mult==0.0) {
+      energy[i]=0.0;
+      field[i].Set(0.,0.,0.);
+      continue;
+    }
+
+    ThreeVector u3 = u1;    u3 ^= u2;
+    REAL8m a1 = u1*m;  REAL8m a1sq = a1*a1;
+    REAL8m a2 = u2*m;  REAL8m a2sq = a2*a2;
+    REAL8m a3 = u3*m;  REAL8m a3sq = a3*a3;
+
+    energy[i] = k * (a1sq*a2sq+a1sq*a3sq+a2sq*a3sq);
+
+    ThreeVector m1 = a1*u1;
+    ThreeVector m2 = a2*u2;
+    ThreeVector m3 = a3*u3;
+    field[i]  = (a2sq+a3sq)*m1;
+    field[i] += (a1sq+a3sq)*m2;
+    field[i] += (a1sq+a2sq)*m3;
+    field[i] *= field_mult;
+  }
 */
 
+/*
+  for(UINT4m i=0;i<size;++i) {
+    REAL8m k = K1[i];
+    REAL8m field_mult = (2.0/MU0)*k*Ms_inverse[i];
+    if(field_mult==0.0) {
+      energy[i]=0.0;
+      field[i].Set(0.,0.,0.);
+      continue;
+    }
+    if(k<=0) {
+      // Easy plane (hard axis)
+      REAL8m dot = axis[i]*spin[i];
+      field[i] = (field_mult*dot) * axis[i];
+      energy[i] = -k*dot*dot; // Easy plane is zero energy
+    } else {
+      // Easy axis case.  For improved accuracy, we want to report
+      // energy as -k*(dot*dot-1), where dot = axis * spin.  But
+      // dot*dot-1 suffers from bad loss of precision if spin is
+      // nearly parallel to axis.  The are a couple of ways around
+      // this.  Recall that both spin and axis are unit vectors.
+      // Then from the cross product:
+      //            (axis x spin)^2 = 1 - dot*dot
+      // The cross product requires 6 mults and 3 adds, and
+      // the norm squared takes 3 mult and 2 adds
+      //            => 9 mults + 5 adds.
+      // Another option is to use
+      //            (axis - spin)^2 = 2*(1-dot) 
+      //     so  1 - dot*dot = t*(2-t)
+      //                where t = 0.5*(axis-spin)^2.
+      // The op count here is 
+      //            => 5 mults + 6 adds.
+      // Another advantage to the second approach is you get 'dot', as
+      // opposed to dot*dot, which saves a sqrt if dot is needed.  The
+      // downside is that if axis and spin are anti-parallel, then you
+      // want to use (axis+spin)^2 rather than (axis-spin)^2.  I did
+      // some single-spin test runs and the performance of the two
+      // methods was about the same.  Below we use the cross-product
+      // formulation. -mjd, 28-Jan-2001
+      ThreeVector temp = axis[i];
+      REAL8m dot = temp*spin[i];
+      field[i] = (field_mult*dot) * temp;
+      temp ^= spin[i];
+      energy[i] = k*temp.MagSq();
+    }
+  }
+*/
