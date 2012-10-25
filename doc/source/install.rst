@@ -61,12 +61,6 @@ Ubuntu/Debian apt-get command:
    sudo apt-get install swig2.0
    sudo apt-get install swig1.3 # if swig2.0 is not available
 
-Installing from prebuilded packages
------------------------------------
-
-You can find packages for Ubuntu on https://launchpad.net/micromagnum/.
-
-
 Building MicroMagnum from source
 --------------------------------
 
@@ -74,8 +68,8 @@ Getting the source code: You may either get an source package from the download 
 
 .. code-block:: bash
 
-   # either from launchpad (NOTE: coming soon)
-   bzr branch lp:micromagnum
+   # either from Github 
+   git clone git://github.com/MicroMagnum/MicroMagnum.git
 
    # or extract a source package..
    tar -xvf micromagnum.tar.gz

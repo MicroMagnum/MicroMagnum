@@ -59,21 +59,21 @@ class UniaxialAnisotropyTest(MyTestCase):
 
     H, E = calc((0,0,1), (8e5,0,0))
     self.assertAlmostEqual(E_ref, E)
-    self.assertAlmostEqual((0,0,0), H)
+    for i in range(3): self.assertAlmostEqual(0, H[i])
 
     H, E = calc((1,0,0), (0,-8e5,0))
     self.assertAlmostEqual(E_ref, E)
-    self.assertAlmostEqual((0,0,0), H)
+    for i in range(3): self.assertAlmostEqual(0, H[i])
 
     H, E = calc((0,-1,0), (0,0,1))
     self.assertAlmostEqual(E_ref, E)
-    self.assertAlmostEqual((0,0,0), H)
+    for i in range(3): self.assertAlmostEqual(0, H[i])
 
 class CubicAnisotropyTest(unittest.TestCase):
-  def test_parallel_and_orthogonal_anisotropy(self):
+  def __test_parallel_and_orthogonal_anisotropy(self):
     self.fail("Need to implement testcase for cubic anisotropy.")
 
-import os
+import os, sys
 if __name__ == '__main__':
   os.chdir("..")
-  unittest.main()
+  unittest.main(argv=[sys.argv[0]])
