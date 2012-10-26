@@ -28,9 +28,6 @@
 
 #include "Logger.h"
 
-#include <iostream>
-using namespace std;
-
 SymmetricMatrixVectorConvolution_FFT::SymmetricMatrixVectorConvolution_FFT(const Matrix &lhs, int dim_x, int dim_y, int dim_z)
 	: MatrixVectorConvolution_FFT(dim_x, dim_y, dim_z, lhs.getShape().getDim(1), lhs.getShape().getDim(2), lhs.getShape().getDim(3))
 {
@@ -61,10 +58,10 @@ SymmetricMatrixVectorConvolution_FFT::SymmetricMatrixVectorConvolution_FFT(const
 	}
 
 	// Optimization: Handle cases where imaginary parts of FFT(N[i]) (=N.im[i]) are zero.
-	for (int i=0; i<6; ++i) {
+	/*for (int i=0; i<6; ++i) {
 		cout << i << " absmax(re): " << N.re[i].absMax() << endl;
 		cout << i << " absmax(im): " << N.im[i].absMax() << endl;
-	}
+	}*/
 }
 
 SymmetricMatrixVectorConvolution_FFT::~SymmetricMatrixVectorConvolution_FFT()
