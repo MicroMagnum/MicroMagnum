@@ -24,7 +24,7 @@ OMF_FORMAT_ASCII = magneto.OMF_FORMAT_ASCII
 OMF_FORMAT_BINARY_4 = magneto.OMF_FORMAT_BINARY_4
 OMF_FORMAT_BINARY_8 = magneto.OMF_FORMAT_BINARY_8
 
-def writeOMF_helper(path, vector_field, desc=[], format = OMF_FORMAT_ASCII):
+def writeOMF_helper(path, vector_field, desc=[], omf_format = OMF_FORMAT_ASCII):
   mesh = vector_field.mesh
   header = magneto.OMFHeader()
   header.Title = ""
@@ -51,7 +51,7 @@ def writeOMF_helper(path, vector_field, desc=[], format = OMF_FORMAT_ASCII):
   header.xnodes = mesh.num_nodes[0]
   header.ynodes = mesh.num_nodes[1]
   header.znodes = mesh.num_nodes[2]
-  magneto.writeOMF(path, header, vector_field, format)
+  magneto.writeOMF(path, header, vector_field, omf_format)
   logger.debug("Wrote file %s", path)
 
 def writeOMF(path, vector_field, desc=[], format = OMF_FORMAT_ASCII):
