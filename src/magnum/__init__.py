@@ -15,10 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
+__version__ = "0.2.0rc"
+
 # I. Import extension lib
 from . import magneto
-
-__version__ = "0.2.0rc"
 
 import sys
 

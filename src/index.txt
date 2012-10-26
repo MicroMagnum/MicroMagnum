@@ -2,5 +2,4 @@ Subdirectories:
   magnum        - MagNum simulator: Python parts
   magneto       - "magneto" subsystem: C++/CUDA parts
   tests         - Unit tests, written in Python
-  tests_kernels - Some old unit tests written in C++ to test the FFT convolution classes. Not working atm
   build         - (Suggested) build directory.
