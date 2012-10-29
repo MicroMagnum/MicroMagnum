@@ -19,7 +19,7 @@ from .shape import Shape
 
 class Cylinder(Shape):
   """
-  A cylinder shape. The cylinder is defined by two points and a radius.
+  A cylindric shape. The cylinder is defined by two points and a radius.
   """
 
   def __init__(self, p1, p2, r):

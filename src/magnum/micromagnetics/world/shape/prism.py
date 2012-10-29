@@ -18,7 +18,7 @@
 from .shape import Shape
 from .transformation import Transformation
 
-from math import sqrt, acos, sin, cos
+from math import sqrt, acos
 
 class Prism(Shape):
   def __init__(self, p1, p2, poly):
@@ -81,7 +81,7 @@ class Prism(Shape):
         p[i] = 0
     pt = (p[0], p[1], p[2])
 
-    # Deal with exclusionse
+    # Deal with exclusions
     l_xy_pt = sqrt(pt[0]**2 + pt[1]**2)
     if pt[2] < 0 or pt[2] > l_u or l_xy_pt > r:
       return False

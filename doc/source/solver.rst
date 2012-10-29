@@ -25,7 +25,7 @@ at the time of creation of the Solver object:
   .. code-block:: python
   
     # Create solver with Euler evolver
-    s = Solver(evolver="euler", time_step=1e-14)
+    s = create_solver(evolver="euler", time_step=1e-14)
 
   The time_step parameter is optional, default is 1e-14.
 
@@ -34,7 +34,7 @@ at the time of creation of the Solver object:
   .. code-block:: python
   
     # Create solver with RKF45 evolver
-    s = Solver(evolver="rkf45", eps_abs=1e-3, eps_rel=1e-4)
+    s = create_solver(evolver="rkf45", eps_abs=1e-3, eps_rel=1e-4)
 
   The eps_abs and eps_rel parameters are optional with the defaults
   being as shown in the example.
@@ -223,7 +223,7 @@ in five table columns.
 
 .. code-block:: python
 
-   solver = Solver(...)
+   solver = create_solver(...)
    solver.addStepHandler(DataTableLog("test.odt")
    solver.solve(...)
 
@@ -246,7 +246,7 @@ columns to the log file:
                  ("Vy", "vortex-core-y", "%r", "m"),
                  lambda state: vortex.findCore(solver, 50e-9, 50e-9))
 
-   solver = Solver(...)
+   solver = create_solver(...)
    solver.addStepHandler(log)
    solver.solve(...)
 

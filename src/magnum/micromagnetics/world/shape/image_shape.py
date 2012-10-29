@@ -30,23 +30,25 @@ except:
 
 class ImageShape(Shape):
   """
-  This class can create a shape with an image. The image defines the shape between the x-y-axes and z is filled in the whole world.
+  This class can create a shape from an graphical image using a color mask. In order to use this class,
+  the Python Imaging Library has to be installed ('import Image').
 
-  To use the ImageShape take the *ImageShapeCreator*. For example:
+  ImageShape objects are usually created by the *pick* method of an *ImageShapeCreator* object:
 
   .. code-block:: python
     
-      isc = ImageShapeCreator("phi.png", mesh)
-      world = World(mesh, Body("phi", Material.Py(), isc.pick("black")))
+      isc = ImageShapeCreator("image.png", mesh) # load the image, stretching it over the xy-axes of the mesh.
+      shape = isc.pick("black") # create a shape (of type *ImageShape*) using a color as the mask.
+      world = World(mesh, Body("image", Material.Py(), shape)) # use the shape...
 
-  You can use the following colors:
-  *black, green, blue, red, yellow, grey, white.*
+  You can use the following colors: *black, green, blue, red, yellow, grey, white*.
 
-  It is not necessary to use a color exactly. Every pixel is interpreted as the nearest color.
+  In the image, every pixel is classified using the nearest color in the color list. (The color is selected by the smallest euclidian distance in RGB space.)
 
+  Every image format that is supported by the Python Image Library is accepted, although we suggest to use the PNG image format.
   """
   def __init__(self, isc, color):
-    if not _found_image_lib: raise NotImplementedError("ImageShape class is not implemented because the Python Imaging Library was not found")
+    if not _found_image_lib: raise NotImplementedError("ImageShape class can not be used because the Python Imaging Library could not be loaded ('import Image')")
     super(ImageShape, self).__init__()
     self.__isc = isc
     self.__test_fn = isc.makeColorTestFunction(color)
@@ -60,7 +62,7 @@ class ImageShape(Shape):
 
 class ImageShapeCreator(object):
   def __init__(self, filename, mesh):
-    if not _found_image_lib: raise NotImplementedError("ImageShapeCreator class is not implemented because the Python Imaging Library was not found")
+    if not _found_image_lib: raise NotImplementedError("ImageShape class can not be used because the Python Imaging Library could not be loaded ('import Image')")
     if not isinstance(mesh, RectangularMesh): raise ValueError("ImageShapeCreator: 'mesh' argument must be a RectangularMesh object")
     if not isinstance(filename, str): raise ValueError("ImageShapeCreator: 'filename' argument must be a string")
 
