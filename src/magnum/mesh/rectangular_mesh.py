@@ -46,10 +46,11 @@ class RectangularMesh(Mesh):
     self.__periodic_repeat = periodic_repeat
 
   def __repr__(self):
-    return "RectangularMesh(%r, %r, %r)" % (
+    return "RectangularMesh(%r, %r, periodic_bc=%r, periodic_repeat=%r)" % (
       self.num_nodes,
       self.delta,
-      self.__periodic_bc
+      self.__periodic_bc,
+      self.__periodic_repeat
     )
 
   def isCompatible(self, other): 
