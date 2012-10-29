@@ -22,7 +22,7 @@ import magnum.magneto as magneto
 import math
 
 import unittest
-from my_testcase import MyTestCase
+from .my_testcase import MyTestCase
 
 class UniaxialAnisotropyTest(MyTestCase):
 
