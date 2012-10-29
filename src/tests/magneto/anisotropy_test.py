@@ -22,7 +22,7 @@ import magnum.magneto as magneto
 import math
 
 import unittest
-from .my_testcase import MyTestCase
+from my_testcase import MyTestCase
 
 class UniaxialAnisotropyTest(MyTestCase):
 
@@ -73,7 +73,7 @@ class UniaxialAnisotropyTest(MyTestCase):
     self.assertAlmostEqual(E_ref, E)
     
     # orthogonal cases
-    E_ref = k.average() * mesh.cell_volume * mesh.total_nodes
+    E_ref = k.average() * mesh.volume
 
     H, E = calc((0,0,1), (8e5,0,0))
     self.assertAlmostEqual(E_ref, E)
@@ -88,8 +88,34 @@ class UniaxialAnisotropyTest(MyTestCase):
     for i in range(3): self.assertAlmostEqual(0, H[i])
 
 class CubicAnisotropyTest(unittest.TestCase):
-  def __test_parallel_and_orthogonal_anisotropy(self):
-    self.fail("Need to implement testcase for cubic anisotropy.")
+
+  def test_parallel_anisotropy(self):
+    mesh = RectangularMesh((40, 40, 40), (1e-9, 1e-9, 1e-9))
+    k = Field(mesh); k.fill(520e3)
+    Ms = Field(mesh); Ms.fill(8e5)
+
+    def calc(axis1_vec, axis2_vec, M_vec):
+      axis1 = VectorField(mesh); axis1.fill(axis1_vec)
+      axis2 = VectorField(mesh); axis2.fill(axis2_vec)
+      M = VectorField(mesh); M.fill(M_vec)
+      H = VectorField(mesh); H.fill((0,0,0))
+      E = magneto.cubic_anisotropy(axis1, axis2, k, Ms, M, H) * mesh.cell_volume
+      return H.average(), E
+
+    # parallel cases
+    E_ref = 0.0
+
+    H, E = calc((1,0,0), (0,1,0), (8e5,0,0))
+    self.assertEqual(E_ref, E)
+    for i in range(3): self.assertEqual(0.0, H[i])
+
+    H, E = calc((1,0,0), (0,-1,0), (0,-8e5,0))
+    self.assertEqual(E_ref, E)
+    for i in range(3): self.assertEqual(0, H[i])
+
+    H, E = calc((0,-1,0), (0,0,-1), (0,0,8e5))
+    self.assertAlmostEqual(E_ref, E)
+    for i in range(3): self.assertAlmostEqual(0, H[i])
 
 import os, sys
 if __name__ == '__main__':
