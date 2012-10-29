@@ -67,7 +67,8 @@ class World(object):
       raise ValueError("World: I can accept at maximum one direct material argument")
 
   def __repr__(self):
-    return "World@%s" % hex(id(self))
+    return "World(%r, %s)" % (self.mesh, ", ".join(map(repr, self.bodies)))
+    #return "World@%s" % hex(id(self))
 
   def findBody(self, body_id):
     """
