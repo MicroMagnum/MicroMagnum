@@ -29,8 +29,8 @@ class StepHandler(object):
 
   def done(self):
     """
-    This method is called by the solver when a simulation is
-    complete. Step handlers can use this method to clean up, close log
-    files etc.
+    This method is called by the solver when a simulation is complete
+    (before the ''solver'' method returns). Step handlers can use this
+    method to clean up, close log files etc.
     """
     pass

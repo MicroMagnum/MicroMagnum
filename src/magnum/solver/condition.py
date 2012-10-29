@@ -15,8 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-#import math
-
 class Condition(object):
   def __init__(self, fn = None):
     """
@@ -176,12 +174,6 @@ class Relaxed(Condition):
     :param max_degree_per_ns: Maximum allowed magnetization change in degrees per nanosecond to consider the state relaxed.
     :param check_every_nth_step: Check only every nth step (to save computation time)
     """
-    #def test(state):
-    #  if state.step % check_every_nth_step != 0: return False
-    #  deg_per_timestep = (180.0 / math.pi) * math.atan2(state.dMdt.absMax() * state.h, state.M.absMax()) # we assume a<b at atan(a/b).
-    #  deg_per_ns = 1e-9 * deg_per_timestep / state.h 
-    #  return deg_per_ns <= max_degree_per_ns
-
     def test(state):
       # Only check everty nth step.
       if state.step % check_every_nth_step != 0:

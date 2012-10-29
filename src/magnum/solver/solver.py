@@ -20,18 +20,19 @@ import magnum.evolver as evolver
 import magnum.tools as tools
 
 from .step_handler import StepHandler
+from .condition import Condition
 
 import signal
 
 class Solver(object):
   class FinishSolving(Exception): pass
 
-  def __init__(self, modsys, _evolver):
-    if not isinstance(modsys, module.System): raise TypeError("The 'modsys' argument must be a module.System instance.")
+  def __init__(self, system, _evolver):
+    if not isinstance(system, module.System): raise TypeError("The 'system' argument must be a module.System instance.")
     if not isinstance(_evolver, evolver.Evolver): raise TypeError("The 'evolver' argument must be a evolver.Evolver instance.")
 
-    self.__modsys = modsys
-    self.__state = modsys.createState()
+    self.__system = system
+    self.__state = system.createState()
     self.__evolver = _evolver
     self.__step_handlers = []
 
@@ -46,15 +47,16 @@ class Solver(object):
   def state(self): return self.__state
 
   @property
-  def step_handlers(self): return self.__step_handlers
+  def step_handlers(self): return self.__step_handlers[:]
 
   @property
-  def model(self): return self.__modsys
+  def model(self): return self.__system
 
   def addStepHandler(self, step_handler, condition):
-    if not isinstance(step_handler, StepHandler): raise ValueError("'step_handler' argument must be a StepHandler")
+    if not isinstance(step_handler, StepHandler): raise TypeError("'step_handler' argument must be a StepHandler")
+    if not isinstance(condition, Condition): raise TypeError("'condition' argument must be a Condition")
+    if any(s == step_handler for s, c in self.__step_handlers): raise ValueError("Cannot add step handler more than once")
     self.__step_handlers.append((step_handler, condition))
-    return self
 
   ### The solver loop ##############################################################
 
@@ -79,6 +81,7 @@ class Solver(object):
     # Also, custom sigint handler while loop is running.
     self.__interrupted = False
     def my_int_handler(signum, frame):
+      assert signum == signal.SIGINT
       self.__interrupted = True
     old_sigint_handler = signal.getsignal(signal.SIGINT)
     signal.signal(signal.SIGINT, my_int_handler) # install sigint handler
@@ -114,4 +117,4 @@ class Solver(object):
         if do_finish: break # pretend that stop_condition is true.
 
   def handle_interrupt(self):
-    raise KeyboardInterrupt
+    raise KeyboardInterrupt()
