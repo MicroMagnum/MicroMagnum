@@ -25,8 +25,8 @@ from .micro_magnetics import MicroMagnetics
 from .io import writeOMF
 
 class MicroMagneticsSolver(solver.Solver):
-  def __init__(self, modsys, evolver, world):
-    super(MicroMagneticsSolver, self).__init__(modsys, evolver)
+  def __init__(self, system, evolver, world):
+    super(MicroMagneticsSolver, self).__init__(system, evolver)
     self.__world = world
 
   def __repr__(self):
@@ -39,16 +39,16 @@ class MicroMagneticsSolver(solver.Solver):
 
   def handle_interrupt(self):
     print()
-    print(self.state)
     answer = console.interactive_menu(
-      header = "Solver interrupted by signal SIGINT.",
+      header = "Solver interrupted by signal SIGINT (Ctrl-C)",
       text = "Your options:",
       options = [
         "Continue solving.",
         "Stop solver and return the current state as the result.",
         "Save current magnetization to .omf file, then continue.",
-        "Raise KeyboardInterrupt (graceful program exit)",
-        "Kill program"
+        "Raise KeyboardInterrupt (graceful program exit).",
+        "Kill program.",
+        "Start debugger."
       ]
     )
     if answer == 1:
@@ -62,8 +62,10 @@ class MicroMagneticsSolver(solver.Solver):
       print("Done. Continuing..")
       return False
     elif answer == 4:
-      raise KeyboardInterrupt
+      raise KeyboardInterrupt()
     elif answer == 5:
       import sys
       sys.exit(-1)
+    elif answer == 6:
+      raise solver.Solver.StartDebugger
     assert False

@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function
+
 import magnum.module as module
 import magnum.evolver as evolver
 import magnum.tools as tools
@@ -26,6 +28,7 @@ import signal
 
 class Solver(object):
   class FinishSolving(Exception): pass
+  class StartDebugger(Exception): pass
 
   def __init__(self, system, _evolver):
     if not isinstance(system, module.System): raise TypeError("The 'system' argument must be a module.System instance.")
@@ -112,6 +115,11 @@ class Solver(object):
           self.handle_interrupt()
         except Solver.FinishSolving:
           do_finish = True
+        except Solver.StartDebugger:
+          print("Entering Python debugger. Type 'c' to exit debugging.")
+          print("The currect state can be accessed with the expression 'self.state'.")
+          print()
+          import pdb; pdb.set_trace()
         finally:
           self.__interrupted = False
         if do_finish: break # pretend that stop_condition is true.
