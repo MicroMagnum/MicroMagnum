@@ -23,7 +23,7 @@
 
 #include <stdexcept>
 
-static const int GRID_SIZE = 32; // TODO: Setze auf Anzahl Cores pro Multiprozessor
+static const int GRID_SIZE = 32; // TODO: use device properties
 static const int BLOCK_SIZE = 128;
 
 // hack: use sum routines from matrix library..
@@ -103,10 +103,14 @@ __global__ void kernel_cubic_anisotropy(
 			const real a2 = (ax2*Mx + ay2*My + az2*Mz) / Ms;
 			const real a3 = (ax3*Mx + ay3*My + az3*Mz) / Ms;
 
+			const real a1sq = a1*a1;
+			const real a2sq = a2*a2;
+			const real a3sq = a3*a3;
+
 			const real f = -2.0 * k / real(MU0) / Ms;
-			const real Hx = f * ((a2*a2+a3*a3)*a1*ax1 + (a1*a1+a3*a3)*a2*ax2 + (a1*a1+a2*a2)*a3*ax3);
-			const real Hy = f * ((a2*a2+a3*a3)*a1*ay1 + (a1*a1+a3*a3)*a2*ay2 + (a1*a1+a2*a2)*a3*ay3);
-			const real Hz = f * ((a2*a2+a3*a3)*a1*az1 + (a1*a1+a3*a3)*a2*az2 + (a1*a1+a2*a2)*a3*az3);
+			const real Hx = f * ((a2sq+a3sq)*a1*ax1 + (a1sq+a3sq)*a2*ax2 + (a1sq+a2sq)*a3*ax3);
+			const real Hy = f * ((a2sq+a3sq)*a1*ay1 + (a1sq+a3sq)*a2*ay2 + (a1sq+a2sq)*a3*ay3);
+			const real Hz = f * ((a2sq+a3sq)*a1*az1 + (a1sq+a3sq)*a2*az2 + (a1sq+a2sq)*a3*az3);
 
 			Hx_ptr[i] = Hx;
 			Hy_ptr[i] = Hy;
