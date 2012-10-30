@@ -42,11 +42,11 @@ class Condition(object):
     """
     return None
 
-  def __and__(self, other): # and
+  def __and__(self, other): # &
     """
     Combines this condition with the other condition. 
     The returned condition is true when both conditions yield true.
-    This operator is invoked with the 'and' operator.
+    This operator is invoked with the '&' operator.
 
     :param other: the other condition
     :type other: :class:`magneto.Condition`
@@ -55,11 +55,11 @@ class Condition(object):
     """
     return AndCondition(self, other) 
 
-  def __or__(self, other): # or
+  def __or__(self, other): # |
     """
     Combines this condition with the other condition. 
     The returned condition is true when at least one condition yields true.
-    This operator is invoked with the 'or' operator.
+    This operator is invoked with the '|' operator.
 
     :param other: the other condition
     :type other: :class:`magneto.Condition`
@@ -175,7 +175,7 @@ class Relaxed(Condition):
     :param check_every_nth_step: Check only every nth step (to save computation time)
     """
     def test(state):
-      # Only check everty nth step.
+      # Only check every nth step.
       if state.step % check_every_nth_step != 0:
         return False
 
@@ -197,29 +197,34 @@ class Relaxed(Condition):
       is_relaxed = deg_per_ns < last_deg_per_ns and deg_per_ns <= max_degree_per_ns
       return is_relaxed
 
-    return super(Relaxed, self).__init__(test)
+    super(Relaxed, self).__init__(test)
 
 class Always(Condition):
   def __init__(self):
     """
     Condition that is always true.
     """
-    return super(Always, self).__init__(lambda state: True)
+    super(Always, self).__init__(lambda state: True)
 
 class Never(Condition):
   def __init__(self):
     """
     Condition that is never true.
     """
-    return super(Never, self).__init__(lambda state: False)
+    super(Never, self).__init__(lambda state: False)
 
 class Once(Condition):
   def __init__(self, cond):
+    self.__cond = cond
+
     tag = "_Condition_once_%s" % id(self) # Generate a (hopefully) unique tag to attach to state.
     def test(state):
-      if not hasattr(state, tag) and cond.check(state):
-        setattr(state, tag, True)
-        return True
-      return False
+      if hasattr(state, self.__tag): return False # we already triggered
+      x = cond.check(state):
+      if x: setattr(state, self.__tag, True)
+      return x
 
-    return super(Once, self).__init__(test)
+    super(Once, self).__init__(test)
+
+  def get_time_of_interest(self, state):
+    return self.__cond.get_time_of_interest(state)
