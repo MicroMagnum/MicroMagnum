@@ -34,6 +34,7 @@ class MacroSpinTorque(module.Module):
   def __init__(self, do_precess = True):
     super(SpinTorque, self).__init__()
     self.__do_precess = do_precess
+    raise NotImplementedError("The MacroSpinTorque module does not work yet.")
       
   def calculates(self):
     return ["dMdt_ST"]
