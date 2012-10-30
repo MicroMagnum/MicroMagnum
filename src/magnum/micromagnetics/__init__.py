@@ -18,7 +18,7 @@
 ## module system and solver for micromagnetics
 from .micro_magnetics import MicroMagnetics
 from .micro_magnetics_solver import MicroMagneticsSolver
-from .shortcuts import create_solver
+from .create_solver import create_solver
 
 ## constants and modules
 from .constants import MU0, H_BAR, ELECTRON_CHARGE, MU_BOHR, GYROMAGNETIC_RATIO, BOLTZMANN_CONSTANT
