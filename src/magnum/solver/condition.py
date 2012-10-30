@@ -220,7 +220,7 @@ class Once(Condition):
     tag = "_Condition_once_%s" % id(self) # Generate a (hopefully) unique tag to attach to state.
     def test(state):
       if hasattr(state, self.__tag): return False # we already triggered
-      x = cond.check(state):
+      x = cond.check(state)
       if x: setattr(state, self.__tag, True)
       return x
 

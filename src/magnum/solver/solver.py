@@ -24,8 +24,6 @@ import magnum.tools as tools
 from .step_handler import StepHandler
 from .condition import Condition
 
-import signal
-
 class Solver(object):
   class FinishSolving(Exception): pass
   class StartDebugger(Exception): pass
@@ -82,6 +80,7 @@ class Solver(object):
 
     # Run solver loop.
     # Also, custom sigint handler while loop is running.
+    import signal
     self.__interrupted = False
     def my_int_handler(signum, frame):
       assert signum == signal.SIGINT
