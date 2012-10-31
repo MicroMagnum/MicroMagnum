@@ -15,13 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-import os, re, sys, socket, gc, atexit
+import os, re, sys, socket, atexit
 
 from magnum.logger import logger
 import magnum.magneto as magneto
 
 class MagnumConfig(object):
+
   ### Startup & shutdown ################################################################
+
   def __init__(self):
     self.skip_long_tests = False # config flag for unit tests (not used anywhere else and not adjustable by command line)
 
@@ -67,6 +69,7 @@ class MagnumConfig(object):
   cache_directory = property(getCacheDirectory)
 
   ### Global CUDA settings ##############################################################
+
   CUDA_DISABLED = magneto.CUDA_DISABLED
   CUDA_32 = magneto.CUDA_32
   CUDA_64 = magneto.CUDA_64
@@ -84,6 +87,7 @@ class MagnumConfig(object):
     return magneto.haveCudaSupport()
 
   ### Profiling settings ################################################################
+
   def enableProfiling(self, yes = True):
     magneto.enableProfiling(yes)
     if magneto.isProfilingEnabled():
