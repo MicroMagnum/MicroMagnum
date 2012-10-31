@@ -59,3 +59,11 @@ def flush():
 
   #if len(gc.garbage) > 0:
   #  logger.warn("Uncollectable garbage!")
+
+def cpu_count():
+  try:
+    import multiprocessing
+    return multiprocessing.cpu_count()
+  except:
+    logger.warn("Could not find out number of processors")
+    return 1
