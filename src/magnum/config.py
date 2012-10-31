@@ -30,7 +30,7 @@ class MagnumConfig(object):
   def initialize(self, argv = None):
     # Initialize magneto
     magneto.initialize(self.getCacheDirectory())
-    self.parseCommandLine(argv if argv is not None else sys.argv)
+    self.parseCommandLine(argv or sys.argv)
 
     # Register cleanup function
     atexit.register(MagnumConfig.cleanupBeforeExit, self)

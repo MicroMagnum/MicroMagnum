@@ -20,8 +20,6 @@ __version__ = "0.2.0rc"
 # I. Import extension lib
 from . import magneto
 
-import sys
-
 # II. Import config & tools
 from . import tools
 from . import console
@@ -47,13 +45,6 @@ def do_initialize():
   import sys
   # No nothing when magnum is imported for documentation generation
   if 'sphinx-build' in sys.argv[0]: return
-  # Filter out --skip-long-tests and --with-long-tests parameters
-  argv = list(filter(lambda p: p != '--skip-long-tests' and p != '--with-long-tests', sys.argv))
-  # Initialize MicroMagnum
-  config.cfg.initialize(argv)
+  config.cfg.initialize(sys.argv)
 do_initialize()
 del do_initialize
-
-# mesh0 = RectangularMesh((100,100,1),(1e-9,1e-9,1e-9))
-# mesh1 = RectangularMesh((200,200,1),(1e-9,1e-9,1e-9))
-# mesh2 = RectangularMesh((300,300,1),(1e-9,1e-9,1e-9))
