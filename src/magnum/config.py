@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-import os, re, sys, socket, atexit
+import os, re, sys, socket, atexit, multiprocessing
 
 from magnum.logger import logger
 import magnum.magneto as magneto
@@ -106,6 +106,13 @@ class MagnumConfig(object):
   def setFFTWThreads(self, num_threads):
     magneto.setFFTWThreads(num_threads)
 
+  def getCPUCount(self):
+    try:
+      n = multiprocessing.cpu_count()
+    except:
+      n = 1
+    return n
+
   ### Parse the command line ############################################################
 
   def parseCommandLine(self, argv):
@@ -136,7 +143,7 @@ class MagnumConfig(object):
       metavar = "NUM_THREADS", 
       dest    = "num_fftw_threads", 
       type    = "int",
-      default = 1
+      default = self.getCPUCount()
     )
     #hw_group.add_option("-f", "--fftw-mode", 
     #  help    = "set fftw plan creation mode (0:Estimate, 1:Measure, 2:Exhaustive), default is Measure (1).", 
