@@ -51,12 +51,14 @@ public:
 	int getStride(int d) const { return strides[d]; }
 	const std::vector<int> &getStrides() const { return strides; }
 
-	int getRank() const { return dims.size(); }
-	int getNumEl() const;
+	inline int getRank() const { return dims.size(); }
+  inline int getNumEl() const { return num_el; }
 
 	bool sameDims(const Shape &other) const;
 
+
 private:
+  int num_el;
 	std::vector<int> dims;
 	std::vector<int> strides;
 

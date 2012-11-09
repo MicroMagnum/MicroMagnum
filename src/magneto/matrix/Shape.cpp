@@ -19,10 +19,13 @@
 
 #include "config.h"
 #include "Shape.h"
+#include <iostream>
 
 #include <cstddef>
 
+
 namespace matty {
+
 
 Shape::Shape()
 {
@@ -67,15 +70,8 @@ void Shape::init(int *beg, int *end)
 		strides.push_back(s);
 		s *= dims[i];
 	}
-}
 
-int Shape::getNumEl() const
-{
-	int n = 1;
-	for (int i=0; i<getRank(); ++i) {
-		n *= getDim(i);
-	}
-	return n;
+  num_el = s;
 }
 
 bool Shape::sameDims(const Shape &other) const
