@@ -20,8 +20,19 @@
 #include "config.h"
 #include "cvode.h"
 #include "Magneto.h"
+#include "/usr/local/include/cvode/cvode.h" // TODO relative path
+//extern "C" {
+//  #include "/usr/local/include/nvector/nvector_parallel.h"
+//}
+#include "/usr/local/include/nvector/nvector_serial.h"
+#include "/usr/local/include/cvode/cvode_band.h"
 
-// TODO
+// TODO implementation
 int cvode_test() {
-  return 529;
+  realtype t;
+  N_Vector y;
+  N_Vector ydot;
+
+  int ans;
+  return ans;
 }
