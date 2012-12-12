@@ -153,6 +153,15 @@ if(ENABLE_CUDA)
 endif(ENABLE_CUDA)
 
 ##############################################################
+###    CVode                                               ###
+##############################################################
+
+#add_executable(Cvode cvode/cvode.cpp ${MAGNETO_SRC})
+
+#target_link_libraries(Cvode ${FFTW_LIBRARIES})
+
+
+##############################################################
 ###    Don't forget to create config.h                     ###
 ##############################################################
 

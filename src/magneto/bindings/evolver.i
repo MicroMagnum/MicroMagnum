@@ -19,6 +19,7 @@
 
 %{
 #include "evolver/runge_kutta.h"
+#include "evolver/cvode.h"
 %}
 
 struct ButcherTableau
@@ -67,6 +68,37 @@ void rk_prepare_step(
 );
 
 void rk_combine_result(
+	double h,
+	ButcherTableau &tab,
+
+	const VectorMatrix &k0,
+	const VectorMatrix &k1,
+	const VectorMatrix &k2,
+	const VectorMatrix &k3,
+	const VectorMatrix &k4,
+	const VectorMatrix &k5,
+
+	VectorMatrix &y,
+	VectorMatrix &y_error
+);
+
+void cvode_prepare_step(
+	int step,
+	double h,
+	ButcherTableau &tab,
+
+	const VectorMatrix &k0,
+	const VectorMatrix &k1,
+	const VectorMatrix &k2,
+	const VectorMatrix &k3,
+	const VectorMatrix &k4,
+	const VectorMatrix &k5,
+
+	const VectorMatrix &y,
+	VectorMatrix &ytmp
+);
+
+void cvode_combine_result(
 	double h,
 	ButcherTableau &tab,
 
