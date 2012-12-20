@@ -82,4 +82,6 @@ void rk_combine_result(
 	VectorMatrix &y_error
 );
 
+int cvode_test();
+
 double rk_adjust_stepsize(int order, double h, double eps_abs, double eps_rel, const VectorMatrix &y, const VectorMatrix &y_error);

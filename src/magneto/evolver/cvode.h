@@ -21,5 +21,22 @@
 
 #include "matrix/matty.h"
 #include <vector>
+#include "/usr/local/include/cvode/cvode.h" // TODO relative path
+
+#define Y1    RCONST(1.0)      /* initial y components */
+#define Y2    RCONST(0.0)
+#define Y3    RCONST(0.0)
+#define T0    RCONST(0.0)      /* initial time           */
+#define Ith(v,i)    NV_Ith_S(v,i-1)       /* Ith numbers components 1..NEQ */
+
+
 // TODO
 int cvode_test();
+
+typedef struct {
+    realtype a,b,c,d;
+} *UserData;
+
+static int f(realtype t, N_Vector y, N_Vector ydot, void *user_data);
+
+static int check_flag(void *flagvalue, char *funcname, int opt);
