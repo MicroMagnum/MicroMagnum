@@ -17,7 +17,8 @@
 
 from math import sin, cos
 
-# Helper class: Handles some affine transformations in 3-D (using linear transformations with homogeneous 4-D coordinates)
+# Helper class: Handles some affine transformations in 3-D using 4-D matrices
+# ( see e.g. http://en.wikipedia.org/wiki/Transformation_matrix )
 class Transformation(object):
   def __init__(self):
     self.T = [[1,0,0,0],
@@ -27,10 +28,10 @@ class Transformation(object):
 
   def addTransform(self, T2):
     T1 = self.T
-    T3 = [[1,0,0,0],
-          [0,1,0,0],
-          [0,0,1,0],
-          [0,0,0,1]]
+    T3 = [[0,0,0,0],
+          [0,0,0,0],
+          [0,0,0,0],
+          [0,0,0,0]]
     # Matrix multiply: T3 = T1 * T2
     for i in range(4):
       for j in range(4):
@@ -62,4 +63,3 @@ class Transformation(object):
     for i in range(4):
       p2[i] = T1[i][0]*p1[0] + T1[i][1]*p1[1] + T1[i][2]*p1[2] + T1[i][3]
     return (p2[0]/p2[3],p2[1]/p2[3],p2[2]/p2[3])
-
