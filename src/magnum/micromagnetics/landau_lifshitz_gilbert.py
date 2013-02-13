@@ -76,6 +76,7 @@ class LandauLifshitzGilbert(module.Module):
     if id == "dMdt":
       return self.calculate_dMdt(state)
     if id == "deg_per_ns":
+      # TODO: Cache this value like everything else
       deg_per_timestep = (180.0 / math.pi) * math.atan2(state.dMdt.absMax() * state.h, state.M.absMax()) # we assume a<b at atan(a/b).
       deg_per_ns = 1e-9 * deg_per_timestep / state.h
       return deg_per_ns

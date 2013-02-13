@@ -76,6 +76,7 @@ class Solver(object):
     self.step_with_t_max(1e100)
 
   def solve(self, stop_condition):
+    self.state.flush_cache()
     tools.flush()
 
     # Run solver loop.
@@ -93,6 +94,7 @@ class Solver(object):
       signal.signal(signal.SIGINT, old_sigint_handler) # uninstall sigint handler
       del self.__interrupted
 
+    self.state.flush_cache()
     tools.flush()
 
   def __call_step_handlers(self):

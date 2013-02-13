@@ -102,17 +102,19 @@ class System(object):
     else:
       super(System, self).__setattr__(key, value)
 
-  # Add accessors for model variables to the state class
+  # Add accessors for model variables and parameters to the state class
 
   def imbue_state_class_properties(self, state_class):
     assert self.initialized
     assert issubclass(state_class, evolver.State)
 
     def make_param_property(var): 
-      return property(
-        lambda state       : self.get_param(var),
-        lambda state, value: self.set_param(var, value)
-      )
+      def getter(state): 
+        return self.get_param(var)
+      def setter(state, value):
+        self.set_param(var, value)
+        state.flush_cache() # just to be sure
+      return property(getter, setter)
 
     def make_var_property(var):
       calc_mod = self.calculators.get(var, None)
