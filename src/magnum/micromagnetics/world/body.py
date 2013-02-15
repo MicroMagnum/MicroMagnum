@@ -1,4 +1,4 @@
-# Copyright 2012 by the Micromagnum authors.
+# Copyright 2012, 2013 by the Micromagnum authors.
 #
 # This file is part of MicroMagnum.
 # 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 by the Micromagnum authors.
+ * Copyright 2012, 2013 by the Micromagnum authors.
  *
  * This file is part of MicroMagnum.
  * 
@@ -31,7 +31,7 @@ template <>           __host__ __device__ inline double float_max() { return DBL
 
 template <typename T>
 __global__ 
-static void kernel_min_reduce(const T *in, T *out, int N)
+static void kernel_min_reduce(const T * __restrict__ in, T * __restrict__ out, int N)
 {
 	__shared__ T sh[256]; // blockDim = (256,0,0)
 	T tmp1, tmp2;
