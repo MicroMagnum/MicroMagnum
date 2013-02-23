@@ -19,6 +19,8 @@
 
 #include "config.h"
 #include "cublas_wrap.h"
+#include "kernels_simple.h"
+#include "kernels_reduce.h"
 
 #include <stdexcept>
 #include <cassert>
