@@ -3,7 +3,10 @@ from magnum import *
 from frange import frange
 from math import cos, sin, pi
 
-mesh = RectangularMesh((500,250,1), (5e-9, 5e-9, 20e-9))
+print "TODO: Implement SP1 :)"
+import sys; sys.exit()
+
+mesh = RectangularMesh((125,125,1), (20e-9, 10e-9, 20e-9))
 Py = Material.Py(k_uni=5e2, axis1=(1,0,0))
 world = World(mesh, Body("square", Py, Everywhere()))
 
