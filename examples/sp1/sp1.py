@@ -34,6 +34,7 @@ def hysteresis(axis):
     mx, my, mz = [a/Py.Ms for a in solver.state.M.average()]
     
     f.write("%s\t%s %s %s\n" % (H*MU0, mx, my, mz))
+    f.flush()
   f.close()
 
 hysteresis("long")
