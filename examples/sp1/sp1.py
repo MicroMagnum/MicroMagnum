@@ -1,41 +1,36 @@
 #!/usr/bin/python
 from magnum import *
-from frange import frange
-from math import cos, sin, pi
+from math import sin, cos, pi
 
-#mesh = RectangularMesh((50,100,1), (20e-9, 20e-9, 20e-9))
-mesh = RectangularMesh((25,50,1), (40e-9, 40e-9, 20e-9))
-Py = Material.Py(k_uniaxial=5e2, axis1=(1,0,0))
-world = World(mesh, Body("square", Py, Everywhere()))
+Py = Material.Py(Ms=8e5, A=1.3e-11,k_uniaxial=5e2, axis1=(0,1,0))
 
-solver = create_solver(world, [StrayField, ExchangeField, AnisotropyField, ExternalField], log=True)
-solver.state.M = (8e5, 0, 0)
+world = World(
+  RectangularMesh((50,100,1), (20e-9, 20e-9, 20e-9)),
+  Body("square", Py, Everywhere())
+)
 
-# Perform hysteresis
-H_range = list(frange(+50e-3, -50e-3, -5e-3)) + list(frange(-50e-3, +50e-3, 5e-3))
-H_range = [H/MU0 for H in H_range] # convert Tesla->A/m
+def hysteresis(name, axis):
+  f = open("hysteresis-%s-axis.txt" % name, "w+")
+  f.write("# H (mT)\t<mx> <my> <mz>\n")
 
-def hysteresis(axis):
-  if axis == "long":
-    ax = (sin(pi/180), cos(pi/180), 0.0) # along 'long' y axis
-  elif axis == "short":
-    ax = (cos(pi/180), sin(pi/180), 0.0) # along 'short' x axis
-  else:
-    raise ValueError("need to specify 'long' or 'short'")
+  solver = create_solver(
+    world, [StrayField, ExchangeField, AnisotropyField, ExternalField]
+  )
+  solver.state.M = (axis[0]*Py.Ms, axis[1]*Py.Ms, axis[2]*Py.Ms)
 
-  f = open("hysteresis-%s-axis.txt" % axis, "w+")
-  f.write("# H (mT)\tmx(A/m) my(A/m) mz(A/m)\n")
-  for H in H_range:
-    print axis, H
-  
-    Hx, Hy, Hz = H*ax[0], H*ax[1], H*ax[2]
+  for H in [x*1e-3/MU0 for x in range(50,-51,-1) + range(-50,51,1)]:
+    print name, H*MU0
+    Hx, Hy, Hz = H*axis[0], H*axis[1], H*axis[2]
     solver.state.H_ext_offs = (Hx, Hy, Hz)
     solver.relax(1.0)
-    mx, my, mz = [a/Py.Ms for a in solver.state.M.average()]
-    
-    f.write("%s\t%s %s %s\n" % (H*MU0, mx, my, mz))
-    f.flush()
+    Mx, My, Mz = solver.state.M.average()
+    f.write("%s\t%s %s %s\n" % (H*MU0, Mx/Py.Ms, My/Py.Ms, Mz/Py.Ms))
+
+    if H == 0:
+      writeOMF("M_remanence-%s-%s.omf" % (name, "up" if H > H_last else "down"), solver.state.M)
+    H_last = H
+
   f.close()
 
-hysteresis("long")
-hysteresis("short")
+hysteresis( "long", (sin(pi/180), cos(pi/180), 0.0))
+hysteresis("short", (cos(pi/180), sin(pi/180), 0.0))
