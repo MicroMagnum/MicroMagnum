@@ -59,6 +59,12 @@ class Solver(object):
     if any(s == step_handler for s, c in self.__step_handlers): raise ValueError("Cannot add step handler more than once")
     self.__step_handlers.append((step_handler, condition))
 
+  def removeStepHandler(self, step_handler):
+    if not isinstance(step_handler, StepHandler): raise TypeError("'step_handler' argument must be a StepHandler")
+    idx = [i for i, (s, c) in enumerate(self.__step_handlers) if s == step_handler]
+    if len(idx) == 0: raise ValueError('step handler not found')
+    del self.__step_handlers[idx[0]]
+
   ### The solver loop ##############################################################
 
   def step_with_t_max(self, t_max):
@@ -117,9 +123,11 @@ class Solver(object):
         except Solver.FinishSolving:
           do_finish = True
         except Solver.StartDebugger:
-          print("Entering Python debugger. Type 'c' to exit debugging.")
-          print("The currect state can be accessed with the expression 'self.state'.")
           print()
+          print("Entering Python debugger. Type 'c' to exit debugging, 'h' for help.")
+          print("The current state can be accessed with 'self.state'.")
+          print()
+          from magnum import *
           import pdb; pdb.set_trace()
         finally:
           self.__interrupted = False

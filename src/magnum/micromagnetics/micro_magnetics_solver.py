@@ -39,27 +39,41 @@ class MicroMagneticsSolver(solver.Solver):
 
   def handle_interrupt(self):
     print()
+
+    text = ""
+    text += "State:\n"
+    text += "       step = %s\n" % self.state.step
+    text += "          t = %s\n" % self.state.t
+    text += "     avg(M) = %s\n" % (self.state.M.average(),)
+    text += " deg_per_ns = %s\n" % self.state.deg_per_ns
+    text += "\n"
+    text += "Options:"
+
+    from .stephandler import ScreenLog
+    loggers = [h for (h, _) in self.step_handlers if isinstance(h, ScreenLog)]
+
     answer = console.interactive_menu(
-      header = "Solver interrupted by signal SIGINT (Ctrl-C)",
-      text = "Your options:",
+      header = "Solver interrupted by signal SIGINT (ctrl-c)",
+      text = text,
       options = [
-        "Continue solving.",
-        "Stop solver and return the current state as the result.",
-        "Save current magnetization to .omf file, then continue.",
-        "Raise KeyboardInterrupt (graceful program exit).",
-        "Kill program.",
-        "Start debugger."
+        "Continue",
+        "Stop solver and return the current state as the result",
+        "Save current magnetization to .omf file, then continue",
+        "Raise KeyboardInterrupt",
+        "Kill program",
+        "Start debugger",
+        "Toggle console log (now:%s)" % ("enabled" if loggers else "disabled")
       ]
     )
     if answer == 1:
       return
     elif answer == 2:
-      raise solver.Solver.FinishSolving
+      raise solver.Solver.FinishSolving()
     elif answer == 3:
       print("Enter file name ('.omf' is appended automatically)")
       path = console.getline() + ".omf"
       writeOMF(path, self.state.M)
-      print("Done. Continuing..")
+      print("Done.")
       return False
     elif answer == 4:
       raise KeyboardInterrupt()
@@ -67,5 +81,14 @@ class MicroMagneticsSolver(solver.Solver):
       import sys
       sys.exit(-1)
     elif answer == 6:
-      raise solver.Solver.StartDebugger
+      raise solver.Solver.StartDebugger()
+    elif answer == 7:
+      if loggers:
+        for logger in loggers: self.removeStepHandler(logger)
+        print("Disabled console log.")
+      else:
+        from magnum.solver.condition import EveryNthStep
+        self.addStepHandler(ScreenLog(), EveryNthStep(100))
+        print("Enabled console log.")
+      return
     assert False

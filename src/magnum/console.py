@@ -34,7 +34,7 @@ def interactive_menu(header, text, options):
   print_header(header, 60)
   print(text)
   for idx, opt in enumerate(options):
-    print(" %i. %s" % (idx+1, opt))
+    print("  %i. %s" % (idx+1, opt))
   while True:
     print("Choice: ", end="")
     try:

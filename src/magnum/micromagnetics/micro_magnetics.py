@@ -83,7 +83,7 @@ class MicroMagnetics(module.System):
           self.set_param(param, val, mask=cells)
           used_param_list.append("'%s=%s'" % (param, format_parameter_value(val)))
 
-      logger.info("  Body: '%s', in_cells=%s%%, params: %s", 
+      logger.info("  body id='%s', volume=%s%%, params: %s",
         body.id, 
         round(1000.0 * len(cells) / self.mesh.total_nodes) / 10,
         ", ".join(used_param_list) or "(none)"
