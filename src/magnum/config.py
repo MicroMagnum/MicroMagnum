@@ -143,7 +143,8 @@ class MagnumConfig(object):
       metavar = "NUM_THREADS", 
       dest    = "num_fftw_threads", 
       type    = "int",
-      default = self.getCPUCount()
+      #default = self.getCPUCount()   # Is this a good idea? - Gunnar
+      default = 1
     )
     #hw_group.add_option("-f", "--fftw-mode", 
     #  help    = "set fftw plan creation mode (0:Estimate, 1:Measure, 2:Exhaustive), default is Measure (1).", 
