@@ -50,7 +50,7 @@ for ratio in range(1,40+1):
     
     print h, m
     if abs(H) < 1e-10:
-      f = open("log.txt", "a")
+      f = open("sp2.txt", "a")
       f.write("%s    %s %s %s\n" % (ratio, m[0], m[1], m[2]))
       f.close()
       break
