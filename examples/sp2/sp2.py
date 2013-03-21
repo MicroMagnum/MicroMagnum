@@ -8,9 +8,7 @@ A = Py.A
 Ms = Py.Ms
 K_m = 0.5*MU0*(Ms*Ms)
 l_ex = math.sqrt(A/K_m)
-#print l_ex
 
-# Geometry: ratio = d/l_ex
 def geometry(ratio):
   d = ratio * l_ex
   t = 0.1 * d
@@ -29,14 +27,14 @@ def discretize(L, d, t):
 def field(A, axis = (1,1,1)):
   return tuple(A * axis[i] / (axis[0]**2 + axis[1]**2 + axis[2]**2) for i in (0,1,2))
 
-for ratio in range(1,30+1):
+for ratio in range(1,40+1):
   L, d, t = geometry(ratio)
   print "d/l_ex=%s, L=%s, d=%s, t=%s" % (ratio, L, d, t)
 
   mesh = discretize(L, d, t)
-  print mesh
+  print "nn:", mesh.num_nodes
+  print "cells:", mesh.delta
   
-  Py = Material.Py()
   world = World(mesh, Body("thinfilm", Py, Everywhere()))
   solver = create_solver(world, [StrayField, ExchangeField, ExternalField], log=False, do_precess=False)
   solver.state.M = (Ms,0.0,0.0)
@@ -57,4 +55,4 @@ for ratio in range(1,30+1):
       f.close()
       break
 
-    H -= 1e-3/MU0
+    H -= 0.1e-3/MU0
