@@ -14,7 +14,7 @@ def hysteresis(name, axis):
   f.write("# H (mT)\t<mx> <my> <mz>\n")
 
   solver = create_solver(
-    world, [StrayField, ExchangeField, AnisotropyField, ExternalField]
+    world, [StrayField, ExchangeField, AnisotropyField, ExternalField], log=True
   )
   solver.state.M = (axis[0]*Py.Ms, axis[1]*Py.Ms, axis[2]*Py.Ms)
 
