@@ -2,8 +2,6 @@
 from magnum import *
 import math
 
-s = math.sqrt(3.0)
-
 # Material parameters
 Py = Material.Py()
 A = Py.A
@@ -20,39 +18,43 @@ def geometry(ratio):
   return L, d, t
 
 def discretize(L, d, t):
-  nn = (10,10,10)
-  dd = (1e-9,1e-9,1e-9)
-  return RectangularMesh(nn, dd)
+  def choose(l):
+    n = 1+int(1.0*l / l_ex)
+    return n, l / float(n)
+  nx, dx = choose(L)
+  ny, dy = choose(d)
+  nz, dz = choose(t)
+  return RectangularMesh((nx, ny, nz), (dx, dy, dz))
 
-for ratio in (0.1,0.2):
+def field(A, axis = (1,1,1)):
+  return tuple(A * axis[i] / (axis[0]**2 + axis[1]**2 + axis[2]**2) for i in (0,1,2))
+
+for ratio in range(1,30+1):
   L, d, t = geometry(ratio)
   print "d/l_ex=%s, L=%s, d=%s, t=%s" % (ratio, L, d, t)
 
   mesh = discretize(L, d, t)
-  world = World(mesh, Body("thinfilm", Material.Py(), Everywhere()))
-  solver = create_solver(world, [StrayField, ExchangeField, ExternalField], log=True, do_precess=False)
+  print mesh
+  
+  Py = Material.Py()
+  world = World(mesh, Body("thinfilm", Py, Everywhere()))
+  solver = create_solver(world, [StrayField, ExchangeField, ExternalField], log=False, do_precess=False)
   solver.state.M = (Ms,0.0,0.0)
 
   # do hysteresis
-  H = 0.0/MU0
-
+  H = 10.0e-3/MU0
   while True:
-    solver.state.H_ext_offs = (H/s,H/s,H/s)
-    solver.relax()
-    M = solver.state.M.average()
+    solver.state.H_ext_offs = field(H, (1,1,1))
+    solver.relax(1.0)
 
-    print H*MU0, M[0]+M[1]+M[2]
-    if M[0]+M[1]+M[2] == 0.0:
-      H_coerc = H
-      break
-    H += 0.1/MU0
-
-  while True:
-    print H*MU0
-    solver.state.H_ext = (H/s,H/s,H/s)
-    solver.relax()
+    h = H/Py.Ms
+    m = tuple(a/Py.Ms for a in solver.state.M.average())
     
-    if H == 0.0: 
-      M_rem = solver.state.M.average()
+    print h, m
+    if abs(H) < 1e-10:
+      f = open("log.txt", "a")
+      f.write("%s    %s %s %s\n" % (ratio, m[0], m[1], m[2]))
+      f.close()
       break
-    H -= 0.1/MU0
+
+    H -= 1e-3/MU0
