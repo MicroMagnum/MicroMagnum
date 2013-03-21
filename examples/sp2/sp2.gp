@@ -11,7 +11,7 @@ set xlabel "d/l_ex"
 set xrange [0 to 40];
 set yrange [0.95 to 1];
 set title "muMAG Standard Problem #2"
-plot "log.txt" using ($1):($2) with points notitle
+plot "sp2.txt" using ($1):($2) with points notitle
 
 set size 1,0.5
 set origin 0,0
@@ -20,4 +20,4 @@ set xlabel "d/l_ex"
 set xrange [0 to 40];
 set yrange [0 to 0.1];
 set title " "
-plot "log.txt" using ($1):($3) with points notitle
+plot "sp2.txt" using ($1):($3) with points notitle
