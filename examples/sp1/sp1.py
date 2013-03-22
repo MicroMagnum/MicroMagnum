@@ -6,6 +6,8 @@ Py = Material.Py(Ms=8e5, A=1.3e-11,k_uniaxial=5e2, axis1=(0,1,0))
 
 world = World(
   RectangularMesh((50,100,1), (20e-9, 20e-9, 20e-9)),
+  #RectangularMesh((100,200,1), (10e-9, 10e-9, 20e-9)),
+  #RectangularMesh((200,400,4), (5e-9, 5e-9, 5e-9)),
   Body("square", Py, Everywhere())
 )
 
