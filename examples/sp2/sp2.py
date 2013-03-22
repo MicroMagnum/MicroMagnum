@@ -50,7 +50,7 @@ for ratio in range(1,40+1):
     if abs(h) < 1e-10:
       m_rem = m
 
-    # find H_coerc
+    # find coercitivity
     if h < 0 and sum(m) < 1000/Ms:
       h_coerc = abs(h)
       break # exit hysteresis loop
@@ -59,6 +59,6 @@ for ratio in range(1,40+1):
     H -= 0.1e-3/MU0
 
   # 2. log results
-  f = open("sp2.txt", "a")
+  f = open("sp2.dat", "a")
   f.write("%s    %s    %s %s %s\n" % (ratio, h_coerc, m_rem[0], m_rem[1], m_rem[2]))
   f.close()
