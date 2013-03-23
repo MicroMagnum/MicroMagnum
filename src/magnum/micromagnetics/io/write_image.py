@@ -49,7 +49,7 @@ else:
       for x in range(nx):
         col = color_fn(arr[x,y])
         r, g, b = int(256*col[0]), int(256*col[1]), int(256*col[2])
-        img.putpixel((x,y), (r,g,b))
+        img.putpixel((x,ny-y-1), (r,g,b))
     return img
   
   def exportImage(field, map_fn, color_fn, scale_from_range = (None, None)):
