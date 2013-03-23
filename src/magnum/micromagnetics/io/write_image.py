@@ -18,7 +18,7 @@
 from .io_tools import try_io_operation
 
 try:
-  import numpy, Image2
+  import numpy, Image
 except ImportError:
   from magnum.logger import logger
   def writeImage(filename, field, map_fn = id, color_fn = "black-white", color_range = (None, None)):
