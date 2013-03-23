@@ -18,10 +18,11 @@
 from .io_tools import try_io_operation
 
 try:
-  import numpy, Image
+  import numpy, Image2
 except ImportError:
+  from magnum.logger import logger
   def writeImage(filename, field, map_fn = id, color_fn = "black-white", color_range = (None, None)):
-    raise NotImplementedError("writeImage: need 'numpy' and 'Image' libraries to work")
+    logger.warn("writeImage %s: Not enabled because the 'numpy' and 'Image' modules where not found, sorry." % filename)
 else:
 
   def map_field_to_array(field, map_fn, scale_from_range = (None, None)):
