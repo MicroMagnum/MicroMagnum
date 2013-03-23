@@ -19,6 +19,7 @@ Examples:
   relax                 perform relaxation of a magnetization pattern
 
   imageshape            use an graphical image (png, ...) to define geometry
+  omf2png               print omf file as png image
 
   macro-spintorque      (doesn't work) simulate macro spin torque
 
