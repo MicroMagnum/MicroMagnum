@@ -4,6 +4,8 @@ from math import sin, cos, pi
 
 Py = Material.Py(Ms=8e5, A=1.3e-11,k_uniaxial=5e2, axis1=(0,1,0))
 
+# x: "short axis"
+# y: "long axis"
 world = World(
   RectangularMesh((50,100,1), (20e-9, 20e-9, 20e-9)),
   #RectangularMesh((100,200,1), (10e-9, 10e-9, 20e-9)),
@@ -16,7 +18,7 @@ def hysteresis(name, axis):
   f.write("# H (mT)\t<mx> <my> <mz>\n")
 
   solver = create_solver(
-    world, [StrayField, ExchangeField, AnisotropyField, ExternalField], log=True
+    world, [StrayField, ExchangeField, AnisotropyField, ExternalField], log=True, do_precess=False
   )
   solver.state.M = (axis[0]*Py.Ms, axis[1]*Py.Ms, axis[2]*Py.Ms)
 
