@@ -21,8 +21,10 @@ try:
   import numpy, Image
 except ImportError:
   from magnum.logger import logger
-  def writeImage(filename, field, map_fn = id, color_fn = "black-white", color_range = (None, None)):
-    logger.warn("writeImage %s: Not enabled because the 'numpy' and 'Image' modules where not found, sorry." % filename)
+  _msg = "image export not enabled because the 'numpy' and/or 'Image' modules where not found, sorry."
+  def createImage(*args, **kwargs): logger.warn(_msg)
+  def writeImage(*args, **kwargs): logger.warn(_msg)
+
 else:
 
   def map_field_to_array(field, map_fn, scale_from_range = (None, None)):
@@ -51,13 +53,11 @@ else:
         r, g, b = int(256*col[0]), int(256*col[1]), int(256*col[2])
         img.putpixel((x,ny-y-1), (r,g,b))
     return img
-  
+
   def exportImage(field, map_fn, color_fn, scale_from_range = (None, None)):
-    arr = map_field_to_array(field, map_fn, scale_from_range)
-    img = map_array_to_image(arr, color_fn)
     return img
-  
-  def writeImage(filename, field, map_fn = id, color_fn = "black-white", color_range = (None, None)):
+
+  def createImage(filename, field, map_fn = id, color_fn = "black-white", color_range = (None, None), scale = 1.0):
     from math import atan2, sqrt
 
     map_fns = {
@@ -78,5 +78,13 @@ else:
     if isinstance(color_fn, str): color_fn = color_fns[color_fn]
     if isinstance(map_fn, str): map_fn = map_fns[map_fn]
   
-    img = exportImage(field, map_fn, color_fn, color_range)
+    arr = map_field_to_array(field, map_fn, color_range)
+    img = map_array_to_image(arr, color_fn)
+    if scale != 1.0:
+      scaled_size = tuple(x*scale for x in img.size)
+      img = img.resize(scale_size, "BICUBIC")
+    return img
+
+  def writeImage(filename, *args, **kwargs):
+    img = createImage(filename, *args, **kwargs)
     try_io_operation(lambda: img.save(filename))
