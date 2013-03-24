@@ -57,10 +57,11 @@ else:
   def exportImage(field, map_fn, color_fn, scale_from_range = (None, None)):
     return img
 
-  def createImage(filename, field, map_fn = id, color_fn = "black-white", color_range = (None, None), scale = 1.0):
+  def createImage(filename, field, map_fn, color_fn = "black-white", color_range = (None, None), scale = 1.0):
     from math import atan2, sqrt
 
     map_fns = {
+      'id': lambda val: val,
       'x': lambda val: val[0],
       'y': lambda val: val[1],
       'z': lambda val: val[2],
