@@ -71,6 +71,72 @@ find_package(PythonLibs REQUIRED)
 include(FindOpenMP)
 
 ##############################################################
+###    CVode                                               ###
+##############################################################
+
+#add_executable(Cvode cvode/cvode.cpp ${MAGNETO_SRC})
+
+#target_link_libraries(Cvode ${FFTW_LIBRARIES})
+
+# - Try to find sundials_cvode
+# Once done this will define
+#  SUNDIALS_CVODE_FOUND - System has sundials_cvode
+#  SUNDIALS_CVODE_INCLUDE_DIRS - The sundials_cvode include directories
+#  SUNDIALS_CVODE_LIBRARIES - The libraries needed to use sundials_cvode
+#  SUNDIALS_CVODE_DEFINITIONS - Compiler switches required for using sundials_cvode
+
+find_package(PkgConfig)
+pkg_check_modules(PC_SUNDIALS_CVODE QUIET sundials_cvode)
+set(SUNDIALS_CVODE_DEFINITIONS ${PC_SUNDIALS_CVODE_CFLAGS_OTHER})
+
+find_path(SUNDIALS_CVODE_INCLUDE_DIR cvode/cvode.h
+  HINTS ${PC_SUNDIALS_CVODE_INCLUDEDIR} ${PC_SUNDIALS_CVODE_INCLUDE_DIRS}
+  PATH_SUFFIXES sundials_cvode )
+
+find_library(SUNDIALS_CVODE_LIBRARY NAMES cvode sundials_cvode
+  HINTS ${PC_SUNDIALS_CVODE_LIBDIR} ${PC_SUNDIALS_CVODE_LIBRARY_DIRS} )
+
+set(SUNDIALS_CVODE_LIBRARIES ${SUNDIALS_CVODE_LIBRARY} )
+set(SUNDIALS_CVODE_INCLUDE_DIRS ${SUNDIALS_CVODE_INCLUDE_DIR} )
+
+set(SUNDIALS_NVECSERIAL ${PC_SUNDIALS_NVECSERIAL_CFLAGS_OTHER})
+
+find_path(SUNDIALS_NVECSERIAL_INCLUDE_DIR nvector/nvector_serial.h
+  HINTS ${PC_SUNDIALS_NVECSERIAL_INCLUDEDIR} ${PC_SUNDIALS_NVECSERIAL_INCLUDE_DIRS}
+  PATH_SUFFIXES sundials_nvecserial )
+
+find_library(SUNDIALS_NVECSERIAL_LIBRARY NAMES nvector_serial sundials_nvecserial
+  HINTS ${PC_SUNDIALS_NVECSERIAL_LIBDIR} ${PC_SUNDIALS_NVECSERIAL_LIBRARY_DIRS} )
+
+set(SUNDIALS_NVECSERIAL_LIBRARIES ${SUNDIALS_NVECSERIAL_LIBRARY} )
+set(SUNDIALS_NVECSERIAL_INCLUDE_DIRS ${SUNDIALS_NVECSERIAL_INCLUDE_DIR} )
+
+include(FindPackageHandleStandardArgs)
+# handle the QUIETLY and REQUIRED arguments and set SUNDIALS_CVODE_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args(sundials_cvode  DEFAULT_MSG
+  SUNDIALS_CVODE_LIBRARY SUNDIALS_CVODE_INCLUDE_DIR)
+
+mark_as_advanced(SUNDIALS_CVODE_INCLUDE_DIR SUNDIALS_CVODE_LIBRARY )
+
+##############################################################
+###    Boost.python                                        ###
+##############################################################
+
+#FIND_PACKAGE(Boost 1.50.0)
+#IF(Boost_FOUND)
+#  INCLUDE_DIRECTORIES("${Boost_INCLUDE_DIRS}" "/usr/include/python2.7")
+#  SET(Boost_USE_STATIC_LIBS OFF)
+#  SET(Boost_USE_MULTITHREADED ON)
+#  SET(Boost_USE_STATIC_RUNTIME OFF)
+#  FIND_PACKAGE(Boost 1.50.0 COMPONENTS python)
+#
+#ELSEIF(NOT Boost_FOUND)
+#  MESSAGE(FATAL_ERROR "Unable to find correct Boost version. Did you set BOOST_ROOT?")
+#ENDIF()
+
+
+##############################################################
 ###    Subdirectories                                      ###
 ##############################################################
 
@@ -88,9 +154,7 @@ add_subdirectory(magneto/evolver)
 ##############################################################
 
 if(CMAKE_COMPILER_IS_GNUCXX)
-  #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall -march=native -msse3 -fomit-frame-pointer -ffast-math -mfused-madd -std=gnu++0x -pthread")
-  #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall -march=native -msse3 -fomit-frame-pointer -ffast-math -mfused-madd")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall -march=native -msse3 -fomit-frame-pointer -ffast-math")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall -march=native -msse3 -fomit-frame-pointer -ffast-math -fpermissive -fPIC")
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 if(OPENMP_FOUND)
@@ -145,21 +209,13 @@ else()
 endif(ENABLE_CUDA)
 set_source_files_properties (${BINDINGS_SOURCE} PROPERTIES SWIG_FLAGS "-O;-module;${SWIG_MODULE_NAME}")
 swig_add_module(${SWIG_MODULE_NAME} python ${PROJECT_SOURCE_DIR}/magneto/bindings/magneto.i ${MAGNETO_SRC})
-swig_link_libraries(${SWIG_MODULE_NAME} ${FFTW_LIBRARIES})
+swig_link_libraries(${SWIG_MODULE_NAME} ${FFTW_LIBRARIES} ${SUNDIALS_CVODE_LIBRARIES} ${SUNDIALS_NVECSERIAL_LIBRARIES})
+#swig_link_libraries(${SWIG_MODULE_NAME} ${FFTW_LIBRARIES} ${SUNDIALS_CVODE_LIBRARIES} ${SUNDIALS_NVECSERIAL_LIBRARIES} ${Boost_LIBRARIES})
 
 # Link Cuda Kernels to Swig module
 if(ENABLE_CUDA)
   swig_link_libraries(${SWIG_MODULE_NAME} magneto_cu_parts)
 endif(ENABLE_CUDA)
-
-##############################################################
-###    CVode                                               ###
-##############################################################
-
-#add_executable(Cvode cvode/cvode.cpp ${MAGNETO_SRC})
-
-#target_link_libraries(Cvode ${FFTW_LIBRARIES})
-
 
 ##############################################################
 ###    Don't forget to create config.h                     ###

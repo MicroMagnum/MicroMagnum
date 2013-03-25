@@ -17,15 +17,20 @@
  * along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "config.h"
+//#include "config.h"
 
-#include "matrix/matty.h"
-#include <vector>
-#include "/usr/local/include/cvode/cvode.h" // TODO relative path
+//#include "matrix/matty.h"
+//#include <vector>
+//#include <cvode/cvode.h>
+//#include <cvode/cvode_band.h>
+#include <nvector/nvector_serial.h>
+//#include <sundials/sundials_types.h>
+//#include <sundials/sundials_math.h>
+//#include <sundials/sundials_band.h>
 
 #define Y1    RCONST(1.0)      /* initial y components */
-#define Y2    RCONST(0.0)
-#define Y3    RCONST(0.0)
+#define Y2    RCONST(1.0)
+#define Y3    RCONST(1.0)
 #define T0    RCONST(0.0)      /* initial time           */
 #define Ith(v,i)    NV_Ith_S(v,i-1)       /* Ith numbers components 1..NEQ */
 
