@@ -39,17 +39,48 @@
 
 // Magnum
 //#include "config.h"
-//#include "Magneto.h"
+#include "Magneto.h"
+//#include "matrix/matty.h"
+//#include "Vector3d.h"
 
 
 static void PrintOutput(realtype t, realtype y1, realtype y2, realtype y3)
 {
   std::cout << "t = " << t << ", y1 = " << y1 << ", y2 = " << y2 << ", y3 = " << y3 << "\n";
-
-  return;
 }
 
-int cvode_test() {
+static void Cvode::matrixTest(VectorMatrix mat)
+{
+  int dim_x = mat.dimX();
+  int dim_y = mat.dimY();
+  int dim_z = mat.dimZ();
+	const int dim_xy = dim_x * dim_y;
+
+  std::cout << "matrixTest size: " << mat.size() << "\n";
+  std::cout << "matrixTest dimX: " << mat.dimX() << "\n";
+  std::cout << "matrixTest dimY: " << mat.dimY() << "\n";
+  std::cout << "matrixTest dimZ: " << mat.dimZ() << "\n";
+
+  VectorMatrix::const_accessor Macc(mat);
+
+	for (int z=0; z<dim_z; ++z) {
+		for (int y=0; y<dim_y; ++y) {	
+			for (int x=0; x<dim_x; ++x) {
+				const int i = z*dim_xy + y*dim_x + x; // linear index of (x,y,z)
+        std::cout << Macc.get(i);
+      }
+      std::cout << std::endl;
+    }
+    std::cout << std::endl;
+  }
+}
+
+void Cvode::one(int i) {
+  std::cout << "one from c++\n";
+}
+
+int Cvode::cvodeTest() {
+  one(437291);
   realtype t;
   N_Vector yout, y, ydot, abstol;
   void *cvode_mem;
@@ -82,7 +113,7 @@ int cvode_test() {
   /* Call CVodeInit to initialize the integrator memory and specify the
    * user's right hand side function in y'=f(t,y), the inital time T0, and
    * the initial dependent variable vector y. */
-  flag = CVodeInit(cvode_mem, f, T0, y);
+  flag = CVodeInit(cvode_mem, callf, T0, y);
   if (check_flag(&flag, "CVodeInit", 1)) return(1);
 
   /* Call CVodeSVtolerances to specify the scalar relative tolerance
@@ -97,15 +128,8 @@ int cvode_test() {
   flag = CVode(cvode_mem, 2, yout, &t, CV_NORMAL);
   if(check_flag(&flag, "CVode", 1));
 
-  //Py_SetProgramName(argv[0]);  /* optional but recommended */
-  Py_Initialize();
-  PyRun_SimpleString("from magnum import test\n"
-      "test.hello_world()\n");
-  PyRun_SimpleString("from time import time,ctime\n"
-      "print('Today is',ctime(time()))\n");
-  Py_Finalize();
-
   PrintOutput(t, Ith(yout,1), Ith(yout,2), Ith(yout,3));
+
   return ans;
 }
 
@@ -113,23 +137,50 @@ int cvode_test() {
  * f routine. Compute function f(t,y). 
  */
 
-static int f(realtype t, N_Vector y, N_Vector ydot, void *user_data)
+static int Cvode::callf(realtype t, N_Vector y, N_Vector ydot, void *user_data)
 {
   realtype y1, y2, y3;
 
+  //VectorMatrix tvec = getVectorMatrix(y);
+  //N_Vector Y = getN_Vector(tvec);
+
   y1 = Ith(y,1); y2 = Ith(y,2); y3 = Ith(y,3);
 
-  /*
-  yd1 = Ith(ydot,1) = RCONST(-0.04)*y1 + RCONST(1.0e4)*y2*y3;
-  yd3 = Ith(ydot,3) = RCONST(3.0e7)*y2*y2;
-  Ith(ydot,2) = -yd1 - yd3;
-  */
+    /*
+     yd1 = Ith(ydot,1) = RCONST(-0.04)*y1 + RCONST(1.0e4)*y2*y3;
+     yd3 = Ith(ydot,3) = RCONST(3.0e7)*y2*y2;
+     Ith(ydot,2) = -yd1 - yd3;
+     */
 
   Ith(ydot,1) = RCONST(1);
   Ith(ydot,2) = t;
   Ith(ydot,3) = t * t;
-  
+
   return(0);
+}
+
+matty::VectorMatrix Cvode::f(matty::VectorMatrix y)
+{
+  std::cout << "c++ VectorMatrix\n";
+  return y;
+}
+
+static N_Vector Cvode::getN_Vector(matty::VectorMatrix vec)
+{
+  //Array a = vec.getArray(0,0);
+  N_Vector nvec = N_VNew_Serial(3);
+  //Ith(nvec,1) = vec[0];
+  //Ith(nvec,2) = vec[1];
+  //Ith(nvec,3) = vec[2];
+
+  return nvec;
+}
+
+static VectorMatrix Cvode::getVectorMatrix(N_Vector vec)
+{
+  VectorMatrix nvec;
+
+  return nvec;
 }
 
 /*
@@ -142,7 +193,7 @@ static int f(realtype t, N_Vector y, N_Vector ydot, void *user_data)
  *          NULL pointer 
  */
 
-static int check_flag(void *flagvalue, char *funcname, int opt)
+static int Cvode::check_flag(void *flagvalue, char *funcname, int opt)
 {
   int *errflag;
 
@@ -168,5 +219,4 @@ static int check_flag(void *flagvalue, char *funcname, int opt)
 
   return(0);
 }
-
 

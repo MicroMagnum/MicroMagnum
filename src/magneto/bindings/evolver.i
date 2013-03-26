@@ -17,6 +17,8 @@
  * along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+%module(directors="1") cvode_director
+
 %{
 #include "evolver/runge_kutta.h"
 #include "evolver/cvode.h"
@@ -82,6 +84,15 @@ void rk_combine_result(
 	VectorMatrix &y_error
 );
 
-int cvode_test();
 
 double rk_adjust_stepsize(int order, double h, double eps_abs, double eps_rel, const VectorMatrix &y, const VectorMatrix &y_error);
+
+%feature("director") Cvode;
+
+class Cvode {
+  public:
+    virtual int cvodeTest();
+    virtual void one(int i);
+    virtual VectorMatrix f(VectorMatrix y);
+    static void matrixTest(VectorMatrix mat);
+};

@@ -27,6 +27,7 @@
 //#include <sundials/sundials_types.h>
 //#include <sundials/sundials_math.h>
 //#include <sundials/sundials_band.h>
+#include "matrix/matty.h"
 
 #define Y1    RCONST(1.0)      /* initial y components */
 #define Y2    RCONST(1.0)
@@ -35,13 +36,26 @@
 #define Ith(v,i)    NV_Ith_S(v,i-1)       /* Ith numbers components 1..NEQ */
 
 
-// TODO
-int cvode_test();
+class Cvode {
 
-typedef struct {
-    realtype a,b,c,d;
-} *UserData;
+  public:
+    virtual int cvodeTest();
 
-static int f(realtype t, N_Vector y, N_Vector ydot, void *user_data);
+    virtual void one(int i);
 
-static int check_flag(void *flagvalue, char *funcname, int opt);
+    virtual matty::VectorMatrix f(matty::VectorMatrix y);
+
+    typedef struct {
+      realtype a,b,c,d;
+    } *UserData;
+
+    static int callf(realtype t, N_Vector y, N_Vector ydot, void *user_data);
+
+    static N_Vector getN_Vector(matty::VectorMatrix vec);
+
+    static void matrixTest(VectorMatrix mat);
+
+    static VectorMatrix getVectorMatrix(N_Vector vec);
+
+    static int check_flag(void *flagvalue, char *funcname, int opt);
+};
