@@ -83,7 +83,7 @@ class Solver(object):
 
   def solve(self, stop_condition):
     self.state.flush_cache()
-    tools.flush()
+    #tools.flush()
 
     # Run solver loop.
     # Also, custom sigint handler while loop is running.
@@ -101,7 +101,7 @@ class Solver(object):
       del self.__interrupted
 
     self.state.flush_cache()
-    tools.flush()
+    #tools.flush()
 
   def __call_step_handlers(self):
     for step_handler, condition in self.__step_handlers:

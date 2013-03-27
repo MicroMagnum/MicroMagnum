@@ -31,7 +31,7 @@ def writeOMF_helper(path, vector_field, desc=[], omf_format = OMF_FORMAT_ASCII):
   header.Desc.clear()
   for d in desc: header.Desc.push_back(str(d))
   header.meshunit = "m"
-  header.valueunit = vector_field.value_unit or "(none)"
+  header.valueunit = "(none)"
   header.valuemultiplier = 1.0 # this is overwritten by magneto.writeOMF
   header.xmin = 0.0
   header.ymin = 0.0

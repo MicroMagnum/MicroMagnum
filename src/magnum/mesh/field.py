@@ -20,14 +20,13 @@ import magnum.magneto as magneto
 from .rectangular_mesh import RectangularMesh
 
 class Field(magneto.Matrix):
-  def __init__(self, mesh, id = None, value_unit = None):
-    super(Field, self).__init__(magneto.Shape(*mesh.getFieldMatrixDimensions()))
+  def __init__(self, mesh):
+    nx, ny, nz = mesh.num_nodes
+    magneto.Matrix.__init__(self, magneto.Shape(nx, ny, nz))
     self.__mesh = mesh
-    self.__id = id
-    self.__value_unit = value_unit
 
   def __repr__(self):
-    return "Field(%r, %r, %r)" % (self.shape, self.__id, self.__value_unit)
+    return "Field(%r)" % self.__mesh
 
   def getMesh(self): return self.__mesh
   mesh = property(getMesh)

@@ -27,7 +27,7 @@ def readOMF(path):
 
   # Convert (header, mat) to VectorField.
   mesh = RectangularMesh((header.xnodes, header.ynodes, header.znodes), (header.xstepsize, header.ystepsize, header.zstepsize))
-  vector_field = VectorField(mesh, id=None, value_unit=header.valueunit)
+  vector_field = VectorField(mesh)
   vector_field.assign(mat)
 
   logger.debug("Read file %s", path)
