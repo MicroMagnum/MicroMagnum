@@ -137,10 +137,10 @@ class LandauLifshitzGilbert(module.Module):
     self.__f2 = f2 = Field(self.system.mesh) # damping factors
 
     # Prepare factors    
-    nx, ny, nz = self.system.mesh.num_nodes
-    for z in range(nz):
-      for y in range(ny):
-        for x in range(nx):
+    nx, ny, nz = map(range, self.system.mesh.num_nodes)
+    for z in nz:
+      for y in ny:
+        for x in nx:
           alpha, Ms = self.alpha.get(x,y,z), self.Ms.get(x,y,z)
 
           if Ms != 0.0:

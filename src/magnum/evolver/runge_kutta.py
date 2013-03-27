@@ -40,7 +40,7 @@ class RungeKutta(Evolver):
     self.__y0    =  VectorField(mesh)
     self.__y_err =  VectorField(mesh)
     self.__y_tmp =  VectorField(mesh)
-    self.__k     = [VectorField(mesh) for idx in range(self.__tab.getNumSteps())]
+    self.__k     = [None] * self.__tab.getNumSteps()
 
     logger.info("Runge Kutta evolver: method is %s, step size controller is %s.", method, self.__controller)
 
@@ -87,11 +87,10 @@ class RungeKutta(Evolver):
     return state
 
   def apply(self, state, h):
-    (y, y_tmp, y_err) = (state.y, self.__y_tmp, self.__y_err)
+    y, y_tmp, y_err = state.y, self.__y_tmp, self.__y_err
     tab = self.__tab
     num_steps = tab.getNumSteps()
-
-    k = [None for idx in range(num_steps)]
+    k = self.__k
 
     # I. Calculate step vectors k[0] to k[5]
 

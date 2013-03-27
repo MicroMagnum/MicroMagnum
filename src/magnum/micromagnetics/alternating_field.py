@@ -72,7 +72,9 @@ class AlternatingField(module.Module):
         A = fn(t)
       else:
         # with 'offs', 'amp', 'freq', 'phase' parameters
-        A = tuple(offs[c] + amp[c] * sin(t * freq[c] + phase[c]) for c in range(3))
+        A = (offs[0] + amp[0] * sin(t * freq[0] + phase[0]),
+             offs[1] + amp[1] * sin(t * freq[1] + phase[1]),
+             offs[2] + amp[2] * sin(t * freq[2] + phase[2]))
 
       # Convert 3-vector to VectorField if necessary.
       if isinstance(A, tuple):
