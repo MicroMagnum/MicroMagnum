@@ -17,8 +17,6 @@
  * along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <Python.h>
-
 // System
 #include <stdlib.h>
 #include <iostream>
@@ -40,6 +38,7 @@
 // Magnum
 //#include "config.h"
 #include "Magneto.h"
+#include "ode.h"
 //#include "matrix/matty.h"
 //#include "Vector3d.h"
 
@@ -92,8 +91,8 @@ static void Cvode::matrixTest(VectorMatrix mat)
     Ith(x,3*i+2) += RCONST(2); 
     Ith(x,3*i+3) += RCONST(3);
 
-    x1 = Ith(x,3*i+1); 
-    x2 = Ith(x,3*i+2); 
+    x1 = Ith(x,3*i+1);
+    x2 = Ith(x,3*i+2);
     x3 = Ith(x,3*i+3);
 
     std::cout <<"(" << x1 << "," << x2 << "," << x3 << ")";
@@ -115,9 +114,7 @@ static void Cvode::matrixTest(VectorMatrix mat)
           std::cout << Macc.get(i);
           std::cout << std::endl;
         }
-        //std::cout << std::endl;
       }
-      //std::cout << std::endl;
     }
   }
 
@@ -132,12 +129,12 @@ int Cvode::cvodeTest() {
   realtype t;
   N_Vector yout, y, ydot, abstol;
   void *cvode_mem;
-  UserData user_data;
+  ODE user_data;
   int flag, ans;
 
   y = ydot = yout = NULL;
   cvode_mem = NULL;
-  user_data = NULL;
+  //user_data = NULL;
 
   y = N_VNew_Serial(3);
   ydot = N_VNew_Serial(3);
@@ -157,6 +154,10 @@ int Cvode::cvodeTest() {
    * Backward Differentiation Formula and the use of a Newton iteration */
   cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
   if (check_flag((void *)cvode_mem, "CVodeCreate", 0)) return(1);
+
+  /* Set the pointer to user-defined data */
+  flag = CVodeSetUserData(cvode_mem, data);
+  if(check_flag(&flag, "CVodeSetUserData", 1)) return(1);
 
   /* Call CVodeInit to initialize the integrator memory and specify the
    * user's right hand side function in y'=f(t,y), the inital time T0, and
@@ -187,16 +188,10 @@ int Cvode::cvodeTest() {
 
 static int Cvode::callf(realtype t, N_Vector y, N_Vector ydot, void *user_data)
 {
-  realtype y1, y2, y3;
+  ODE* ode = (ODE*) user_data;
 
-
-  y1 = Ith(y,1); y2 = Ith(y,2); y3 = Ith(y,3);
-
-    /*
-     yd1 = Ith(ydot,1) = RCONST(-0.04)*y1 + RCONST(1.0e4)*y2*y3;
-     yd3 = Ith(ydot,3) = RCONST(3.0e7)*y2*y2;
-     Ith(ydot,2) = -yd1 - yd3;
-     */
+  matty::VectorMatrix My, Mydot;
+  ode->diff(My,Mydot);
 
   Ith(ydot,1) = RCONST(1);
   Ith(ydot,2) = t;

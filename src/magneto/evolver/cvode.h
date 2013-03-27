@@ -45,8 +45,6 @@ class Cvode {
 
     virtual matty::VectorMatrix f(matty::VectorMatrix y);
 
-    static int callf(realtype t, N_Vector y, N_Vector ydot, void *user_data);
-
     static void matrixTest(VectorMatrix mat);
 
   private:
@@ -55,6 +53,8 @@ class Cvode {
     static void getN_Vector(matty::VectorMatrix vec, N_Vector& nvec);
 
     static int check_flag(void *flagvalue, char *funcname, int opt);
+
+    static int callf(realtype t, N_Vector y, N_Vector ydot, void *user_data);
 
     typedef struct {
       realtype a,b,c,d;
