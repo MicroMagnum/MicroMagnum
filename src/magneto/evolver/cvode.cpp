@@ -54,25 +54,73 @@ static void Cvode::matrixTest(VectorMatrix mat)
   int dim_x = mat.dimX();
   int dim_y = mat.dimY();
   int dim_z = mat.dimZ();
-	const int dim_xy = dim_x * dim_y;
+  const int dim_xy = dim_x * dim_y;
 
   std::cout << "matrixTest size: " << mat.size() << "\n";
   std::cout << "matrixTest dimX: " << mat.dimX() << "\n";
   std::cout << "matrixTest dimY: " << mat.dimY() << "\n";
   std::cout << "matrixTest dimZ: " << mat.dimZ() << "\n";
 
-  VectorMatrix::const_accessor Macc(mat);
+  {
+    VectorMatrix::const_accessor Macc(mat);
 
-	for (int z=0; z<dim_z; ++z) {
-		for (int y=0; y<dim_y; ++y) {	
-			for (int x=0; x<dim_x; ++x) {
-				const int i = z*dim_xy + y*dim_x + x; // linear index of (x,y,z)
-        std::cout << Macc.get(i);
+    for (int z=0; z<dim_z; ++z) {
+      for (int y=0; y<dim_y; ++y) {	
+        for (int x=0; x<dim_x; ++x) {
+          const int i = z*dim_xy + y*dim_x + x; // linear index of (x,y,z)
+          std::cout << Macc.get(i);
+          std::cout << std::endl;
+        }
+        //std::cout << std::endl;
       }
-      std::cout << std::endl;
+      //std::cout << std::endl;
     }
+  }
+
+  /*
+   * Konverter Test
+   */
+
+  N_Vector x = N_VNew_Serial(3*mat.size());
+  getN_Vector(mat,x);
+  realtype x1,x2,x3;
+
+  std::cout << std::endl;
+  std::cout << "konvertiert:" << std::endl;
+  for (int i=0; i<mat.size(); ++i) {
+    Ith(x,3*i+1) += RCONST(1); 
+    Ith(x,3*i+2) += RCONST(2); 
+    Ith(x,3*i+3) += RCONST(3);
+
+    x1 = Ith(x,3*i+1); 
+    x2 = Ith(x,3*i+2); 
+    x3 = Ith(x,3*i+3);
+
+    std::cout <<"(" << x1 << "," << x2 << "," << x3 << ")";
     std::cout << std::endl;
   }
+
+  /*
+   * Zurück konvertieren
+   */
+  {
+    getVectorMatrix(x, mat);
+    VectorMatrix::const_accessor Macc(mat);
+
+    std::cout << "\nzurück konvertiert:\n";
+    for (int z=0; z<dim_z; ++z) {
+      for (int y=0; y<dim_y; ++y) {	
+        for (int x=0; x<dim_x; ++x) {
+          const int i = z*dim_xy + y*dim_x + x; // linear index of (x,y,z)
+          std::cout << Macc.get(i);
+          std::cout << std::endl;
+        }
+        //std::cout << std::endl;
+      }
+      //std::cout << std::endl;
+    }
+  }
+
 }
 
 void Cvode::one(int i) {
@@ -80,7 +128,7 @@ void Cvode::one(int i) {
 }
 
 int Cvode::cvodeTest() {
-  one(437291);
+  one(437292);
   realtype t;
   N_Vector yout, y, ydot, abstol;
   void *cvode_mem;
@@ -141,8 +189,6 @@ static int Cvode::callf(realtype t, N_Vector y, N_Vector ydot, void *user_data)
 {
   realtype y1, y2, y3;
 
-  //VectorMatrix tvec = getVectorMatrix(y);
-  //N_Vector Y = getN_Vector(tvec);
 
   y1 = Ith(y,1); y2 = Ith(y,2); y3 = Ith(y,3);
 
@@ -165,22 +211,52 @@ matty::VectorMatrix Cvode::f(matty::VectorMatrix y)
   return y;
 }
 
-static N_Vector Cvode::getN_Vector(matty::VectorMatrix vec)
+/**
+ * nvec muss mit der richtigen Größe initialisiert sein (N_VNew_Serial(3*size)).
+ */
+static void Cvode::getN_Vector(VectorMatrix mat, N_Vector& nvec)
 {
-  //Array a = vec.getArray(0,0);
-  N_Vector nvec = N_VNew_Serial(3);
-  //Ith(nvec,1) = vec[0];
-  //Ith(nvec,2) = vec[1];
-  //Ith(nvec,3) = vec[2];
+  int dim_x = mat.dimX();
+  int dim_y = mat.dimY();
+  int dim_z = mat.dimZ();
+  int size  = mat.size();
+	const int dim_xy = dim_x * dim_y;
 
-  return nvec;
+  VectorMatrix::const_accessor Macc(mat);
+
+	for (int z=0; z<dim_z; ++z)
+  for (int y=0; y<dim_y; ++y)
+  for (int x=0; x<dim_x; ++x) {
+    const int i = z*dim_xy + y*dim_x + x; // linear index of (x,y,z)
+    Vector3d vec3 = Macc.get(i);
+    Ith(nvec,3*i+1) = vec3[0];
+    Ith(nvec,3*i+2) = vec3[1];
+    Ith(nvec,3*i+3) = vec3[2];
+  }
 }
 
-static VectorMatrix Cvode::getVectorMatrix(N_Vector vec)
+static void Cvode::getVectorMatrix(N_Vector vec, VectorMatrix& mat)
 {
-  VectorMatrix nvec;
+  int dim_x = mat.dimX();
+  int dim_y = mat.dimY();
+  int dim_z = mat.dimZ();
+  int size  = mat.size();
+	const int dim_xy = dim_x * dim_y;
 
-  return nvec;
+  VectorMatrix::accessor Macc(mat);
+
+	for (int z=0; z<dim_z; ++z)
+  for (int y=0; y<dim_y; ++y)
+  for (int x=0; x<dim_x; ++x) {
+    const int i = z*dim_xy + y*dim_x + x; // linear index of (x,y,z)
+
+    Vector3d vec3;
+
+    vec3[0] = Ith(vec,3*i+1);
+    vec3[1] = Ith(vec,3*i+2);
+    vec3[2] = Ith(vec,3*i+3);
+    Macc.set(i, vec3);
+  }
 }
 
 /*

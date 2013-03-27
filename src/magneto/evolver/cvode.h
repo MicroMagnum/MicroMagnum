@@ -45,17 +45,19 @@ class Cvode {
 
     virtual matty::VectorMatrix f(matty::VectorMatrix y);
 
+    static int callf(realtype t, N_Vector y, N_Vector ydot, void *user_data);
+
+    static void matrixTest(VectorMatrix mat);
+
+  private:
+    static void getVectorMatrix(N_Vector vec, VectorMatrix& mat);
+
+    static void getN_Vector(matty::VectorMatrix vec, N_Vector& nvec);
+
+    static int check_flag(void *flagvalue, char *funcname, int opt);
+
     typedef struct {
       realtype a,b,c,d;
     } *UserData;
 
-    static int callf(realtype t, N_Vector y, N_Vector ydot, void *user_data);
-
-    static N_Vector getN_Vector(matty::VectorMatrix vec);
-
-    static void matrixTest(VectorMatrix mat);
-
-    static VectorMatrix getVectorMatrix(N_Vector vec);
-
-    static int check_flag(void *flagvalue, char *funcname, int opt);
 };
