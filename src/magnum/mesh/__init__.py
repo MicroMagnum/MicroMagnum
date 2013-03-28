@@ -15,8 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .rectangular_mesh import Mesh, RectangularMesh
+from .rectangular_mesh import RectangularMesh
 from .field import Field
 from .vector_field import VectorField
 
-__all__ = ["Mesh", "RectangularMesh", "Field", "VectorField"]
+__all__ = ["RectangularMesh", "Field", "VectorField"]

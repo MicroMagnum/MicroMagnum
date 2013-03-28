@@ -59,6 +59,8 @@ namespace std {
 %include "evolver.i"
 %include "benchmark.i"
 
+%include "../mesh/RectangularMesh.i"
+
 %{
 #include "Magneto.h"
 %}
