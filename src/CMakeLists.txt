@@ -82,6 +82,7 @@ add_subdirectory(magneto/math/conv)
 add_subdirectory(magneto/math/conv/kernels)
 add_subdirectory(magneto/mmm)
 add_subdirectory(magneto/evolver)
+add_subdirectory(magneto/mesh)
 
 ##############################################################
 ###    Set Compiler Flags                                  ###

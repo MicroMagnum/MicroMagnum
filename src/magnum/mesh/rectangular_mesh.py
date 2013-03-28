@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-import itertools
 import magnum.magneto as magneto
 
 class RectangularMesh(magneto.RectangularMesh):
@@ -37,25 +36,5 @@ class RectangularMesh(magneto.RectangularMesh):
  
     super(RectangularMesh, self).__init__(nx, ny, nz, dx, dy, dz, periodic_bc, periodic_repeat)
 
-  def __repr__(self):
-    return "RectangularMesh(%r, %r, periodic_bc=%r, periodic_repeat=%r)" % (self.num_nodes, self.delta, self.periodic_bc[0], self.periodic_bc[1])
-
   def getFieldMatrixDimensions(self):
-    return self.__num_nodes
-
-  def iterateCellIndices(self):
-    """
-    Returns iterator that iterates through all cell indices (x,y,z).
-    Example:
-      for x,y,z in mesh.iterateCellIndices():
-        print(x,y,z)
-    """
-    return itertools.product(*map(range, self.num_nodes))
-  
-  volume = property(magneto.RectangularMesh.getVolume)
-  cell_volume = property(magneto.RectangularMesh.getCellVolume)
-  total_nodes = property(magneto.RectangularMesh.getTotalNodes)
-  num_nodes = property(magneto.RectangularMesh.getNumNodes)
-  delta = property(magneto.RectangularMesh.getDelta)
-  size = property(magneto.RectangularMesh.getSize)
-  periodic_bc = property(magneto.RectangularMesh.getPeriodicBC)
+    return self.num_nodes

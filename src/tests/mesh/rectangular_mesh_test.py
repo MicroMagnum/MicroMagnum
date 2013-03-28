@@ -23,6 +23,11 @@ import unittest
 # Body
 class RectangularMeshTest(unittest.TestCase):
 
+  def test_properties(self):
+    mesh = RectangularMesh((1,2,3),(4.0,5.0,6.0))
+    self.assertEqual(mesh.num_nodes, (1,2,3))
+    self.assertEqual(mesh.delta, (4.0,5.0,6.0))
+
   def test_derived_quantities(self):
     mesh = RectangularMesh((10,10,10),(2,2,2))
     self.assertEqual(mesh.cell_volume, 8)

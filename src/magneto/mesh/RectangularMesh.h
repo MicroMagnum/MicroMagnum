@@ -19,11 +19,11 @@ public:
 	}
 
 	double getCellVolume() const { return dx * dy * dz; }
-	double getTotalNodes() const { return nx * ny * nz; }
+	int getTotalNodes() const { return nx * ny * nz; }
 	double getVolume() const { return getCellVolume() * getTotalNodes(); }
 
         void getNumNodes(int &nx, int &ny, int &nz) const { nx = this->nx; ny = this->ny; nz = this->nz; }
-        void getDelta(int &dx, int &dy, int &dz) const { dx = this->dx; dy = this->dy; dz = this->dz; }
+        void getDelta(double &dx, double &dy, double &dz) const { dx = this->dx; dy = this->dy; dz = this->dz; }
         void getSize(double &size_x, double &size_y, double &size_z) const { size_x = nx*dx; size_y = ny*dy; size_z = nz*dz; }
 
 	void getPeriodicBC(std::string &pbc, int &pbc_reps) const { pbc = this->pbc; pbc_reps = this->pbc_reps; }

@@ -60,6 +60,8 @@ namespace std {
 %include "benchmark.i"
 
 %include "../mesh/RectangularMesh.i"
+%include "../mesh/VectorField.i"
+%include "../mesh/Field.i"
 
 %{
 #include "Magneto.h"
