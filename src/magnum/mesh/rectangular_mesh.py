@@ -35,6 +35,3 @@ class RectangularMesh(magneto.RectangularMesh):
       periodic_repeat = {0:1, 1:15, 2:3, 3:2}[num_dirs]
  
     super(RectangularMesh, self).__init__(nx, ny, nz, dx, dy, dz, periodic_bc, periodic_repeat)
-
-  def getFieldMatrixDimensions(self):
-    return self.num_nodes

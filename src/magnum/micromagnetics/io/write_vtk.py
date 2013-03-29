@@ -19,7 +19,7 @@ from .vtk import *
 
 def writeVTK(filename, field):
   mesh = field.mesh
-  n = mesh.getFieldMatrixDimensions()
+  n = mesh.num_nodes
   d = mesh.delta
 
   # I. Describe data entries in file
