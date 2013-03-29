@@ -22,6 +22,7 @@ def VectorField_initFromFunction(self, init_fn):
     self.set(idx, init_fn(mesh, mesh.getPosition(idx)))
 
 def VectorField_findExtremum(self, z_slice=0, component=0): # TODO: Better name (only the xy-Plane is searched)
+  import magnum.magneto as magneto
   cell = magneto.findExtremum(self, z_slice, component)
   return (
     (0.5 + cell[0]) * self.mesh.delta[0],
@@ -31,6 +32,7 @@ def VectorField_findExtremum(self, z_slice=0, component=0): # TODO: Better name 
 
 def VectorField_interpolate(self, mesh):
   # Get matrix with interpolated values in 'interp_mat'   
+  import magnum.magneto as magneto
   need_interpolate = (self.mesh.num_nodes != mesh.num_nodes)
   if need_interpolate:
     nx, ny, nz = mesh.num_nodes # new size (in number of cells)

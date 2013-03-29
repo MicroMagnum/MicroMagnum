@@ -17,6 +17,4 @@
 
 import magnum.magneto as magneto
 
-from .rectangular_mesh import RectangularMesh
-
 VectorField = magneto.VectorField
