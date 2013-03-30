@@ -15,8 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from magnum.config import cfg
 import magnum.magneto as magneto
+
+from magnum.config import cfg
 
 class TensorField(object):
   PADDING_DISABLE             = magneto.PADDING_DISABLE
@@ -118,7 +119,7 @@ class StrayFieldCalculator(object):
       tensor.setPeriodicBoundaries(peri_x, peri_y, peri_z, peri_repeat)
       conv = magneto.VectorVectorConvolution_FFT(tensor.generate(), nx, ny, nz, dx, dy, dz) 
       self.__calc = lambda M, H: conv.execute(M, H)
-    # experimental, don't use!
+    # experimental, don't use (and not implemented :) )
     elif method == "single":
       assert not peri_x and not peri_y and not peri_z
       stray = magneto.StrayField_single(nx, ny, nz, dx, dy, dz)

@@ -18,19 +18,15 @@
 import magnum.magneto as magneto
 
 class RectangularMesh(magneto.RectangularMesh):
+
   def __init__(self, num_nodes, cell_size, periodic_bc="", periodic_repeat=None):
-    assert isinstance(num_nodes, tuple) and len(num_nodes) == 3
-    assert isinstance(cell_size, tuple) and len(cell_size) == 3
-    assert all([isinstance(x, (int, float)) for x in num_nodes])
 
-    nx, ny, nz = tuple(map(int,num_nodes))
-    dx, dy, dz = tuple(map(float,cell_size))
+    nx, ny, nz = map(  int, num_nodes)
+    dx, dy, dz = map(float, cell_size)
 
-    if periodic_repeat is None:
+    if not periodic_repeat:
       # count number of periodic directions (0, 1, 2, or 3)
-      num_dirs = 0
-      for s in ["x", "y", "z"]: 
-        if periodic_bc.find(s) != -1: num_dirs += 1
+      num_dirs = sum(1 for s in ("x","y","z") if periodic_bc.find(s) != -1)
       # defaults for peri_repeat for counted num_dirs.
       periodic_repeat = {0:1, 1:15, 2:3, 3:2}[num_dirs]
  

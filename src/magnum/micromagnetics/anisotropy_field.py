@@ -17,6 +17,7 @@
 
 import magnum.module as module
 import magnum.magneto as magneto
+
 from magnum.mesh import VectorField, Field
 from .constants import MU0
 
