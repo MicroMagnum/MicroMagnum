@@ -31,8 +31,7 @@ class LandauLifshitzGilbert(module.Module):
     self.__do_precess = do_precess
 
   def calculates(self):
-                                                           # deprecated names for H_tot and E_tot:
-    return ["dMdt", "M", "H_tot", "E_tot", "deg_per_ns"] + ["H_eff", "E_eff"]
+    return ["dMdt", "M", "H_tot", "E_tot", "deg_per_ns"]
 
   def updates(self):
     return ["M"]
@@ -96,15 +95,10 @@ class LandauLifshitzGilbert(module.Module):
     if hasattr(state.cache, "H_tot"): return state.cache.H_tot
     H_tot = state.cache.H_tot = VectorField(self.system.mesh)
 
-    if len(self.field_terms) == 0:
-      H_tot.fill((0.0, 0.0, 0.0))
-    else: 
-      for i, H_str in enumerate(self.field_terms):
-        H_i = getattr(state, H_str)
-        if i == 0:
-          H_tot.assign(H_i)
-        else: 
-          H_tot.add(H_i)
+    H_tot.fill((0.0, 0.0, 0.0))
+    for H_str in self.field_terms: 
+      H_i = getattr(state, H_str)
+      H_tot.add(H_i)
 
     return H_tot
 

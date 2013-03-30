@@ -47,11 +47,11 @@ class ExchangeField(module.Module):
       if hasattr(cache, "H_exch"): return cache.H_exch
       H_exch = cache.H_exch = VectorField(self.system.mesh)
 
-      nx, ny, nz = self.system.mesh.num_nodes
-      dx, dy, dz = self.system.mesh.delta
-      bcx, bcy, bcz = self.__peri_x, self.__peri_y, self.__peri_z
+      #nx, ny, nz = self.system.mesh.num_nodes
+      #dx, dy, dz = self.system.mesh.delta
+      #bcx, bcy, bcz = self.__peri_x, self.__peri_y, self.__peri_z
 
-      magneto.fdm_exchange(nx, ny, nz, dx, dy, dz, bcx, bcy, bcz, self.system.Ms, self.system.A, state.M, H_exch)
+      magneto.exchange(self.system.Ms, self.system.A, state.M, H_exch)
       return H_exch
 
     elif id == "E_exch":

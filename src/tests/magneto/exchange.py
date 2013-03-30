@@ -43,7 +43,7 @@ class ExchangeTest(MyTestCase):
     nx, ny, nz = mesh.num_nodes
     dx, dy, dz = mesh.delta
     bcx, bcy, bcz = False, False, False
-    magneto.fdm_exchange(nx, ny, nz, dx, dy, dz, bcx, bcy, bcz, Ms, A, M, H)
+    magneto.exchange(nx, ny, nz, dx, dy, dz, bcx, bcy, bcz, Ms, A, M, H)
 
     # compare
     self.assertVectorFieldEqual(H_ref, H, epsilon)
@@ -66,7 +66,7 @@ class ExchangeTest(MyTestCase):
     for bcx, bcy, bcz in itertools.product([False, True], [False, True], [False, True]):
       M.fill(tuple((random.random()-0.5) * 2e5 for i in range(3)))
       #M.fill((8e5, 8e5, -8e5))
-      magneto.fdm_exchange(nx, ny, nz, dx, dy, dz, bcx, bcy, bcz, Ms, A, M, H)
+      magneto.exchange(nx, ny, nz, dx, dy, dz, bcx, bcy, bcz, Ms, A, M, H)
       for i in range(nx*ny*nz):
         self.assertEquals(H.get(i), (0.0, 0.0, 0.0))
 
@@ -90,7 +90,7 @@ class ExchangeTest(MyTestCase):
       dx, dy, dz = M.mesh.delta
       pbc, pbc_rep = M.mesh.periodic_bc
       bcx, bcy, bcz = "x" in pbc, "y" in pbc, "z" in pbc
-      magneto.fdm_exchange(nx, ny, nz, dx, dy, dz, bcx, bcy, bcz, Ms, A, M, H)
+      magneto.exchange(nx, ny, nz, dx, dy, dz, bcx, bcy, bcz, Ms, A, M, H)
       for _ in range(rotations): H = left_rotate_vector_field(H)
       return H
 

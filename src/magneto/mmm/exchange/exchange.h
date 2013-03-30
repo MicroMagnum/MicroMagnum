@@ -17,13 +17,15 @@
  * along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPU_FDM_EXCHANGE_H
-#define CPU_FDM_EXCHANGE_H
+#ifndef EXCHANGE_H
+#define EXCHANGE_H
 
 #include "config.h"
 #include "matrix/matty.h"
+#include "mesh/VectorField.h"
+#include "mesh/Field.h"
 
-double fdm_exchange_cpu(
+double exchange(
 	int dim_x, int dim_y, int dim_z,
 	double delta_x, double delta_y, double delta_z,
 	bool periodic_x, bool periodic_y, bool periodic_z,
@@ -31,6 +33,13 @@ double fdm_exchange_cpu(
 	const Matrix &A,
 	const VectorMatrix &M,
 	VectorMatrix &H
+);
+
+double exchange(
+	const Field &Ms,
+	const Field &A,
+	const VectorField &M,
+	VectorField &H
 );
 
 #endif

@@ -118,10 +118,10 @@ class RungeKutta(Evolver):
       k[step] = state1.differentiate()
 
     # II. Linear-combine step vectors, add them to y, calculate error y_err
-    if num_steps == 3:
-      magneto.rk_combine_result(h, tab, k[0], k[1], k[2], y, y_err)
     if num_steps == 6:
       magneto.rk_combine_result(h, tab, k[0], k[1], k[2], k[3], k[4], k[5], y, y_err)
+    elif num_steps == 3:
+      magneto.rk_combine_result(h, tab, k[0], k[1], k[2], y, y_err)
     else:
       y_err.clear()
       for step in range(0, num_steps):

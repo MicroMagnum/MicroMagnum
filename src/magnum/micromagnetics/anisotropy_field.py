@@ -40,42 +40,49 @@ class AnisotropyField(module.Module):
     self.axis1 = VectorField(self.system.mesh); self.axis1.fill((0.0, 0.0, 0.0))
     self.axis2 = VectorField(self.system.mesh); self.axis2.fill((0.0, 0.0, 0.0))
 
-  def calculate(self, state, id):
-    if id == "H_aniso":
-      if hasattr(state.cache, "H_aniso"): return state.cache.H_aniso
-      H_aniso = state.cache.H_aniso = VectorField(self.system.mesh)
-      
-      axis1 = self.axis1
-      axis2 = self.axis2
-      k_uni = self.k_uniaxial
-      k_cub = self.k_cubic
-      
-      skip_uni = k_uni.isUniform() and k_uni.uniform_value == 0.0
-      have_uni = not skip_uni
-      skip_cub = k_cub.isUniform() and k_cub.uniform_value == 0.0
-      have_cub = not skip_cub
-  
+  def on_param_update(self, id):
+
+    if id in self.params() + ["Ms"]:
+      axis1, axi2 = self.axis1, self.axis2
+      k_uni, k_cub = self.k_uniaxial, self.k_cubic
       Ms = self.system.Ms    
-  
-      if   not have_uni and not have_cub:
+
+      def compute_none(state, H_aniso):
         H_aniso.fill((0.0, 0.0, 0.0))
-        state.cache.E_aniso_sum = 0.0
-      elif not have_uni and have_cub:
-        state.cache.E_aniso_sum = magneto.cubic_anisotropy(axis1, axis2, k_cub, Ms, state.M, H_aniso)
-      elif have_uni and not have_cub:
-        state.cache.E_aniso_sum = magneto.uniaxial_anisotropy(axis1, k_uni, Ms, state.M, H_aniso)
-      elif have_uni and have_cub:
+        return 0.0
+
+      def compute_uniaxial(state, H_aniso):
+        return magneto.uniaxial_anisotropy(axis1, k_uni, Ms, state.M, H_aniso)
+
+      def compute_cubic(state, H_aniso):
+        return magneto.cubic_anisotropy(axis1, axis2, k_cub, Ms, state.M, H_aniso)
+ 
+      def compute_uniaxial_and_cubic(state, H_aniso):
         tmp = VectorField(self.system.mesh)
         E0 = magneto.uniaxial_anisotropy(axis1, k_uni, Ms, state.M, tmp)
         E1 = magneto.cubic_anisotropy(axis1, axis2, k_cub, Ms, state.M, H_aniso)
         state.cache.E_aniso_sum = E0 + E1
         H_aniso.add(tmp)
 
+      fns = {(False, False): compute_none,
+             ( True, False): compute_uniaxial,
+             (False,  True): compute_cubic,
+             ( True,  True): compute_uniaxial_and_cubic}
+
+      have_uni = not (k_uni.isUniform() and k_uni.uniform_value == 0.0)
+      have_cub = not (k_cub.isUniform() and k_cub.uniform_value == 0.0)
+      self.__compute_fn = fns[have_uni, have_cub]
+
+  def calculate(self, state, id):
+    if id == "H_aniso":
+      if hasattr(state.cache, "H_aniso"): return state.cache.H_aniso
+      H_aniso = state.cache.H_aniso = VectorField(self.system.mesh)
+      state.cache.E_aniso_sum = self.__compute_fn(state, H_aniso)
       return H_aniso
   
     elif id == "E_aniso":
-      if not hasattr(state.cache, "E_aniso"):
-        foo = state.H_aniso
+      if not hasattr(state.cache, "E_aniso_sum"):
+        self.calculate("H_aniso")
       return state.cache.E_aniso_sum * self.system.mesh.cell_volume
 
     else:

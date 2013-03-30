@@ -18,7 +18,7 @@
  */
 
 #include "config.h"
-#include "fdm_exchange_cuda.h"
+#include "exchange_cuda.h"
 
 #include <cuda.h>
 
@@ -379,7 +379,7 @@ void kernel_exchange_3d(
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename real>
-double fdm_exchange_cuda_impl(
+double exchange_cuda_impl(
 	int dim_x, int dim_y, int dim_z,		
 	double delta_x, double delta_y, double delta_z,
 	bool periodic_x, bool periodic_y, bool periodic_z,
@@ -456,7 +456,7 @@ double fdm_exchange_cuda_impl(
 	return -MU0/2.0 * M.dotSum(H) * delta_x * delta_y * delta_z;
 }
 
-double fdm_exchange_cuda(
+double exchange_cuda(
 	int dim_x, int dim_y, int dim_z,		
 	double delta_x, double delta_y, double delta_z,
 	bool periodic_x, bool periodic_y, bool periodic_z,
@@ -468,8 +468,8 @@ double fdm_exchange_cuda(
 {
 #ifdef HAVE_CUDA_64
 	if (cuda64)
-	return fdm_exchange_cuda_impl<double>(dim_x, dim_y, dim_z, delta_x, delta_y, delta_z, periodic_x, periodic_y, periodic_z, Ms, A, M, H);
+	return exchange_cuda_impl<double>(dim_x, dim_y, dim_z, delta_x, delta_y, delta_z, periodic_x, periodic_y, periodic_z, Ms, A, M, H);
 	else
 #endif
-	return fdm_exchange_cuda_impl<float>(dim_x, dim_y, dim_z, delta_x, delta_y, delta_z, periodic_x, periodic_y, periodic_z, Ms, A, M, H);
+	return exchange_cuda_impl<float>(dim_x, dim_y, dim_z, delta_x, delta_y, delta_z, periodic_x, periodic_y, periodic_z, Ms, A, M, H);
 }

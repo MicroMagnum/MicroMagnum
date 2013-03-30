@@ -12,8 +12,8 @@ set(SRC
   demag/demag_tensor.cpp
 
   # exchange
-  exchange/fdm_exchange.cpp
-  exchange/fdm_exchange_cpu.cpp
+  exchange/exchange.cpp
+  exchange/exchange_cpu.cpp
 
   # io
   io/OMFHeader.cpp

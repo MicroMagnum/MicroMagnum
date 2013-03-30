@@ -17,7 +17,7 @@
 
 from magnum.mesh import VectorField
 
-import copy
+from copy import copy
 
 class State(object):
   class Cache(object):
@@ -43,11 +43,8 @@ class State(object):
   def finish_step(self):
     pass
 
-  def clone(self, y_replacement = None):
-    state = copy.copy(self)
-    if y_replacement:
-      state.y = y_replacement
-    else:
-      state.y = VectorField(self.mesh)
+  def clone(self, y_replacement):
+    state = copy(self)
+    state.y = y_replacement
     state.flush_cache()
     return state

@@ -18,10 +18,10 @@
  */
 
 #include "config.h"
-#include "fdm_exchange_cpu.h"
+#include "exchange_cpu.h"
 #include "mmm/constants.h"
 
-static double fdm_exchange_cpu_nonperiodic(
+static double exchange_cpu_nonperiodic(
 	int dim_x, int dim_y, int dim_z,
 	double delta_x, double delta_y, double delta_z,
 	const Matrix &Ms,
@@ -30,7 +30,7 @@ static double fdm_exchange_cpu_nonperiodic(
 	VectorMatrix &H
 );
 
-static double fdm_exchange_cpu_periodic(
+static double exchange_cpu_periodic(
 	int dim_x, int dim_y, int dim_z,
 	double delta_x, double delta_y, double delta_z,
 	bool periodic_x, bool periodic_y, bool periodic_z,
@@ -40,7 +40,7 @@ static double fdm_exchange_cpu_periodic(
 	VectorMatrix &H
 );
 
-double fdm_exchange_cpu(
+double exchange_cpu(
 	int dim_x, int dim_y, int dim_z,
 	double delta_x, double delta_y, double delta_z,
 	bool periodic_x, bool periodic_y, bool periodic_z,
@@ -51,13 +51,13 @@ double fdm_exchange_cpu(
 {
 	const bool periodic = periodic_x || periodic_y || periodic_z;
 	if (periodic) {
-		return fdm_exchange_cpu_periodic(dim_x, dim_y, dim_z, delta_x, delta_y, delta_z, periodic_x, periodic_y, periodic_z, Ms, A, M, H);
+		return exchange_cpu_periodic(dim_x, dim_y, dim_z, delta_x, delta_y, delta_z, periodic_x, periodic_y, periodic_z, Ms, A, M, H);
 	} else {
-		return fdm_exchange_cpu_nonperiodic(dim_x, dim_y, dim_z, delta_x, delta_y, delta_z, Ms, A, M, H);
+		return exchange_cpu_nonperiodic(dim_x, dim_y, dim_z, delta_x, delta_y, delta_z, Ms, A, M, H);
 	}
 }
 
-static double fdm_exchange_cpu_nonperiodic(
+static double exchange_cpu_nonperiodic(
 	int dim_x, int dim_y, int dim_z,
 	double delta_x, double delta_y, double delta_z,
 	const Matrix &Ms,
@@ -138,7 +138,7 @@ static double fdm_exchange_cpu_nonperiodic(
 	return energy;
 }
 
-static double fdm_exchange_cpu_periodic(
+static double exchange_cpu_periodic(
 	int dim_x, int dim_y, int dim_z,
 	double delta_x, double delta_y, double delta_z,
 	bool periodic_x, bool periodic_y, bool periodic_z,
@@ -147,10 +147,6 @@ static double fdm_exchange_cpu_periodic(
 	const VectorMatrix &M,
 	VectorMatrix &H)
 {
-	/*if (periodic_x && dim_x == 1) periodic_x = false;
-	if (periodic_y && dim_y == 1) periodic_y = false;
-	if (periodic_z && dim_z == 1) periodic_z = false;*/
-
 	const int dim_xy = dim_x * dim_y;
 	const double wx = 1.0 / (delta_x * delta_x);
 	const double wy = 1.0 / (delta_y * delta_y);
