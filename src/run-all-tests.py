@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 # Copyright 2012, 2013 by the Micromagnum authors.
 #
 # This file is part of MicroMagnum.
@@ -15,4 +17,24 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .controller_test import ControllerTest
+import magnum
+from magnum_tests import *
+
+from magnum.config import cfg
+
+import sys
+import unittest
+if not hasattr(unittest, "skipIf"): # defined in unittest since Python 2.7
+  unittest.skipIf = lambda cond, reason: lambda fn: fn
+  cfg.skip_long_tests = False
+else:
+  if "--with-long-tests" in sys.argv:
+    cfg.skip_long_tests = False
+  elif "--skip-long-tests" in sys.argv:
+    cfg.skip_long_tests = True
+  else:
+    cfg.skip_long_tests = bool(int(input("Skip long tests (0=no,1=yes)? ")))
+
+import os
+os.chdir("magnum_tests")
+unittest.main(argv=[sys.argv[0]])

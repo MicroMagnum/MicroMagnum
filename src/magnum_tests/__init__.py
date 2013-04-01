@@ -15,13 +15,24 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .exchange import ExchangeTest
-from .slonchewski_test import FDMSlonchewskiTest
-from .spintorque_test import FDMZhangLiTest
-from .anisotropy_test import UniaxialAnisotropyTest, CubicAnisotropyTest
-from .llge_test import LLGETest
-from .matrix_test import MatrixTest
-from .vector_matrix_test import VectorMatrixTest
-from .scaled_abs_max_test import ScaledAbsMaxTest
-from .stray_field_test import StrayFieldTest
-from .numpy_interaction_test import NumpyInteractionTest
+from .exchange import *
+from .spintorque_test import *
+from .anisotropy_test import *
+from .llge_test import *
+from .matrix_test import *
+from .vector_matrix_test import *
+from .scaled_abs_max_test import *
+from .stray_field_test import *
+from .numpy_interaction_test import *
+from .rectangular_mesh_test import *
+from .vector_field_test import *
+from .external_field_test import *
+from .body_test import *
+from .material_test import *
+from .world_test import *
+from .shape_test import *
+from .cylinder_test import *
+from .cuboid_test import *
+from .image_test import *
+from .sphere_test import *
+from .controller_test import *

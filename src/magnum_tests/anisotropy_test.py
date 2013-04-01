@@ -22,7 +22,8 @@ import magnum.magneto as magneto
 import math
 
 import unittest
-from .my_testcase import MyTestCase
+
+from magnum_tests.my_testcase import MyTestCase
 
 class UniaxialAnisotropyTest(MyTestCase):
 
@@ -119,5 +120,5 @@ class CubicAnisotropyTest(unittest.TestCase):
 
 import os, sys
 if __name__ == '__main__':
-  os.chdir("..")
+  #os.chdir("..")
   unittest.main(argv=[sys.argv[0]])

@@ -107,7 +107,5 @@ class ExchangeTest(MyTestCase):
     self.assertVectorFieldEqual(H0, H1, 1e0)
     self.assertVectorFieldEqual(H0, H2, 1e0)
 
-import os
 if __name__ == '__main__':
-  os.chdir("..")
   unittest.main()
