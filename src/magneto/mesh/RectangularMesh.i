@@ -5,8 +5,8 @@
 class RectangularMesh
 {
 public:
-        RectangularMesh(int nx, int ny, int nz, double dx, double dy, double dz, std::string pbc, int pbc_reps);
-        
+        RectangularMesh(int nx, int ny, int nz, double dx, double dy, double dz, const std::string &pbc = "", int pbc_reps = -1);
+
         bool isCompatible(const RectangularMesh &other) const;
         
         double getCellVolume() const;
@@ -18,22 +18,27 @@ public:
         void getSize(double &OUTPUT, double &OUTPUT, double &OUTPUT) const;
         void getPeriodicBC(std::string &OUTPUT, int &OUTPUT) const;
         void getPosition(int linidx, double &OUTPUT, double &OUTPUT, double &OUTPUT);
+
+        %extend {
+
+        %pythoncode {
+          def __repr__(self):
+            return "RectangularMesh(%r, %r, periodic_bc=%r, periodic_repeat=%r)" % (self.num_nodes, self.delta, self.periodic_bc[0], self.periodic_bc[1])
+          
+          def iterateCellIndices(self):
+            """
+            Returns iterator that iterates through all cell indices (x,y,z).
+            Example:
+              for x,y,z in mesh.iterateCellIndices():
+                print(x,y,z)
+            """
+            import itertools
+            return itertools.product(*map(range, self.num_nodes))
+        }
+        }
 };
 
 %pythoncode {
-
-def RectangularMesh__repr__(self):
-  return "RectangularMesh(%r, %r, periodic_bc=%r, periodic_repeat=%r)" % (self.num_nodes, self.delta, self.periodic_bc[0], self.periodic_bc[1])
-
-def RectangularMesh_iterateCellIndices(self):
-  """
-  Returns iterator that iterates through all cell indices (x,y,z).
-  Example:
-    for x,y,z in mesh.iterateCellIndices():
-      print(x,y,z)
-  """
-  import itertools
-  return itertools.product(*map(range, self.num_nodes))
 
 RectangularMesh.volume      = property(                   RectangularMesh.getVolume)
 RectangularMesh.cell_volume = property(                   RectangularMesh.getCellVolume)
@@ -42,7 +47,5 @@ RectangularMesh.num_nodes   = property(lambda self: tuple(RectangularMesh.getNum
 RectangularMesh.delta       = property(lambda self: tuple(RectangularMesh.getDelta(self)))
 RectangularMesh.size        = property(lambda self: tuple(RectangularMesh.getSize(self)))
 RectangularMesh.periodic_bc = property(lambda self: tuple(RectangularMesh.getPeriodicBC(self)))
-RectangularMesh.iterateCellIndices = RectangularMesh_iterateCellIndices
-RectangularMesh.__repr__ = RectangularMesh__repr__
 
 }

@@ -73,6 +73,6 @@ double exchange(
 	const bool py = pbc.find("y") != std::string::npos;
 	const bool pz = pbc.find("z") != std::string::npos;
 
-	exchange(nx, ny, nz, dx, dy, dz, px, py, pz, Ms, A, M, H);
+	return exchange(nx, ny, nz, dx, dy, dz, px, py, pz, Ms, A, M, H);
 }
 

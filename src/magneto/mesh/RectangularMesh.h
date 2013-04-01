@@ -2,12 +2,26 @@
 #define RECTANGULAR_MESH_H
 
 #include <string>
+#include <stdexcept>
 
 class RectangularMesh
 {
+private:
+	static int get_pbc_reps(const std::string &pbc, int pbc_reps_override = -1) 
+	{
+		if (pbc_reps_override != -1) return pbc_reps_override;
+
+		int num_dirs = 0;
+		if (pbc.find("x") != std::string::npos) num_dirs += 1;
+		if (pbc.find("y") != std::string::npos) num_dirs += 1;
+		if (pbc.find("z") != std::string::npos) num_dirs += 1;
+		const int pbc_reps_defaults[] = {1, 15, 3, 2};
+		return pbc_reps_defaults[num_dirs];
+	}
+
 public:
-	RectangularMesh(int nx, int ny, int nz, double dx, double dy, double dz, std::string pbc, int pbc_reps)
-		: nx(nx), ny(ny), nz(nz), dx(dx), dy(dy), dz(dz), pbc(pbc), pbc_reps(pbc_reps)
+	RectangularMesh(int nx, int ny, int nz, double dx, double dy, double dz, const std::string &pbc = "", int pbc_reps = -1)
+		: nx(nx), ny(ny), nz(nz), dx(dx), dy(dy), dz(dz), pbc(pbc), pbc_reps(get_pbc_reps(pbc, pbc_reps))
 	{
 	}
 
