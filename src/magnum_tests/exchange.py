@@ -22,7 +22,6 @@ from magnum.config import cfg
 import magnum.magneto as magneto
 
 import unittest
-from my_testcase import MyTestCase
 from helpers import *
 
 import random

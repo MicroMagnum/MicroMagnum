@@ -22,8 +22,7 @@ from magnum.config import cfg
 
 import unittest
 
-from my_testcase import MyTestCase
-from helpers import *
+from magnum_tests.helpers import *
 
 class StrayFieldTest(MyTestCase):
 
@@ -44,13 +43,13 @@ class StrayFieldTest(MyTestCase):
     # compare
     self.assertVectorFieldEqual(H_ref, H, epsilon)
 
-  #@unittest.skipIf(cfg.skip_long_tests, "skipping StrayFieldTest.calculate_2d (long test)")
-  #def test_calculate_2d(self):
-  #  self.doTest("ref/M1.omf", "ref/H1_stray.omf", 1e0);
+  @unittest.skipIf(cfg.skip_long_tests, "skipping StrayFieldTest.calculate_2d (long test)")
+  def test_calculate_2d(self):
+    self.doTest("ref/M1.omf", "ref/H1_stray.omf", 1e0);
 
-  #@unittest.skipIf(cfg.skip_long_tests, "skipping StrayFieldTest.calculate_3d (long test)")
-  #def test_calculate_3d(self):
-  #  self.doTest("ref/M3.omf", "ref/H3_stray.ohf", 5e1)
+  @unittest.skipIf(cfg.skip_long_tests, "skipping StrayFieldTest.calculate_3d (long test)")
+  def test_calculate_3d(self):
+    self.doTest("ref/M3.omf", "ref/H3_stray.ohf", 5e1)
 
   def test_rotated_magnetization_produces_same_rotated_strayfield(self):
 
@@ -72,8 +71,4 @@ class StrayFieldTest(MyTestCase):
     self.assertVectorFieldEqual(H0, H1, 1e0)
     self.assertVectorFieldEqual(H0, H2, 1e0)
 
-# start tests
-import os
-if __name__ == '__main__':
-  os.chdir("..")
-  unittest.main()
+if __name__ == '__main__': unittest.main()

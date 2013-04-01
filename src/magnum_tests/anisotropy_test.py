@@ -23,7 +23,7 @@ import math
 
 import unittest
 
-from magnum_tests.my_testcase import MyTestCase
+from magnum_tests.helpers import MyTestCase
 
 class UniaxialAnisotropyTest(MyTestCase):
 
