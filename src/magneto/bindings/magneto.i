@@ -31,11 +31,12 @@ namespace std {
 %exception {
         try {
                 $action
+                SWIG_SYNCHRONIZE();
         } catch (std::exception &e) {
                 PyErr_SetString(PyExc_RuntimeError, const_cast<char*>(e.what()));
                 return 0;
         } catch (...) {
-                PyErr_SetString(PyExc_RuntimeError, "Some C++ exception occured!");
+                PyErr_SetString(PyExc_RuntimeError, "unknown exception in magneto");
                 return 0;
         }
 }
@@ -51,6 +52,12 @@ namespace std {
 %include "PythonByteArray.i"
 
 ///////////////////////////////////////////////////////////////////////////////////
+
+%{
+#include "config.h"
+#include "Magneto.h"
+#include "matrix/matty.h"
+%}
 
 // Magneto parts
 %include "../matrix/matty.inc.i" // Matrix subsystem definitions
