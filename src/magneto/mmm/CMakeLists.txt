@@ -32,7 +32,7 @@ set(SRC
 
 set(CUSRC
   anisotropy/anisotropy_cuda.cu
-  exchange/fdm_exchange_cuda.cu
+  exchange/exchange_cuda.cu
   llge/llge_cuda.cu
   spintorque/fdm_zhangli_cuda.cu
 )
