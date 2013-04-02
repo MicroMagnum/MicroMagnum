@@ -24,6 +24,8 @@
 
 #include <driver_types.h>
 #include <cufft.h>
+#include <cuda.h>
+#include <cuda_runtime.h>
 
 void printCudaSpecs();
 int getMaxGflopsDeviceId();

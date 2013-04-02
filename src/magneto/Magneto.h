@@ -43,7 +43,7 @@ void printProfilingReport();
 #define CUTOC(id) { if (isProfilingEnabled()) { cudaThreadSynchronize(); Benchmark::inst().toc(id); } }
 
 #ifdef HAVE_CUDA
-#define SWIG_SYNCHRONIZE() do { CUDA_THREADSYNCHRONIZE(); } while (false);
+#define SWIG_SYNCHRONIZE() do { CUDA_THREAD_SYNCHRONIZE(); } while (false);
 #else
 #define SWIG_SYNCHRONIZE() while (false);
 #endif
