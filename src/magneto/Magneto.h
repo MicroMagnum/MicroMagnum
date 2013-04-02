@@ -42,6 +42,12 @@ void printProfilingReport();
 #define CUTIC(id) { if (isProfilingEnabled()) { cudaThreadSynchronize(); Benchmark::inst().tic(id); } }
 #define CUTOC(id) { if (isProfilingEnabled()) { cudaThreadSynchronize(); Benchmark::inst().toc(id); } }
 
+#ifdef HAVE_CUDA
+#define SWIG_SYNCHRONIZE() do { CUDA_THREADSYNCHRONIZE(); } while (false);
+#else
+#define SWIG_SYNCHRONIZE() while (false);
+#endif
+
 // CUDA support control
 enum CudaMode {
 	CUDA_DISABLED=0,
