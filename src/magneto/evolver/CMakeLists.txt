@@ -2,6 +2,7 @@ set(SRC
   runge_kutta.cpp
   runge_kutta_cpu.cpp
   cvode.cpp
+  diffeq.cpp
 )
 
 if(ENABLE_CUDA)

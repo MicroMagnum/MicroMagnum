@@ -17,6 +17,9 @@
  * along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef CVODE_H
+#define CVODE_H
+
 //#include "config.h"
 
 //#include "matrix/matty.h"
@@ -39,20 +42,27 @@
 class Cvode {
 
   public:
+    /**
+     * My     VectorMatrix y
+     * Mydot  VectorMatrix y.differentiate
+     * abstol Absolute Toleranz
+     */
+    Cvode(VectorMatrix &y, VectorMatrix &ydot);
+    virtual ~Cvode();
     virtual int cvodeTest();
 
     virtual void one(int i);
 
-    virtual matty::VectorMatrix f(matty::VectorMatrix y);
+    virtual VectorMatrix f(VectorMatrix y);
 
-    static void matrixTest(VectorMatrix mat);
+    void matrixTest(VectorMatrix mat);
 
   private:
-    static void getVectorMatrix(N_Vector vec, VectorMatrix& mat);
+    void getVectorMatrix(N_Vector vec, VectorMatrix& mat);
 
-    static void getN_Vector(matty::VectorMatrix vec, N_Vector& nvec);
+    void getN_Vector(matty::VectorMatrix vec, N_Vector& nvec);
 
-    static int check_flag(void *flagvalue, char *funcname, int opt);
+    int check_flag(void *flagvalue, char *funcname, int opt);
 
     static int callf(realtype t, N_Vector y, N_Vector ydot, void *user_data);
 
@@ -60,4 +70,10 @@ class Cvode {
       realtype a,b,c,d;
     } *UserData;
 
+    VectorMatrix _My, _Mydot;
+    N_Vector _Ny, _Nydot, _abstol;
+    double _reltol;
+    int _size;
+
 };
+#endif

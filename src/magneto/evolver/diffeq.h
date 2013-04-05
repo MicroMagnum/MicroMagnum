@@ -17,9 +17,14 @@
  * along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ode.h"
+#ifndef diffeq_h
+#define diffeq_h
 
-void diff(const matty::VectorMatrix My, matty::VectorMatrix Mydot&)
-{
-  //std::cout << "DIFF\n";
-}
+#include "matrix/matty.h"
+
+//using namespace matty;
+class DiffEq {
+  public:
+    void diff(const VectorMatrix &My, VectorMatrix &Mydot);
+};
+#endif

@@ -21,6 +21,7 @@
 
 %{
 #include "evolver/runge_kutta.h"
+#include "evolver/diffeq.h"
 #include "evolver/cvode.h"
 %}
 
@@ -87,8 +88,10 @@ void rk_combine_result(
 
 double rk_adjust_stepsize(int order, double h, double eps_abs, double eps_rel, const VectorMatrix &y, const VectorMatrix &y_error);
 
+%feature("director") DiffEq;
 %feature("director") Cvode;
 
+/*
 class Cvode {
   public:
     virtual int cvodeTest();
@@ -96,3 +99,13 @@ class Cvode {
     virtual VectorMatrix f(VectorMatrix y);
     static void matrixTest(VectorMatrix mat);
 };
+*/
+%include "evolver/cvode.h";
+
+%include "evolver/diffeq.h";
+/*
+class DiffEq {
+  public:
+    void test();
+};
+*/

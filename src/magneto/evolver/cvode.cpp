@@ -38,17 +38,47 @@
 // Magnum
 //#include "config.h"
 #include "Magneto.h"
-#include "ode.h"
+#include "diffeq.h"
 //#include "matrix/matty.h"
 //#include "Vector3d.h"
 
+Cvode::Cvode(VectorMatrix &My, VectorMatrix &Mydot)
+  : _My(My), _Mydot(Mydot)
+{
+    std::cout << "Konstruktor Anfang\n";
+  _size  = My.size();
+    std::cout << "size: " << _size << "\n";
+
+    std::cout << "Konstruktor 1\n";
+  _Ny = N_VNew_Serial(_size);
+  _Nydot = N_VNew_Serial(_size);
+    std::cout << "Konstruktor 2\n";
+  getN_Vector(_My, _Ny);
+    std::cout << "Konstruktor 3\n";
+  getN_Vector(_Mydot, _Ny); //TODO remove
+    std::cout << "Konstruktor 4\n";
+  //_Nydot = N_VNew_Serial(_size);
+    std::cout << "Konstruktor 5\n";
+  getN_Vector(_Mydot, _Nydot);
+    std::cout << "Konstruktor 6\n";
+
+  _abstol = N_VNew_Serial(_size);
+    std::cout << "Konstruktor 7\n";
+  _reltol = 0.1;
+
+  std::cout << "size: " << _size << std::endl;
+  for (int i=1; i<=_size; ++i)
+  {
+    Ith(_abstol,i) = 0.1;
+  }
+}
 
 static void PrintOutput(realtype t, realtype y1, realtype y2, realtype y3)
 {
   std::cout << "t = " << t << ", y1 = " << y1 << ", y2 = " << y2 << ", y3 = " << y3 << "\n";
 }
 
-static void Cvode::matrixTest(VectorMatrix mat)
+void Cvode::matrixTest(VectorMatrix mat)
 {
   int dim_x = mat.dimX();
   int dim_y = mat.dimY();
@@ -117,65 +147,59 @@ static void Cvode::matrixTest(VectorMatrix mat)
       }
     }
   }
-
 }
 
-void Cvode::one(int i) {
+void Cvode::one(int i) 
+{
   std::cout << "one from c++\n";
 }
 
-int Cvode::cvodeTest() {
-  one(437292);
+int Cvode::cvodeTest() 
+{
+  one(123456);
+  return 1; // TODO remove
   realtype t;
-  N_Vector yout, y, ydot, abstol;
+  N_Vector yout;
   void *cvode_mem;
-  ODE user_data;
   int flag, ans;
+  VectorMatrix My, Mydot;
+  DiffEq user_data;
+  //user_data.diff(My,Mydot);
 
-  y = ydot = yout = NULL;
+  yout = NULL;
   cvode_mem = NULL;
   //user_data = NULL;
 
-  y = N_VNew_Serial(3);
-  ydot = N_VNew_Serial(3);
-  yout = N_VNew_Serial(3);
-  abstol = N_VNew_Serial(3);
-
-  Ith(abstol,1) = 0.00001;
-  Ith(abstol,2) = 0.00001;
-  Ith(abstol,3) = 0.00001;
-
-
-  Ith(y,1) = Y1;
-  Ith(y,2) = Y2;
-  Ith(y,3) = Y3;
+  //y = N_VNew_Serial(3);
+  //ydot = N_VNew_Serial(3);
+  yout = N_VNew_Serial(_size);
 
   /* Call CVodeCreate to create the solver memory and specify the 
    * Backward Differentiation Formula and the use of a Newton iteration */
   cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
-  if (check_flag((void *)cvode_mem, "CVodeCreate", 0)) return(1);
+  if (check_flag((void *)cvode_mem, (char *) "CVodeCreate", 0)) return(1);
 
   /* Set the pointer to user-defined data */
-  flag = CVodeSetUserData(cvode_mem, data);
-  if(check_flag(&flag, "CVodeSetUserData", 1)) return(1);
+  flag = CVodeSetUserData(cvode_mem, &user_data);
+  if(check_flag(&flag, (char *) "CVodeSetUserData", 1)) return(1);
 
   /* Call CVodeInit to initialize the integrator memory and specify the
    * user's right hand side function in y'=f(t,y), the inital time T0, and
    * the initial dependent variable vector y. */
-  flag = CVodeInit(cvode_mem, callf, T0, y);
-  if (check_flag(&flag, "CVodeInit", 1)) return(1);
+  flag = CVodeInit(cvode_mem, callf, T0, _Ny);
+  if (check_flag(&flag, (char *) "CVodeInit", 1)) return(1);
 
   /* Call CVodeSVtolerances to specify the scalar relative tolerance
-   *    * and vector absolute tolerances */
-  flag = CVodeSVtolerances(cvode_mem, 0.00001, abstol);
-  if (check_flag(&flag, "CVodeSVtolerances", 1)) return(1);
+   * and vector absolute tolerances */
+  flag = CVodeSVtolerances(cvode_mem, _reltol, _abstol);
+  if (check_flag(&flag, (char *) "CVodeSVtolerances", 1)) return(1);
 
   /* Call CVDense to specify the CVDENSE dense linear solver */
   flag = CVDense(cvode_mem, 3);
-  if (check_flag(&flag, "CVDense", 1)) return(1);
+  if (check_flag(&flag, (char *) "CVDense", 1)) return(1);
 
   flag = CVode(cvode_mem, 2, yout, &t, CV_NORMAL);
-  if(check_flag(&flag, "CVode", 1));
+  if(check_flag(&flag, (char *) "CVode", 1));
 
   PrintOutput(t, Ith(yout,1), Ith(yout,2), Ith(yout,3));
 
@@ -186,16 +210,16 @@ int Cvode::cvodeTest() {
  * f routine. Compute function f(t,y). 
  */
 
-static int Cvode::callf(realtype t, N_Vector y, N_Vector ydot, void *user_data)
+static int Cvode::callf(realtype t, N_Vector Ny, N_Vector Nydot, void *user_data)
 {
-  ODE* ode = (ODE*) user_data;
+  DiffEq* ode = (DiffEq*) user_data;
 
   matty::VectorMatrix My, Mydot;
   ode->diff(My,Mydot);
 
-  Ith(ydot,1) = RCONST(1);
-  Ith(ydot,2) = t;
-  Ith(ydot,3) = t * t;
+  Ith(Nydot,1) = RCONST(1);
+  Ith(Nydot,2) = t;
+  Ith(Nydot,3) = t * t;
 
   return(0);
 }
@@ -209,12 +233,11 @@ matty::VectorMatrix Cvode::f(matty::VectorMatrix y)
 /**
  * nvec muss mit der richtigen Größe initialisiert sein (N_VNew_Serial(3*size)).
  */
-static void Cvode::getN_Vector(VectorMatrix mat, N_Vector& nvec)
+void Cvode::getN_Vector(VectorMatrix mat, N_Vector& nvec)
 {
   int dim_x = mat.dimX();
   int dim_y = mat.dimY();
   int dim_z = mat.dimZ();
-  int size  = mat.size();
 	const int dim_xy = dim_x * dim_y;
 
   VectorMatrix::const_accessor Macc(mat);
@@ -230,12 +253,12 @@ static void Cvode::getN_Vector(VectorMatrix mat, N_Vector& nvec)
   }
 }
 
-static void Cvode::getVectorMatrix(N_Vector vec, VectorMatrix& mat)
+void Cvode::getVectorMatrix(N_Vector vec, VectorMatrix& mat)
 {
   int dim_x = mat.dimX();
   int dim_y = mat.dimY();
   int dim_z = mat.dimZ();
-  int size  = mat.size();
+  //int size  = mat.size();
 	const int dim_xy = dim_x * dim_y;
 
   VectorMatrix::accessor Macc(mat);
@@ -264,7 +287,7 @@ static void Cvode::getVectorMatrix(N_Vector vec, VectorMatrix& mat)
  *          NULL pointer 
  */
 
-static int Cvode::check_flag(void *flagvalue, char *funcname, int opt)
+int Cvode::check_flag(void *flagvalue, char *funcname, int opt)
 {
   int *errflag;
 
