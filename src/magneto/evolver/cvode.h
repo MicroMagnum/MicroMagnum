@@ -17,8 +17,8 @@
  * along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CVODE_H
-#define CVODE_H
+#ifndef CVODEINT_H
+#define CVODEINT_H
 
 //#include "config.h"
 
@@ -49,18 +49,19 @@ class Cvode {
      */
     Cvode(VectorMatrix &y, VectorMatrix &ydot);
     virtual ~Cvode();
+
     virtual int cvodeTest();
 
     virtual void one(int i);
 
     virtual VectorMatrix f(VectorMatrix y);
 
-    void matrixTest(VectorMatrix mat);
+    static void matrixTest(VectorMatrix mat);
 
   private:
-    void getVectorMatrix(N_Vector vec, VectorMatrix& mat);
+    static void getVectorMatrix(const N_Vector& vec, VectorMatrix& mat);
 
-    void getN_Vector(matty::VectorMatrix vec, N_Vector& nvec);
+    static void getN_Vector(const matty::VectorMatrix& vec, N_Vector& nvec);
 
     int check_flag(void *flagvalue, char *funcname, int opt);
 

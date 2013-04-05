@@ -43,24 +43,24 @@
 //#include "Vector3d.h"
 
 Cvode::Cvode(VectorMatrix &My, VectorMatrix &Mydot)
-  : _My(My), _Mydot(Mydot)
+  : _My(My), _Mydot(Mydot), _Ny(), _Nydot(), _abstol(), _size(My.size())
 {
-    std::cout << "Konstruktor Anfang\n";
-  _size  = My.size();
-    std::cout << "size: " << _size << "\n";
+      std::cout << "Konstruktor Anfang\n";
+      std::cout << "size: " << _size << "\n";
 
-    std::cout << "Konstruktor 1\n";
+      std::cout << "Konstruktor 1\n";
   _Ny = N_VNew_Serial(_size);
   _Nydot = N_VNew_Serial(_size);
-    std::cout << "Konstruktor 2\n";
+      std::cout << "Konstruktor 2\n";
   getN_Vector(_My, _Ny);
-    std::cout << "Konstruktor 3\n";
-  getN_Vector(_Mydot, _Ny); //TODO remove
-    std::cout << "Konstruktor 4\n";
-  //_Nydot = N_VNew_Serial(_size);
-    std::cout << "Konstruktor 5\n";
-  getN_Vector(_Mydot, _Nydot);
-    std::cout << "Konstruktor 6\n";
+
+      std::cout << "Konstruktor 3\n";
+  //getN_Vector(_Mydot, _Ny); //TODO remove
+      std::cout << "Konstruktor 4\n";
+  _Nydot = N_VNew_Serial(_size);
+      std::cout << "Konstruktor 5\n";
+  //getN_Vector(_Mydot, _Nydot);
+      std::cout << "Konstruktor 6\n";
 
   _abstol = N_VNew_Serial(_size);
     std::cout << "Konstruktor 7\n";
@@ -71,6 +71,10 @@ Cvode::Cvode(VectorMatrix &My, VectorMatrix &Mydot)
   {
     Ith(_abstol,i) = 0.1;
   }
+}
+
+Cvode::~Cvode()
+{
 }
 
 static void PrintOutput(realtype t, realtype y1, realtype y2, realtype y3)
@@ -157,7 +161,7 @@ void Cvode::one(int i)
 int Cvode::cvodeTest() 
 {
   one(123456);
-  return 1; // TODO remove
+  //return 1; // TODO remove
   realtype t;
   N_Vector yout;
   void *cvode_mem;
@@ -210,7 +214,7 @@ int Cvode::cvodeTest()
  * f routine. Compute function f(t,y). 
  */
 
-static int Cvode::callf(realtype t, N_Vector Ny, N_Vector Nydot, void *user_data)
+int Cvode::callf(realtype t, N_Vector Ny, N_Vector Nydot, void *user_data)
 {
   DiffEq* ode = (DiffEq*) user_data;
 
@@ -233,7 +237,7 @@ matty::VectorMatrix Cvode::f(matty::VectorMatrix y)
 /**
  * nvec muss mit der richtigen Größe initialisiert sein (N_VNew_Serial(3*size)).
  */
-void Cvode::getN_Vector(VectorMatrix mat, N_Vector& nvec)
+void Cvode::getN_Vector(const VectorMatrix& mat, N_Vector& nvec)
 {
   int dim_x = mat.dimX();
   int dim_y = mat.dimY();
@@ -253,12 +257,11 @@ void Cvode::getN_Vector(VectorMatrix mat, N_Vector& nvec)
   }
 }
 
-void Cvode::getVectorMatrix(N_Vector vec, VectorMatrix& mat)
+void Cvode::getVectorMatrix(const N_Vector& vec, VectorMatrix& mat)
 {
   int dim_x = mat.dimX();
   int dim_y = mat.dimY();
   int dim_z = mat.dimZ();
-  //int size  = mat.size();
 	const int dim_xy = dim_x * dim_y;
 
   VectorMatrix::accessor Macc(mat);
