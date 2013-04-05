@@ -43,27 +43,17 @@
 //#include "Vector3d.h"
 
 Cvode::Cvode(VectorMatrix &My, VectorMatrix &Mydot)
-  : _My(My), _Mydot(Mydot), _Ny(), _Nydot(), _abstol(), _size(My.size())
+  : _My(My), _Mydot(Mydot), _Ny(), _Nydot(), _abstol(), _size(3*My.size())
 {
-      std::cout << "Konstruktor Anfang\n";
-      std::cout << "size: " << _size << "\n";
+  std::cout << "size: " << _size << "\n";
 
-      std::cout << "Konstruktor 1\n";
   _Ny = N_VNew_Serial(_size);
   _Nydot = N_VNew_Serial(_size);
-      std::cout << "Konstruktor 2\n";
-  getN_Vector(_My, _Ny);
-
-      std::cout << "Konstruktor 3\n";
-  //getN_Vector(_Mydot, _Ny); //TODO remove
-      std::cout << "Konstruktor 4\n";
-  _Nydot = N_VNew_Serial(_size);
-      std::cout << "Konstruktor 5\n";
-  //getN_Vector(_Mydot, _Nydot);
-      std::cout << "Konstruktor 6\n";
-
   _abstol = N_VNew_Serial(_size);
-    std::cout << "Konstruktor 7\n";
+
+  getN_Vector(_My, _Ny);
+  getN_Vector(_Mydot, _Nydot);
+
   _reltol = 0.1;
 
   std::cout << "size: " << _size << std::endl;
@@ -104,9 +94,7 @@ void Cvode::matrixTest(VectorMatrix mat)
           std::cout << Macc.get(i);
           std::cout << std::endl;
         }
-        //std::cout << std::endl;
       }
-      //std::cout << std::endl;
     }
   }
 
@@ -161,7 +149,6 @@ void Cvode::one(int i)
 int Cvode::cvodeTest() 
 {
   one(123456);
-  //return 1; // TODO remove
   realtype t;
   N_Vector yout;
   void *cvode_mem;
@@ -202,6 +189,7 @@ int Cvode::cvodeTest()
   flag = CVDense(cvode_mem, 3);
   if (check_flag(&flag, (char *) "CVDense", 1)) return(1);
 
+  return 1; // TODO remove
   flag = CVode(cvode_mem, 2, yout, &t, CV_NORMAL);
   if(check_flag(&flag, (char *) "CVode", 1));
 
