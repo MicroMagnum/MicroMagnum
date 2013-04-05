@@ -42,8 +42,8 @@
 //#include "matrix/matty.h"
 //#include "Vector3d.h"
 
-Cvode::Cvode(VectorMatrix &My, VectorMatrix &Mydot)
-  : _My(My), _Mydot(Mydot), _Ny(), _Nydot(), _abstol(), _size(3*My.size())
+Cvode::Cvode(VectorMatrix &My, VectorMatrix &Mydot, DiffEq &diff)
+  : _My(My), _Mydot(Mydot), _Ny(), _Nydot(), _abstol(), _size(3*My.size()), _diff(diff)
 {
   std::cout << "size: " << _size << "\n";
 
@@ -189,7 +189,7 @@ int Cvode::cvodeTest()
   flag = CVDense(cvode_mem, 3);
   if (check_flag(&flag, (char *) "CVDense", 1)) return(1);
 
-  return 1; // TODO remove
+  return 1; //TODO remove
   flag = CVode(cvode_mem, 2, yout, &t, CV_NORMAL);
   if(check_flag(&flag, (char *) "CVode", 1));
 

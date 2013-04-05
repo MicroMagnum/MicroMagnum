@@ -1,8 +1,9 @@
-#!/usr/bin/python 
+#!/usr/bin/python
 from magnum import *
 from math import pi, cos, sin
 import magnum.magneto as m
 import test
+import llgDiffEq
 
 world = World(RectangularMesh((4,  4, 1), (  5e-9,    5e-9, 3.0e-9)), Body("all", Material.Py(alpha=0.02)))
 
@@ -15,12 +16,16 @@ solver.state.M = state0
 solver.state.alpha = 0.5
 #solver.relax(1.0)
 
-c = test.MyCvode(solver.state.y, solver.state.differentiate())
+llg = llgDiffEq.LlgDiffEq()
+
+c = test.MyCvode(solver.state.y, solver.state.differentiate(), llg)
 print("")
 c.matrixTest(solver.state.differentiate())
 print("")
 c.matrixTest(solver.state.y)
 c.cvodeTest()
+print("")
+llg.diff(solver.state.y, solver.state.differentiate())
 
 #d = m.Cvode(solver.state.y, solver.state.differentiate())
 #d.cvodeTest()

@@ -31,6 +31,7 @@
 //#include <sundials/sundials_math.h>
 //#include <sundials/sundials_band.h>
 #include "matrix/matty.h"
+#include "diffeq.h"
 
 #define Y1    RCONST(1.0)      /* initial y components */
 #define Y2    RCONST(1.0)
@@ -47,7 +48,7 @@ class Cvode {
      * Mydot  VectorMatrix y.differentiate
      * abstol Absolute Toleranz
      */
-    Cvode(VectorMatrix &y, VectorMatrix &ydot);
+    Cvode(VectorMatrix &y, VectorMatrix &ydot, DiffEq &diff);
     virtual ~Cvode();
 
     virtual int cvodeTest();
@@ -75,6 +76,7 @@ class Cvode {
     N_Vector _Ny, _Nydot, _abstol;
     double _reltol;
     int _size;
+    DiffEq _diff;
 
 };
 #endif

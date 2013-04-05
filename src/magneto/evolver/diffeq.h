@@ -25,6 +25,6 @@
 //using namespace matty;
 class DiffEq {
   public:
-    void diff(const VectorMatrix &My, VectorMatrix &Mydot);
+    virtual void diff(const VectorMatrix &My, VectorMatrix &Mydot);
 };
 #endif
