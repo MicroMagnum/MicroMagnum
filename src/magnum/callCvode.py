@@ -16,16 +16,18 @@ solver.state.M = state0
 solver.state.alpha = 0.5
 #solver.relax(1.0)
 
-llg = llgDiffEq.LlgDiffEq()
+llg = llgDiffEq.LlgDiffEq(solver.state)
 
 c = test.MyCvode(solver.state.y, solver.state.differentiate(), llg)
+Mydot = solver.state.y
+llg.diff(solver.state.y, Mydot)
 print("")
-c.matrixTest(solver.state.differentiate())
+#c.matrixTest(solver.state.differentiate())
 print("")
 c.matrixTest(solver.state.y)
-c.cvodeTest()
-print("")
-llg.diff(solver.state.y, solver.state.differentiate())
+i = c.cvodeTest()
+print(i)
+print("fertig")
 
 #d = m.Cvode(solver.state.y, solver.state.differentiate())
 #d.cvodeTest()

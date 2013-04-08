@@ -26,5 +26,6 @@
 class DiffEq {
   public:
     virtual void diff(const VectorMatrix &My, VectorMatrix &Mydot);
+    virtual VectorMatrix getY();
 };
 #endif

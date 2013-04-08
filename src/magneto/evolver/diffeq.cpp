@@ -25,5 +25,13 @@
 using namespace matty;
 void DiffEq::diff(const VectorMatrix &My, VectorMatrix &Mydot)
 {
-  std::cout << "DIFF\n";
+  std::cout << "DIFF C++\n";
+}
+
+VectorMatrix DiffEq::getY()
+{
+  VectorMatrix y;
+  std::cout << "getY C++\n";
+
+  return y;
 }

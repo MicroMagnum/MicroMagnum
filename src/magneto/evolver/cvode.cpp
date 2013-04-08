@@ -51,8 +51,8 @@ Cvode::Cvode(VectorMatrix &My, VectorMatrix &Mydot, DiffEq &diff)
   _Nydot = N_VNew_Serial(_size);
   _abstol = N_VNew_Serial(_size);
 
-  getN_Vector(_My, _Ny);
-  getN_Vector(_Mydot, _Nydot);
+  //getN_Vector(_My, _Ny);
+  //getN_Vector(_Mydot, _Nydot);
 
   _reltol = 0.1;
 
@@ -67,9 +67,22 @@ Cvode::~Cvode()
 {
 }
 
-static void PrintOutput(realtype t, realtype y1, realtype y2, realtype y3)
+static void PrintOutput(realtype t, N_Vector x, int size)
 {
-  std::cout << "t = " << t << ", y1 = " << y1 << ", y2 = " << y2 << ", y3 = " << y3 << "\n";
+  std::cout << "\nErgebnis:\n";
+  realtype x1,x2,x3;
+  for (int i=0; i<size; ++i) {
+    Ith(x,3*i+1) += RCONST(1); 
+    Ith(x,3*i+2) += RCONST(2); 
+    Ith(x,3*i+3) += RCONST(3);
+
+    x1 = Ith(x,3*i+1);
+    x2 = Ith(x,3*i+2);
+    x3 = Ith(x,3*i+3);
+
+    std::cout <<"(" << x1 << "," << x2 << "," << x3 << ")";
+    std::cout << std::endl;
+  }
 }
 
 void Cvode::matrixTest(VectorMatrix mat)
@@ -154,8 +167,10 @@ int Cvode::cvodeTest()
   void *cvode_mem;
   int flag, ans;
   VectorMatrix My, Mydot;
-  DiffEq user_data;
+  //DiffEq user_data;
   //user_data.diff(My,Mydot);
+  _diff.getY();
+  _diff.diff(_My,_Mydot);
 
   yout = NULL;
   cvode_mem = NULL;
@@ -171,7 +186,7 @@ int Cvode::cvodeTest()
   if (check_flag((void *)cvode_mem, (char *) "CVodeCreate", 0)) return(1);
 
   /* Set the pointer to user-defined data */
-  flag = CVodeSetUserData(cvode_mem, &user_data);
+  flag = CVodeSetUserData(cvode_mem, &_diff);
   if(check_flag(&flag, (char *) "CVodeSetUserData", 1)) return(1);
 
   /* Call CVodeInit to initialize the integrator memory and specify the
@@ -189,11 +204,14 @@ int Cvode::cvodeTest()
   flag = CVDense(cvode_mem, 3);
   if (check_flag(&flag, (char *) "CVDense", 1)) return(1);
 
-  return 1; //TODO remove
-  flag = CVode(cvode_mem, 2, yout, &t, CV_NORMAL);
-  if(check_flag(&flag, (char *) "CVode", 1));
+  std::cout << "cvode 1\n";
 
-  PrintOutput(t, Ith(yout,1), Ith(yout,2), Ith(yout,3));
+  flag = CVode(cvode_mem, 2, yout, &t, CV_NORMAL);
+  if(check_flag(&flag, (char *) "CVode", 1)) return(1);
+  std::cout << "cvode 2\n";
+
+  PrintOutput(t, yout, _size);
+  std::cout << "cvode 3\n";
 
   return ans;
 }
@@ -205,13 +223,53 @@ int Cvode::cvodeTest()
 int Cvode::callf(realtype t, N_Vector Ny, N_Vector Nydot, void *user_data)
 {
   DiffEq* ode = (DiffEq*) user_data;
+                          std::cout << "callf 1\n";
 
-  matty::VectorMatrix My, Mydot;
+  VectorMatrix My, Mydot;
+  My = ode->getY();
+                          std::cout << "callf 2\n";
+
+  int dim_x = My.dimX();
+                          std::cout << "callf 2\n";
+  int dim_y = My.dimY();
+                          std::cout << "callf 2\n";
+  int dim_z = My.dimZ();
+                          std::cout << "callf 2\n";
+  const int dim_xy = dim_x * dim_y;
+
+  std::cout << "matrixTest size: " << My.size() << "\n";
+  std::cout << "matrixTest dimX: " << My.dimX() << "\n";
+  std::cout << "matrixTest dimY: " << My.dimY() << "\n";
+  std::cout << "matrixTest dimZ: " << My.dimZ() << "\n";
+
+  {
+    VectorMatrix::const_accessor Macc(My);
+
+    for (int z=0; z<dim_z; ++z) {
+      for (int y=0; y<dim_y; ++y) {	
+        for (int x=0; x<dim_x; ++x) {
+          const int i = z*dim_xy + y*dim_x + x; // linear index of (x,y,z)
+          std::cout << Macc.get(i);
+          std::cout << std::endl;
+        }
+      }
+    }
+  }
+
+  getVectorMatrix(Ny,My);
+                          std::cout << "callf 3\n";
+  //getVectorMatrix(Nydot,Mydot);
+
   ode->diff(My,Mydot);
+                          std::cout << "callf 4\n";
 
-  Ith(Nydot,1) = RCONST(1);
-  Ith(Nydot,2) = t;
-  Ith(Nydot,3) = t * t;
+  //getN_Vector(My,Ny);
+  getN_Vector(Mydot,Nydot);
+                          std::cout << "callf 5\n";
+
+  //Ith(Nydot,1) = RCONST(1);
+  //Ith(Nydot,2) = t;
+  //Ith(Nydot,3) = t * t;
 
   return(0);
 }

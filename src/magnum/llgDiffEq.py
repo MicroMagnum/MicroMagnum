@@ -1,8 +1,17 @@
 #!/usr/bin/python
+from magnum import *
 import magnum.magneto as m
-import magnum
 
 class LlgDiffEq(m.DiffEq):
+    def __init__(self,state):
+        super(LlgDiffEq, self).__init__()
+        self.State=state
+
     def diff(self,My,Mydot):
-        #Mydot = My.differentiate()
+        self.State.y = My
+        Mydot = self.State.differentiate()
         print("DIFF from python")
+
+    def getY(self):
+        print("getY Python")
+        return self.State.y
