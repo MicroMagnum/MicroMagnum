@@ -48,24 +48,15 @@ class Cvode {
      * Mydot  VectorMatrix y.differentiate
      * abstol Absolute Toleranz
      */
-    Cvode(VectorMatrix &y, VectorMatrix &ydot, DiffEq &diff);
+    Cvode(DiffEq &diff);
     virtual ~Cvode();
-
-    virtual int cvodeTest();
-
+    int cvodeTest();
     virtual void one(int i);
-
-    virtual VectorMatrix f(VectorMatrix y);
-
-    static void matrixTest(VectorMatrix mat);
+    VectorMatrix f(VectorMatrix y);
+    void callPython(DiffEq &d);
 
   private:
-    static void getVectorMatrix(const N_Vector& vec, VectorMatrix& mat);
-
-    static void getN_Vector(const matty::VectorMatrix& vec, N_Vector& nvec);
-
     int check_flag(void *flagvalue, char *funcname, int opt);
-
     static int callf(realtype t, N_Vector y, N_Vector ydot, void *user_data);
 
     typedef struct {
@@ -76,7 +67,7 @@ class Cvode {
     N_Vector _Ny, _Nydot, _abstol;
     double _reltol;
     int _size;
-    DiffEq _diff;
+    DiffEq& _diff; //TODO Referenz
 
 };
 #endif

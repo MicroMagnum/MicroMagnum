@@ -21,11 +21,28 @@
 #define diffeq_h
 
 #include "matrix/matty.h"
+#include <nvector/nvector_serial.h>
+
+#define Ith(v,i)    NV_Ith_S(v,i-1)       /* Ith numbers components 1..NEQ */
 
 //using namespace matty;
 class DiffEq {
   public:
-    virtual void diff(const VectorMatrix &My, VectorMatrix &Mydot);
+    DiffEq(VectorMatrix &My);
+    //virtual void diff(const VectorMatrix &My, VectorMatrix &Mydot);
+    virtual VectorMatrix diff(const VectorMatrix &My);
+    void diffN(const N_Vector& Ny, N_Vector& Nydot);
     virtual VectorMatrix getY();
+
+    VectorMatrix &_My, &_Mydot;
+    //N_Vector& Ny, Nydot;
+
+    static void getVectorMatrix(const N_Vector& vec, VectorMatrix& mat);
+    static void getN_Vector(const matty::VectorMatrix& vec, N_Vector& nvec);
+    static void printVectorMatrix(VectorMatrix& mat);
+    void printN_Vector(N_Vector& nvec);
+    int size();
+
+    static void matrixTest(VectorMatrix mat);
 };
 #endif

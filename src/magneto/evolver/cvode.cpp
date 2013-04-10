@@ -42,9 +42,10 @@
 //#include "matrix/matty.h"
 //#include "Vector3d.h"
 
-Cvode::Cvode(VectorMatrix &My, VectorMatrix &Mydot, DiffEq &diff)
-  : _My(My), _Mydot(Mydot), _Ny(), _Nydot(), _abstol(), _size(3*My.size()), _diff(diff)
+Cvode::Cvode(DiffEq &diff)
+  : _Ny(), _Nydot(), _abstol(), _diff(diff)
 {
+  _size = _diff.size();
   std::cout << "size: " << _size << "\n";
 
   _Ny = N_VNew_Serial(_size);
@@ -56,7 +57,6 @@ Cvode::Cvode(VectorMatrix &My, VectorMatrix &Mydot, DiffEq &diff)
 
   _reltol = 0.1;
 
-  std::cout << "size: " << _size << std::endl;
   for (int i=1; i<=_size; ++i)
   {
     Ith(_abstol,i) = 0.1;
@@ -85,78 +85,14 @@ static void PrintOutput(realtype t, N_Vector x, int size)
   }
 }
 
-void Cvode::matrixTest(VectorMatrix mat)
-{
-  int dim_x = mat.dimX();
-  int dim_y = mat.dimY();
-  int dim_z = mat.dimZ();
-  const int dim_xy = dim_x * dim_y;
-
-  std::cout << "matrixTest size: " << mat.size() << "\n";
-  std::cout << "matrixTest dimX: " << mat.dimX() << "\n";
-  std::cout << "matrixTest dimY: " << mat.dimY() << "\n";
-  std::cout << "matrixTest dimZ: " << mat.dimZ() << "\n";
-
-  {
-    VectorMatrix::const_accessor Macc(mat);
-
-    for (int z=0; z<dim_z; ++z) {
-      for (int y=0; y<dim_y; ++y) {	
-        for (int x=0; x<dim_x; ++x) {
-          const int i = z*dim_xy + y*dim_x + x; // linear index of (x,y,z)
-          std::cout << Macc.get(i);
-          std::cout << std::endl;
-        }
-      }
-    }
-  }
-
-  /*
-   * Konverter Test
-   */
-
-  N_Vector x = N_VNew_Serial(3*mat.size());
-  getN_Vector(mat,x);
-  realtype x1,x2,x3;
-
-  std::cout << std::endl;
-  std::cout << "konvertiert:" << std::endl;
-  for (int i=0; i<mat.size(); ++i) {
-    Ith(x,3*i+1) += RCONST(1); 
-    Ith(x,3*i+2) += RCONST(2); 
-    Ith(x,3*i+3) += RCONST(3);
-
-    x1 = Ith(x,3*i+1);
-    x2 = Ith(x,3*i+2);
-    x3 = Ith(x,3*i+3);
-
-    std::cout <<"(" << x1 << "," << x2 << "," << x3 << ")";
-    std::cout << std::endl;
-  }
-
-  /*
-   * Zurück konvertieren
-   */
-  {
-    getVectorMatrix(x, mat);
-    VectorMatrix::const_accessor Macc(mat);
-
-    std::cout << "\nzurück konvertiert:\n";
-    for (int z=0; z<dim_z; ++z) {
-      for (int y=0; y<dim_y; ++y) {	
-        for (int x=0; x<dim_x; ++x) {
-          const int i = z*dim_xy + y*dim_x + x; // linear index of (x,y,z)
-          std::cout << Macc.get(i);
-          std::cout << std::endl;
-        }
-      }
-    }
-  }
-}
-
 void Cvode::one(int i) 
 {
   std::cout << "one from c++\n";
+}
+
+void Cvode::callPython(DiffEq &d)
+{
+  d.getY();
 }
 
 int Cvode::cvodeTest() 
@@ -170,7 +106,7 @@ int Cvode::cvodeTest()
   //DiffEq user_data;
   //user_data.diff(My,Mydot);
   _diff.getY();
-  _diff.diff(_My,_Mydot);
+  //_diff.diff(_My,_Mydot);
 
   yout = NULL;
   cvode_mem = NULL;
@@ -210,7 +146,7 @@ int Cvode::cvodeTest()
   if(check_flag(&flag, (char *) "CVode", 1)) return(1);
   std::cout << "cvode 2\n";
 
-  PrintOutput(t, yout, _size);
+  _diff.printN_Vector(yout);
   std::cout << "cvode 3\n";
 
   return ans;
@@ -223,53 +159,10 @@ int Cvode::cvodeTest()
 int Cvode::callf(realtype t, N_Vector Ny, N_Vector Nydot, void *user_data)
 {
   DiffEq* ode = (DiffEq*) user_data;
-                          std::cout << "callf 1\n";
 
-  VectorMatrix My, Mydot;
-  My = ode->getY();
-                          std::cout << "callf 2\n";
-
-  int dim_x = My.dimX();
-                          std::cout << "callf 2\n";
-  int dim_y = My.dimY();
-                          std::cout << "callf 2\n";
-  int dim_z = My.dimZ();
-                          std::cout << "callf 2\n";
-  const int dim_xy = dim_x * dim_y;
-
-  std::cout << "matrixTest size: " << My.size() << "\n";
-  std::cout << "matrixTest dimX: " << My.dimX() << "\n";
-  std::cout << "matrixTest dimY: " << My.dimY() << "\n";
-  std::cout << "matrixTest dimZ: " << My.dimZ() << "\n";
-
-  {
-    VectorMatrix::const_accessor Macc(My);
-
-    for (int z=0; z<dim_z; ++z) {
-      for (int y=0; y<dim_y; ++y) {	
-        for (int x=0; x<dim_x; ++x) {
-          const int i = z*dim_xy + y*dim_x + x; // linear index of (x,y,z)
-          std::cout << Macc.get(i);
-          std::cout << std::endl;
-        }
-      }
-    }
-  }
-
-  getVectorMatrix(Ny,My);
-                          std::cout << "callf 3\n";
-  //getVectorMatrix(Nydot,Mydot);
-
-  ode->diff(My,Mydot);
-                          std::cout << "callf 4\n";
-
-  //getN_Vector(My,Ny);
-  getN_Vector(Mydot,Nydot);
-                          std::cout << "callf 5\n";
-
-  //Ith(Nydot,1) = RCONST(1);
-  //Ith(Nydot,2) = t;
-  //Ith(Nydot,3) = t * t;
+  std::cout << "callf 1\n";
+  ode->diffN(Ny, Nydot);
+  //Nydot=Ny;
 
   return(0);
 }
@@ -278,52 +171,6 @@ matty::VectorMatrix Cvode::f(matty::VectorMatrix y)
 {
   std::cout << "c++ VectorMatrix\n";
   return y;
-}
-
-/**
- * nvec muss mit der richtigen Größe initialisiert sein (N_VNew_Serial(3*size)).
- */
-void Cvode::getN_Vector(const VectorMatrix& mat, N_Vector& nvec)
-{
-  int dim_x = mat.dimX();
-  int dim_y = mat.dimY();
-  int dim_z = mat.dimZ();
-	const int dim_xy = dim_x * dim_y;
-
-  VectorMatrix::const_accessor Macc(mat);
-
-	for (int z=0; z<dim_z; ++z)
-  for (int y=0; y<dim_y; ++y)
-  for (int x=0; x<dim_x; ++x) {
-    const int i = z*dim_xy + y*dim_x + x; // linear index of (x,y,z)
-    Vector3d vec3 = Macc.get(i);
-    Ith(nvec,3*i+1) = vec3[0];
-    Ith(nvec,3*i+2) = vec3[1];
-    Ith(nvec,3*i+3) = vec3[2];
-  }
-}
-
-void Cvode::getVectorMatrix(const N_Vector& vec, VectorMatrix& mat)
-{
-  int dim_x = mat.dimX();
-  int dim_y = mat.dimY();
-  int dim_z = mat.dimZ();
-	const int dim_xy = dim_x * dim_y;
-
-  VectorMatrix::accessor Macc(mat);
-
-	for (int z=0; z<dim_z; ++z)
-  for (int y=0; y<dim_y; ++y)
-  for (int x=0; x<dim_x; ++x) {
-    const int i = z*dim_xy + y*dim_x + x; // linear index of (x,y,z)
-
-    Vector3d vec3;
-
-    vec3[0] = Ith(vec,3*i+1);
-    vec3[1] = Ith(vec,3*i+2);
-    vec3[2] = Ith(vec,3*i+3);
-    Macc.set(i, vec3);
-  }
 }
 
 /*
