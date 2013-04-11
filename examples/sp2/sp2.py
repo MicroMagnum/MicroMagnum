@@ -21,13 +21,13 @@ def discretize(L, d, t):
   nx, dx = choose(L)
   ny, dy = choose(d)
   nz, dz = choose(t)
-  assert dx < l_ex and dy < l_ex and dz < l_ex
+  assert dx <= l_ex and dy <= l_ex and dz <= l_ex
   return RectangularMesh((nx, ny, nz), (dx, dy, dz))
 
 def field(A, axis = (1,1,1)):
   return tuple(A * axis[i] / math.sqrt(axis[0]**2 + axis[1]**2 + axis[2]**2) for i in (0,1,2))
 
-for ratio in range(1,40+1):
+for ratio in range(4,40+1):
   L, d, t = geometry(ratio)
   print "d/l_ex=%s, L=%s, d=%s, t=%s" % (ratio, L, d, t)
 
