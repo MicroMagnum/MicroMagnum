@@ -47,6 +47,8 @@ class MicroMagneticsSolver(solver.Solver):
     text += "     avg(M) = %s\n" % (self.state.M.average(),)
     text += " deg_per_ns = %s\n" % self.state.deg_per_ns
     text += "\n"
+    text += "Mesh: %s\n" % self.mesh
+    text += "\n"
     text += "Options:"
 
     from .stephandler import ScreenLog
