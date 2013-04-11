@@ -53,6 +53,9 @@ class Solver(object):
   @property
   def model(self): return self.__system
 
+  @property
+  def mesh(self): return self.__system.mesh
+
   def addStepHandler(self, step_handler, condition):
     if not isinstance(step_handler, StepHandler): raise TypeError("'step_handler' argument must be a StepHandler")
     if not isinstance(condition, Condition): raise TypeError("'condition' argument must be a Condition")
@@ -127,7 +130,6 @@ class Solver(object):
           print("Entering Python debugger. Type 'c' to exit debugging, 'h' for help.")
           print("The current state can be accessed with 'self.state'.")
           print()
-          from magnum import *
           import pdb; pdb.set_trace()
         finally:
           self.__interrupted = False
