@@ -41,9 +41,8 @@ class ImageShape(Shape):
       shape = isc.pick("black") # create a shape (of type *ImageShape*) using a color as the mask.
       world = World(mesh, Body("image", Material.Py(), shape)) # use the shape...
 
-  You can use the following colors: *black, green, blue, red, yellow, grey, white*.
-
-  In the image, every pixel is classified using the nearest color in the color list. (The color is selected by the smallest euclidian distance in RGB space.)
+  You can use the following color strings: *"black", "green", "blue", "red", "yellow", "grey", "white", "cyan", "magenta"* or 
+  make up your own color by passing a tuple of RGB values instead, e.g. (128,128,128) means grey.
 
   Every image format that is supported by the Python Image Library is accepted, although we suggest to use the PNG image format.
   """
@@ -54,7 +53,11 @@ class ImageShape(Shape):
     self.__test_fn = isc.makeColorTestFunction(color)
 
   def getCellIndices(self, mesh):
-    return self.__isc.getCellIndices(mesh, self.__test_fn)
+    try:
+      cell_indices = self.__cell_indices_cache
+    except:
+      cell_indices = self.__cell_indices_cache = self.__isc.getCellIndices(mesh, self.__test_fn)
+    return cell_indices
 
   def isPointInside(self, pt):
     return self.__isc.isPointInside(self.__test_fn, pt)
@@ -79,13 +82,15 @@ class ImageShapeCreator(object):
 
   def makeColorTestFunction(self, p): # p: pick-color
     coltab = {
-      "black": (0,0,0),
-      "green": (0,255,0),
-      "blue":  (0,0,255),
-      "red":   (255,0,0),
-      "yellow":(255,255,0),
-      "grey":  (127,127,127),
-      "white": (255,255,255)
+      "black":   (0,0,0),
+      "green":   (0,255,0),
+      "blue":    (0,0,255),
+      "red":     (255,0,0),
+      "yellow":  (255,255,0),
+      "grey":    (128,128,128), "gray": (128,128,128),
+      "white":   (255,255,255),
+      "cyan":    (128,255,255),
+      "magenta": (255,128,255),
     }
 
     if type(p) == str: 
