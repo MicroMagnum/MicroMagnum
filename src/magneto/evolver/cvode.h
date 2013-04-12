@@ -51,9 +51,6 @@ class Cvode {
     Cvode(DiffEq &diff);
     virtual ~Cvode();
     int cvodeTest();
-    virtual void one(int i);
-    VectorMatrix f(VectorMatrix y);
-    void callPython(DiffEq &d);
 
   private:
     int check_flag(void *flagvalue, char *funcname, int opt);

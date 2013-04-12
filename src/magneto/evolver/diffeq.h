@@ -31,6 +31,7 @@ class DiffEq {
     DiffEq(VectorMatrix &My);
     //virtual void diff(const VectorMatrix &My, VectorMatrix &Mydot);
     virtual VectorMatrix diff(const VectorMatrix &My);
+    virtual void diffX(const VectorMatrix &My, VectorMatrix &Mydot);
     void diffN(const N_Vector& Ny, N_Vector& Nydot);
     virtual VectorMatrix getY();
 
@@ -39,8 +40,9 @@ class DiffEq {
 
     static void getVectorMatrix(const N_Vector& vec, VectorMatrix& mat);
     static void getN_Vector(const matty::VectorMatrix& vec, N_Vector& nvec);
-    static void printVectorMatrix(VectorMatrix& mat);
-    void printN_Vector(N_Vector& nvec);
+    static void printVectorMatrix(const VectorMatrix& mat);
+    void printN_Vector(const N_Vector& nvec);
+    void printOutput(const realtype &t, const N_Vector& nvec);
     int size();
 
     static void matrixTest(VectorMatrix mat);

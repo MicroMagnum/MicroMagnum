@@ -52,8 +52,8 @@ Cvode::Cvode(DiffEq &diff)
   _Nydot = N_VNew_Serial(_size);
   _abstol = N_VNew_Serial(_size);
 
-  //getN_Vector(_My, _Ny);
-  //getN_Vector(_Mydot, _Nydot);
+  _diff.getN_Vector(_diff.getY(), _Ny);
+  _diff.printN_Vector(_Ny);
 
   _reltol = 0.1;
 
@@ -67,46 +67,12 @@ Cvode::~Cvode()
 {
 }
 
-static void PrintOutput(realtype t, N_Vector x, int size)
-{
-  std::cout << "\nErgebnis:\n";
-  realtype x1,x2,x3;
-  for (int i=0; i<size; ++i) {
-    Ith(x,3*i+1) += RCONST(1); 
-    Ith(x,3*i+2) += RCONST(2); 
-    Ith(x,3*i+3) += RCONST(3);
-
-    x1 = Ith(x,3*i+1);
-    x2 = Ith(x,3*i+2);
-    x3 = Ith(x,3*i+3);
-
-    std::cout <<"(" << x1 << "," << x2 << "," << x3 << ")";
-    std::cout << std::endl;
-  }
-}
-
-void Cvode::one(int i) 
-{
-  std::cout << "one from c++\n";
-}
-
-void Cvode::callPython(DiffEq &d)
-{
-  d.getY();
-}
-
 int Cvode::cvodeTest() 
 {
-  one(123456);
   realtype t;
   N_Vector yout;
   void *cvode_mem;
   int flag, ans;
-  VectorMatrix My, Mydot;
-  //DiffEq user_data;
-  //user_data.diff(My,Mydot);
-  _diff.getY();
-  //_diff.diff(_My,_Mydot);
 
   yout = NULL;
   cvode_mem = NULL;
@@ -142,13 +108,14 @@ int Cvode::cvodeTest()
 
   std::cout << "cvode 1\n";
 
-  flag = CVode(cvode_mem, 2, yout, &t, CV_NORMAL);
+  flag = CVode(cvode_mem, 1, yout, &t, CV_NORMAL);
   if(check_flag(&flag, (char *) "CVode", 1)) return(1);
   std::cout << "cvode 2\n";
 
-  _diff.printN_Vector(yout);
+  _diff.printOutput(t,yout);
   std::cout << "cvode 3\n";
 
+  free(cvode_mem);
   return ans;
 }
 
@@ -162,15 +129,11 @@ int Cvode::callf(realtype t, N_Vector Ny, N_Vector Nydot, void *user_data)
 
   std::cout << "callf 1\n";
   ode->diffN(Ny, Nydot);
-  //Nydot=Ny;
+  std::cout << "callf 2\n";
+  ode->printOutput(t,Nydot);
+  std::cout << "callf 3\n";
 
   return(0);
-}
-
-matty::VectorMatrix Cvode::f(matty::VectorMatrix y)
-{
-  std::cout << "c++ VectorMatrix\n";
-  return y;
 }
 
 /*

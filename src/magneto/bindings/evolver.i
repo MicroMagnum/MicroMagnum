@@ -89,7 +89,7 @@ void rk_combine_result(
 double rk_adjust_stepsize(int order, double h, double eps_abs, double eps_rel, const VectorMatrix &y, const VectorMatrix &y_error);
 
 %feature("director") DiffEq;
-%feature("director") Cvode;
+/*%feature("director") Cvode;
 
 /*
 class Cvode {

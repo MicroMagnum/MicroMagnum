@@ -7,11 +7,15 @@ class LlgDiffEq(m.DiffEq):
         super(LlgDiffEq, self).__init__(state.y)
         self.State=state
 
-    #def diff(self,My,Mydot):
+    def diffX(self,My,Mydot):
+        print("DIFFX from python")
+        Mydot=self.State.differentiate()
+
     def diff(self,My):
-        self.State.y = My
-        Mydot = self.State.differentiate()
+        #self.State.y = My
         print("DIFF from python")
+        Mydot = self.State.differentiate()
+        #Mydot=My
         return Mydot
 
     def getY(self):

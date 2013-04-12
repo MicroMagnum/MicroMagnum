@@ -31,7 +31,10 @@ DiffEq::DiffEq(VectorMatrix &My)
   std::cout << "Größe My: " << size() << "\n";
 }
 
-//void DiffEq::diff(const VectorMatrix &My, VectorMatrix &Mydot)
+void DiffEq::diffX(const VectorMatrix &My, VectorMatrix &Mydot)
+{
+  std::cout << "DIFFX C++\n";
+}
 VectorMatrix DiffEq::diff(const VectorMatrix &My)
 {
   std::cout << "DIFF C++\n";
@@ -44,11 +47,18 @@ void DiffEq::diffN(const N_Vector& Ny, N_Vector& Nydot)
   // diff()
   // konvertiere Mydot->Nydot
 
+  std::cout << "diffN 1\n";
   getVectorMatrix(Ny,_My);
+  std::cout << "diffN 2\n";
 
   _Mydot = diff(_My);
+  //diffX(_My,_Mydot);
 
+  std::cout << "diffN 3\n";
+  //std::cout << "diffN VectorMatrix:\n";
+  //printVectorMatrix(_Mydot);
   getN_Vector(_Mydot,Nydot);
+  std::cout << "diffN 4\n";
 }
 
 VectorMatrix DiffEq::getY()
@@ -105,12 +115,12 @@ void DiffEq::getVectorMatrix(const N_Vector& vec, VectorMatrix& mat)
   }
 }
 
-void DiffEq::printN_Vector(N_Vector& nvec)
+void DiffEq::printN_Vector(const N_Vector& nvec)
 {
   getVectorMatrix(nvec, _My);
   printVectorMatrix(_My);
 }
-void DiffEq::printVectorMatrix(VectorMatrix& mat)
+void DiffEq::printVectorMatrix(const VectorMatrix& mat)
 {
   int dim_x = mat.dimX();
   int dim_y = mat.dimY();
@@ -135,6 +145,12 @@ void DiffEq::printVectorMatrix(VectorMatrix& mat)
       }
     }
   }
+}
+
+void DiffEq::printOutput(const realtype &t, const N_Vector& nvec)
+{
+  std::cout << "Time = " << t << std::endl;
+  printN_Vector(nvec);
 }
 
 void DiffEq::matrixTest(VectorMatrix mat)
