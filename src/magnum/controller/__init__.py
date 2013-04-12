@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .controller import Controller
-from .localcontroller import LocalController
+from .create_controller import create_controller, Controller
 
-__all__ = ["Controller", "LocalController"]
+__all__ = ["create_controller", "Controller"]
