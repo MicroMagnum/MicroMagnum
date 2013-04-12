@@ -24,20 +24,20 @@ import unittest
 class ControllerTest(unittest.TestCase):
 
   def test_empty_parameters(self):
-    c = Controller(lambda: None, [])
-    self.assertEqual([], c.getAllParameters())
+    c = create_controller(lambda: None, [])
+    self.assertEqual([], c.all_params)
 
   def test_simple_parameters(self):
-    c = Controller(lambda x: None, [1, 3, 5])
-    self.assertEqual([(1,), (3,), (5,)], c.getAllParameters())
+    c = create_controller(lambda x: None, [1, 3, 5])
+    self.assertEqual([(1,), (3,), (5,)], c.all_params)
 
   def test_product_parameters(self):
-    c = Controller(lambda x, y: None, [(1, [2, 3])])
-    self.assertEqual([(1, 2), (1, 3)], c.getAllParameters())
+    c = create_controller(lambda x, y: None, [(1, [2, 3])])
+    self.assertEqual([(1, 2), (1, 3)], c.all_params)
 
   def test_complicated_parameters(self):
-    c = Controller(lambda x, y: None, [(1, [2, 3]), (4, 5)])
-    self.assertEqual([(1, 2), (1, 3), (4, 5)], c.getAllParameters())
+    c = create_controller(lambda x, y: None, [(1, [2, 3]), (4, 5)])
+    self.assertEqual([(1, 2), (1, 3), (4, 5)], c.all_params)
 
 # start tests
 if __name__ == '__main__':
