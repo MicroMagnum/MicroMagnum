@@ -41,7 +41,7 @@ def create_controller(run, params, *args, **kwargs):
     if env in os.environ:
       return EnvironmentVariableController(run, params, env, env_offset, *args, **kwargs)
     else:
-      logger.info("Environment variable '%s' not found, ignoring 'env' parameter in controller creation" % env)
+      logger.warn("Environment variable '%s' not found, ignoring 'env' parameter in controller creation" % env)
 
   # Case 3: Sun grid engine controller
   sge = kwargs.pop("sun_grid_engine", False)
@@ -49,9 +49,9 @@ def create_controller(run, params, *args, **kwargs):
     if "SGE_TASK_ID" in os.environ:
       return SunGridEngineController(run, params, *args, **kwargs)
     else:
-      logger.info("Environment variable 'SGE_TASK_ID' not found, ignoring 'sun_grid_engine' parameter in controller creation")
+      logger.warn("Environment variable 'SGE_TASK_ID' not found, ignoring 'sun_grid_engine' parameter in controller creation")
 
-  # Case 4: This controller is used when the script was executed locally
+  # Case 4: This controller is used when the script was executed locally. It optionally uses the -p argument passed to the sim script.
   return LocalController(run, params, *args, **kwargs)
 
 def Controller(run, params, *args, **kwargs):
