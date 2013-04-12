@@ -24,7 +24,7 @@ import magnum.console as console
 _color_map = {
   logging.DEBUG: 2,
   logging.INFO: 2,
-  logging.WARNING: 12,
+  logging.WARNING: 6,
   logging.ERROR: 1,
   logging.CRITICAL: 1
 }
@@ -35,7 +35,7 @@ class MyFormatter(logging.Formatter):
 
 # II. Create logger
 ch = logging.StreamHandler()
-ch.setFormatter(MyFormatter("[%(levelname)5s] - %(message)s", "%Y-%m-%d %H:%M:%S"))
+ch.setFormatter(MyFormatter("[%(levelname)7s] - %(message)s", "%Y-%m-%d %H:%M:%S"))
 logger = logging.getLogger("MagNum")
 logger.addHandler(ch)
 logger.setLevel(logging.DEBUG)
