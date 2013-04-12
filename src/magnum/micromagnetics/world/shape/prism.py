@@ -43,7 +43,7 @@ class Prism(Shape):
       if l_p2 > r:
         r = l_p2
     r = sqrt(r)
-		
+
     # Determine rotation angle and axis
     if l_u != 0:
       angle = acos(u[2]/l_u)
@@ -85,7 +85,7 @@ class Prism(Shape):
     l_xy_pt = sqrt(pt[0]**2 + pt[1]**2)
     if pt[2] < 0 or pt[2] > l_u or l_xy_pt > r:
       return False
-		
+
     # Test if point is inside Polygon
     x = pt[0]
     y = pt[1]
@@ -104,7 +104,7 @@ class Prism(Shape):
             if poly1x == poly2x or x <= xinters:
               inside = not inside
       poly1x,poly1y = poly2x,poly2y
-		
+
     return inside
 
   def __repr__(self):

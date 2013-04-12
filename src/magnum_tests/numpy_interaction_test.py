@@ -26,8 +26,7 @@ import itertools
 try:
   import numpy as np
 except ImportError:
-  class NumpyInteractionTest(unittest.TestCase):
-    pass
+  pass
 else:
   class NumpyInteractionTest(unittest.TestCase):
  

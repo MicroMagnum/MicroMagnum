@@ -18,19 +18,21 @@
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import print_function
+
 from magnum import *
 import magnum.magneto as magneto
+
 import unittest
 
 # void fdm_zhangli(
-# 	int dim_x, int dim_y, int dim_z,
-# 	double delta_x, double delta_y, double delta_z,
-# 	bool do_precess,
-# 	double P, double xi, double Jx, double Jy, double Jz,
-# 	const ScalarMatrix &Ms,
-# 	const ScalarMatrix &alpha,
-# 	const VectorMatrix &M,
-# 	VectorMatrix &dM
+#   int dim_x, int dim_y, int dim_z,
+#   double delta_x, double delta_y, double delta_z,
+#   bool do_precess,
+#   double P, double xi, double Jx, double Jy, double Jz,
+#   const ScalarMatrix &Ms,
+#   const ScalarMatrix &alpha,
+#   const VectorMatrix &M,
+#   VectorMatrix &dM
 # );
 
 class FDMZhangLiTest(unittest.TestCase):
@@ -106,9 +108,5 @@ class FDMZhangLiTest(unittest.TestCase):
   def test_2d_2(self): self.with_vortex_test(100, 100, 1, False)
   def test_3d_2(self): self.with_vortex_test(100, 100, 20, False)
 
-# start tests
-import os
 if __name__ == '__main__':
-  os.chdir("../..")
   unittest.main()
-

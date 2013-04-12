@@ -21,7 +21,6 @@ from magnum import *
 from magnum.magneto import VectorMatrix, Shape
 
 import unittest
-import itertools
 
 class VectorMatrixTest(unittest.TestCase):
 

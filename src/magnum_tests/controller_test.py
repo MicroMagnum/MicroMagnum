@@ -20,7 +20,6 @@
 from magnum import *
 import unittest
 
-# Controller
 class ControllerTest(unittest.TestCase):
 
   def test_empty_parameters(self):
@@ -39,6 +38,5 @@ class ControllerTest(unittest.TestCase):
     c = create_controller(lambda x, y: None, [(1, [2, 3]), (4, 5)])
     self.assertEqual([(1, 2), (1, 3), (4, 5)], c.all_params)
 
-# start tests
 if __name__ == '__main__':
   unittest.main()

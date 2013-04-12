@@ -20,8 +20,8 @@
 from magnum import *
 import unittest
 
-# World
 class WorldTest(unittest.TestCase):
+
   def setUp(self):
     self.mesh = RectangularMesh((100, 100, 1), (1e-9, 1e-9, 1e-9))
     self.world = World(

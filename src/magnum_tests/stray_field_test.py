@@ -71,4 +71,5 @@ class StrayFieldTest(MyTestCase):
     self.assertVectorFieldEqual(H0, H1, 1e0)
     self.assertVectorFieldEqual(H0, H2, 1e0)
 
-if __name__ == '__main__': unittest.main()
+if __name__ == '__main__':
+  unittest.main()

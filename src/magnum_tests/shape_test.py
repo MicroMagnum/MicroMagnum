@@ -18,9 +18,63 @@
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
 from magnum import *
+
 import unittest
+import math
+
+class SphereTest(unittest.TestCase):
+
+  def setUp(self):
+    self.sphere = Sphere((1,1,1), 1)
+    self.mesh = RectangularMesh((20, 20, 20), (0.1, 0.1, 0.1))
+
+  def test_isPointInside(self):
+    self.assertTrue (self.sphere.isPointInside((1.0, 1.0, 1.0)))
+    self.assertTrue (self.sphere.isPointInside((1.9, 1.0, 1.0)))
+    self.assertTrue (self.sphere.isPointInside((1.0, 0.1, 1.0)))
+    self.assertTrue (self.sphere.isPointInside((1.0, 1.0, 1.9)))
+    self.assertFalse(self.sphere.isPointInside((2.1, 1.0, 1.0)))
+    self.assertFalse(self.sphere.isPointInside((1.9, 1.9, 1.0)))
+    self.assertFalse(self.sphere.isPointInside((0.1, 0.1, 1.0)))
+
+class CylinderTest(unittest.TestCase):
+
+  def setUp(self):
+    P1, P2, R = (0,0,0), (40,0,0), 10
+    self.cyl1 = Cylinder(P1, P2, R)
+  
+  def test_isPointInside(self):
+    f = 10.0 / math.sqrt(2.0)
+    for P in [(10,0,0), (20,0,0), (30,0,0), (10,f-0.1,f-0.1), (10,-f+0.1,-f+0.1)]:
+      self.assertTrue(self.cyl1.isPointInside(P))
+    for P in [(-10,0,0), (50,0,0), (10,f+0.1,f+0.1), (10,-f-0.1,-f-0.1)]:
+      self.assertFalse(self.cyl1.isPointInside(P))
+
+class CuboidTest(unittest.TestCase):
+
+  def setUp(self):
+    self.cube = Cuboid((0,0,0), (1,1,1))
+    self.mesh = RectangularMesh((10, 10, 10), (1.0, 1.0, 1.0))
+
+  def test_isPointInside(self):
+    self.assertTrue (self.cube.isPointInside(( 0.5,  0.5,  0.5)))
+    self.assertFalse(self.cube.isPointInside((-0.5,  0.5,  0.5)))
+
+class EverywhereTest(unittest.TestCase):
+
+  def test_isPointInside(self):
+    ew = Everywhere()
+    self.assertTrue(ew.isPointInside(( 0.0,  0.0,  0.0)))
+    self.assertTrue(ew.isPointInside((-5.0,  5.0,  0.0)))
+
+  def test_getCellIndices(self):
+    mesh = RectangularMesh((10,10,10),(1,1,1))
+    ew = Everywhere()
+    idx = ew.getCellIndices(mesh)
+    self.assertEqual(1000, len(idx))
 
 class CombinedShapeTest(unittest.TestCase):
+
    def setUp(self):
      self.cube1 = Cuboid((0,0,0), (1,1,1))
      self.cube2 = Cuboid((1,1,1), (2,2,2))
@@ -48,6 +102,5 @@ class CombinedShapeTest(unittest.TestCase):
      cells = combo.getCellIndices(mesh)
      self.assertEqual(0, len(cells))
 
-# start tests
 if __name__ == '__main__':
   unittest.main()

@@ -20,7 +20,6 @@
 from magnum import *
 import unittest
 
-# Body
 class RectangularMeshTest(unittest.TestCase):
 
   def test_properties(self):
@@ -38,6 +37,5 @@ class RectangularMeshTest(unittest.TestCase):
     self.assertEqual(mesh.total_nodes, 1000)
     self.assertEqual(mesh.periodic_bc, ("", 1))
 
-# start tests
 if __name__ == '__main__':
   unittest.main()

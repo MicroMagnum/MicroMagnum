@@ -22,14 +22,13 @@ import unittest
 
 try:
   import Image
-  skip = False
 except ImportError: # if python imaging lib is not installed
   pass
 else:
   class ImageShapeTest(unittest.TestCase):
     def setUp(self):
       mesh = RectangularMesh((100, 100, 1), (1, 1, 1))
-      isc = ImageShapeCreator("image_test.png", mesh)
+      isc = ImageShapeCreator("image_shape_creator_test.png", mesh)
   
       self.shape0 = isc.pick("blue")  # bottom-left of img -> (0,0)
       self.shape1 = isc.pick("green") # bottom-right -> (99,0)
@@ -43,4 +42,5 @@ else:
       self.assertEquals([ 0+99*100], self.shape2.getCellIndices(mesh))
       self.assertEquals([99+99*100], self.shape3.getCellIndices(mesh))
 
-if __name__ == '__main__': unittest.main()
+if __name__ == '__main__':
+  unittest.main()

@@ -36,7 +36,7 @@ class Material(object):
     try:
       return self.__params[key]
     except:
-      raise AttributeError("Material instance has no attribute '%s'" % key)
+      return super(Material, self).__getattr__(key)
 
   def __repr__(self):
     return "Material(" + repr(self.__params) + ")"
@@ -45,10 +45,14 @@ class Material(object):
   def fromDB(id, **params):
     """
     Return a material object of material 'id' from the database. E.g.: Material.fromDB("Py").
-    Additional keyword options are merged with the material parameters of the newly created instance.
+    Additional material parameters have preference over the database.
     """
-    db_params = Material.__getDBParameters(id)
-    return Material(dict(list(db_params.items()) + list(params.items())))
+    global db
+
+    p = dict()
+    p.update(db[id])
+    p.update(params)
+    return Material(p)
     
   @staticmethod
   def Py(**params):
@@ -85,83 +89,79 @@ class Material(object):
   @staticmethod
   def Au(**params):
     """
-    Return a material object for the non-magnetic material 'Gold'.
+    Return a material object for the non-magnetic material 'Gold'. Used for contacts.
     """
     return Material.fromDB("Au", **params)
 
-  # Materials database #
+# Materials database ########################################################
 
-  # From OOMMF source code: ###################################################
-  #                                                                           #
-  # PLEASE NOTE: The following values should *not* be taken as standard       #
-  # reference values for these materials.  These values are only approximate. #
-  # They are included here as examples for users who wish to supply their     #
-  # own material types with symbolic names.                                   #
-  #                  M_s        A         K      anisotropy type              #
-  # Permalloy       860E3    13E-12       0      uniaxial                     #
-  # Iron           1700E3    21E-12      48E3    cubic                        #
-  # Nickel          490E3     9E-12    -5.7E3    cubic                        #
-  # Cobalt(hcp)    1400E3    30E-12     520E3    uniaxial                     #
-  #############################################################################
+# From OOMMF source code: ###################################################
+#                                                                           #
+# PLEASE NOTE: The following values should *not* be taken as standard       #
+# reference values for these materials.  These values are only approximate. #
+# They are included here as examples for users who wish to supply their     #
+# own material types with symbolic names.                                   #
+#                  M_s        A         K      anisotropy type              #
+# Permalloy       860E3    13E-12       0      uniaxial                     #
+# Iron           1700E3    21E-12      48E3    cubic                        #
+# Nickel          490E3     9E-12    -5.7E3    cubic                        #
+# Cobalt(hcp)    1400E3    30E-12     520E3    uniaxial                     #
+#############################################################################
 
-  __db = {
-    # Permalloy
-    'Py': {
-        'id': 'Py', 
-        # For LandauLifshitzGilbert module
-        'Ms':  8e5, 
-        'alpha': 0.01, 
-        # ExchangeField
-        'A': 13e-12,        # Exchange stiffness constant: J/m
-        # CurrentPath
-        'sigma': 0.5e7,     # A/(V*m) = 1/(Ohm*m)
-        'amr': 0.1,
-        # SpinTorque
-        'P': 0.5,           # Spin polarization (1)
-        'xi': 0.02,
-    },
+db = {
+  # Permalloy
+  'Py': {
+      'id': 'Py', 
+      # For LandauLifshitzGilbert module
+      'Ms':  8e5, 
+      'alpha': 0.01, 
+      # ExchangeField
+      'A': 13e-12,        # Exchange stiffness constant: J/m
+      # CurrentPath
+      'sigma': 0.5e7,     # A/(V*m) = 1/(Ohm*m)
+      'amr': 0.1,
+      # SpinTorque
+      'P': 0.5,           # Spin polarization (1)
+      'xi': 0.02,
+  },
 
-    # Iron: (Not verified!)
-    'Fe': {
-        'id': 'Fe',
-        'Ms': 17e5,
-        'alpha': 0.01,
-        'A': 21e-12,
-        'axis1': (1.0, 0.0, 0.0),
-        "k_uniaxial": 48e3,
-    },
+  # Iron: (Not verified!)
+  'Fe': {
+      'id': 'Fe',
+      'Ms': 17e5,
+      'alpha': 0.01,
+      'A': 21e-12,
+      'axis1': (1.0, 0.0, 0.0),
+      "k_uniaxial": 48e3,
+  },
 
-    # Nickel: (Not verified!)
-    'Ni': {
-        'id': 'Ni',
-        'Ms': 4.9e5,
-        'alpha': 0.01,
-        'A':  9e-12,
-        'axis1': (1.0, 0.0, 0.0),
-        "k_uniaxial": -5.7e3,
-    },
+  # Nickel: (Not verified!)
+  'Ni': {
+      'id': 'Ni',
+      'Ms': 4.9e5,
+      'alpha': 0.01,
+      'A':  9e-12,
+      'axis1': (1.0, 0.0, 0.0),
+      "k_uniaxial": -5.7e3,
+  },
 
-    # Cobalt (source: OOMMF)
-    'Co': {
-        'id': 'Co',
-        'Ms': 14e6,
-        'alpha': 0.5,
-        'A': 30e-12,
-        'axis1': (1.0, 0.0, 0.0),
-        'k_uniaxial': 520e3,
-    },
+  # Cobalt (source: OOMMF)
+  'Co': {
+      'id': 'Co',
+      'Ms': 14e6,
+      'alpha': 0.5,
+      'A': 30e-12,
+      'axis1': (1.0, 0.0, 0.0),
+      'k_uniaxial': 520e3,
+  },
 
-    # Gold
-    'Au': {
-        'id': 'Au',
-        'Ms': 0,
-        'alpha': 0,
-        'A': 0,
-        'sigma': 4.55e7, # from wikipedia:en
-        'amr': 0
-    }
+  # Gold
+  'Au': {
+      'id': 'Au',
+      'Ms': 0,
+      'alpha': 0,
+      'A': 0,
+      'sigma': 4.55e7, # from wikipedia:en
+      'amr': 0
   }
-
-  @staticmethod
-  def __getDBParameters(id):
-    return Material.__db[id]
+}
