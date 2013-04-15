@@ -19,22 +19,9 @@
 
 import magnum
 from magnum_tests import *
-
 from magnum.config import cfg
 
-import sys
-import unittest
-if not hasattr(unittest, "skipIf"): # defined in unittest since Python 2.7
-  unittest.skipIf = lambda cond, reason: lambda fn: fn
-  cfg.skip_long_tests = False
-else:
-  if "--with-long-tests" in sys.argv:
-    cfg.skip_long_tests = False
-  elif "--skip-long-tests" in sys.argv:
-    cfg.skip_long_tests = True
-  else:
-    cfg.skip_long_tests = bool(int(input("Skip long tests (0=no,1=yes)? ")))
+import sys, os
 
-import os
 os.chdir("magnum_tests")
 unittest.main(argv=[sys.argv[0]])

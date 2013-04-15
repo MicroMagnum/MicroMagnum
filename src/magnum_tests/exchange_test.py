@@ -69,7 +69,6 @@ class ExchangeTest(MyTestCase):
       for i in range(nx*ny*nz):
         self.assertEquals(H.get(i), (0.0, 0.0, 0.0))
 
-  @unittest.skipIf(cfg.skip_long_tests, "skipping ExchangeTest.test_pbc_exchange_3d (long test)")
   def test_pbc_exchange_3d(self):
     self.pbc_exchange(64, 64, 64) # mod 8 == 0 (cuda thread block size)
     self.pbc_exchange(64+6, 64-4, 64-5)

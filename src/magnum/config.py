@@ -24,9 +24,6 @@ class MagnumConfig(object):
 
   ### Startup & shutdown ################################################################
 
-  def __init__(self):
-    self.skip_long_tests = False # config flag for unit tests (not used anywhere else and not adjustable by command line)
-
   def initialize(self, argv = None):
     # Initialize magneto
     magneto.initialize(self.getCacheDirectory())

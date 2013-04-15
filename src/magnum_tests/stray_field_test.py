@@ -43,11 +43,9 @@ class StrayFieldTest(MyTestCase):
     # compare
     self.assertVectorFieldEqual(H_ref, H, epsilon)
 
-  @unittest.skipIf(cfg.skip_long_tests, "skipping StrayFieldTest.calculate_2d (long test)")
   def test_calculate_2d(self):
     self.doTest("ref/M1.omf", "ref/H1_stray.omf", 1e0);
 
-  @unittest.skipIf(cfg.skip_long_tests, "skipping StrayFieldTest.calculate_3d (long test)")
   def test_calculate_3d(self):
     self.doTest("ref/M3.omf", "ref/H3_stray.ohf", 5e1)
 
