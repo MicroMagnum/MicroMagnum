@@ -24,22 +24,22 @@ from .evolver import Evolver
 from .tableaus import rkf45, cc45, dp54, rk23
 
 class RungeKutta(Evolver):
-    TABLEAUX = {
-      'rkf45': rkf45, # Runge-Kutta-Fehlberg
-      'cc45': cc45, # Cash-Karp
-      'dp54': dp54, # Dormand-Prince
-      'rk23': rk23, # Bogacki-Shampine
+    TABLES = {
+        'rkf45': rkf45,  # Runge-Kutta-Fehlberg
+        'cc45': cc45,    # Cash-Karp
+        'dp54': dp54,    # Dormand-Prince
+        'rk23': rk23,    # Bogacki-Shampine
     }
 
     def __init__(self, mesh, method, stepsize_controller):
         super(RungeKutta, self).__init__(mesh)
 
-        self.__tab = RungeKutta.TABLEAUX[method]()
+        self.__tab = RungeKutta.TABLES[method]()
         self.__controller = stepsize_controller
 
-        self.__y0    =  VectorField(mesh)
-        self.__y_err =  VectorField(mesh)
-        self.__y_tmp =  VectorField(mesh)
+        self.__y0    = VectorField(mesh)
+        self.__y_err = VectorField(mesh)
+        self.__y_tmp = VectorField(mesh)
         self.__k     = [None] * self.__tab.getNumSteps()
 
         logger.info("Runge Kutta evolver: method is %s, step size controller is %s.", method, self.__controller)
@@ -64,12 +64,12 @@ class RungeKutta(Evolver):
             # Step size control (was h too big?)
             # calculate the minimal acceptable step size
             accept, h_new = self.__controller.adjust_stepsize(state, h_try, self.__tab.order, y, y_err, dydt)
-            if not accept: # oh, tried step size was too big.
-                y.assign(y0) # reverse last step
-                h_try = h_new # try again with new (smaller) h.
-                continue # need to retry -> redo loop
+            if not accept:  # oh, tried step size was too big.
+                y.assign(y0)  # reverse last step
+                h_try = h_new  # try again with new (smaller) h.
+                continue  # need to retry -> redo loop
             else:
-                break # done -> exit loop
+                break  # done -> exit loop
 
         # But: Don't overshoot past t_max!
         if state.t + h_try > t_max:
@@ -104,7 +104,7 @@ class RungeKutta(Evolver):
         # step 1 to 5
         for step in range(1, num_steps):
             # calculate ytmp...
-            if num_steps != 6: # High-level version for num_steps != 6
+            if num_steps != 6:  # High-level version for num_steps != 6
                 y_tmp.assign(y)
                 for j in range(0, step):
                     y_tmp.add(k[j], h * tab.getB(step, j))

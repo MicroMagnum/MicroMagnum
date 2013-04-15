@@ -20,7 +20,7 @@ from magnum.logger import logger
 
 import numbers
 
-def assign(obj, val, mask = None):
+def assign(obj, val, mask=None):
     global _typemap_assign
     try:
         return _typemap_assign[type(obj)](obj, val, mask)
@@ -127,6 +127,6 @@ def assign_VectorField(field, val, mask):
     return field
 
 _typemap_assign = {
-  Field: assign_Field,
-  VectorField: assign_VectorField
+    Field: assign_Field,
+    VectorField: assign_VectorField
 }

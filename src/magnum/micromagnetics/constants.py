@@ -18,7 +18,7 @@
 from math import pi
 
 # MU0
-MU0 = 4.0*pi*1e-7
+MU0 = 4.0 * pi * 1e-7
 
 # Plancks constant [kg*m^2/s]
 H_BAR = 1.05457162825e-34

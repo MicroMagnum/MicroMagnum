@@ -33,7 +33,7 @@ class Module(object):
     def properties(self):
         return {}
 
-    def set_param(self, id, value, mask = None):
+    def set_param(self, id, value, mask=None):
         p = getattr(self, id)
         p = assign(p, value, mask)
         setattr(self, id, p)
