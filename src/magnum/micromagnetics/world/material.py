@@ -1,97 +1,97 @@
 # Copyright 2012, 2013 by the Micromagnum authors.
 #
 # This file is part of MicroMagnum.
-# 
+#
 # MicroMagnum is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # MicroMagnum is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
 from magnum.logger import logger
 
 class Material(object):
-  def __init__(self, params):
-    """
-    Create a new material object. 'params' must be a dict that maps
-    material parameter string-ids to their values.
-    """
-    self.__params = params
+    def __init__(self, params):
+        """
+        Create a new material object. 'params' must be a dict that maps
+        material parameter string-ids to their values.
+        """
+        self.__params = params
 
-  def get(self, key):
-    """
-    Return the material parameter with id-string 'key'. The material parameter
-    is usually a scalar value.
-    """
-    return self.__params[key]
+    def get(self, key):
+        """
+        Return the material parameter with id-string 'key'. The material parameter
+        is usually a scalar value.
+        """
+        return self.__params[key]
 
-  def __getattr__(self, key):
-    try:
-      return self.__params[key]
-    except:
-      return super(Material, self).__getattr__(key)
+    def __getattr__(self, key):
+        try:
+            return self.__params[key]
+        except:
+            return super(Material, self).__getattr__(key)
 
-  def __repr__(self):
-    return "Material(" + repr(self.__params) + ")"
+    def __repr__(self):
+        return "Material(" + repr(self.__params) + ")"
 
-  @staticmethod
-  def fromDB(id, **params):
-    """
-    Return a material object of material 'id' from the database. E.g.: Material.fromDB("Py").
-    Additional material parameters have preference over the database.
-    """
-    global db
+    @staticmethod
+    def fromDB(id, **params):
+        """
+        Return a material object of material 'id' from the database. E.g.: Material.fromDB("Py").
+        Additional material parameters have preference over the database.
+        """
+        global db
 
-    p = dict()
-    p.update(db[id])
-    p.update(params)
-    return Material(p)
-    
-  @staticmethod
-  def Py(**params):
-    """
-    Additional keyword options are merged with the material parameters of the newly created instance.
-    Return a material object for the material 'Permalloy'.
-    """
-    return Material.fromDB("Py", **params)
+        p = dict()
+        p.update(db[id])
+        p.update(params)
+        return Material(p)
 
-  @staticmethod
-  def Fe(**params):
-    """
-    Return a material object for the material 'Iron'.
-    """
-    logger.warn("Warning: The Fe material parameters are not verified!")
-    return Material.fromDB("Fe", **params)
+    @staticmethod
+    def Py(**params):
+        """
+        Additional keyword options are merged with the material parameters of the newly created instance.
+        Return a material object for the material 'Permalloy'.
+        """
+        return Material.fromDB("Py", **params)
 
-  @staticmethod
-  def Ni(**params):
-    """
-    Return a material object for the material 'Nickel'.
-    """
-    logger.warn("Warning: The Ni material parameters are not verified!")
-    return Material.fromDB("Ni", **params)
+    @staticmethod
+    def Fe(**params):
+        """
+        Return a material object for the material 'Iron'.
+        """
+        logger.warn("Warning: The Fe material parameters are not verified!")
+        return Material.fromDB("Fe", **params)
 
-  @staticmethod
-  def Co(**params):
-    """
-    Return a material object for the material 'Cobalt'.
-    """
-    logger.warn("Warning: The Co material parameters are not verified!")
-    return Material.fromDB("Co", **params)
+    @staticmethod
+    def Ni(**params):
+        """
+        Return a material object for the material 'Nickel'.
+        """
+        logger.warn("Warning: The Ni material parameters are not verified!")
+        return Material.fromDB("Ni", **params)
 
-  @staticmethod
-  def Au(**params):
-    """
-    Return a material object for the non-magnetic material 'Gold'. Used for contacts.
-    """
-    return Material.fromDB("Au", **params)
+    @staticmethod
+    def Co(**params):
+        """
+        Return a material object for the material 'Cobalt'.
+        """
+        logger.warn("Warning: The Co material parameters are not verified!")
+        return Material.fromDB("Co", **params)
+
+    @staticmethod
+    def Au(**params):
+        """
+        Return a material object for the non-magnetic material 'Gold'. Used for contacts.
+        """
+        return Material.fromDB("Au", **params)
 
 # Materials database ########################################################
 
@@ -111,10 +111,10 @@ class Material(object):
 db = {
   # Permalloy
   'Py': {
-      'id': 'Py', 
+      'id': 'Py',
       # For LandauLifshitzGilbert module
-      'Ms':  8e5, 
-      'alpha': 0.01, 
+      'Ms':  8e5,
+      'alpha': 0.01,
       # ExchangeField
       'A': 13e-12,        # Exchange stiffness constant: J/m
       # CurrentPath

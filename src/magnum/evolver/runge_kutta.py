@@ -1,17 +1,17 @@
 # Copyright 2012, 2013 by the Micromagnum authors.
 #
 # This file is part of MicroMagnum.
-# 
+#
 # MicroMagnum is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # MicroMagnum is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -24,114 +24,114 @@ from .evolver import Evolver
 from .tableaus import rkf45, cc45, dp54, rk23
 
 class RungeKutta(Evolver):
-  TABLEAUX = {
-    'rkf45': rkf45, # Runge-Kutta-Fehlberg
-    'cc45': cc45, # Cash-Karp
-    'dp54': dp54, # Dormand-Prince
-    'rk23': rk23, # Bogacki-Shampine
-  }
+    TABLEAUX = {
+      'rkf45': rkf45, # Runge-Kutta-Fehlberg
+      'cc45': cc45, # Cash-Karp
+      'dp54': dp54, # Dormand-Prince
+      'rk23': rk23, # Bogacki-Shampine
+    }
 
-  def __init__(self, mesh, method, stepsize_controller):
-    super(RungeKutta, self).__init__(mesh)
-   
-    self.__tab = RungeKutta.TABLEAUX[method]()
-    self.__controller = stepsize_controller
+    def __init__(self, mesh, method, stepsize_controller):
+        super(RungeKutta, self).__init__(mesh)
 
-    self.__y0    =  VectorField(mesh)
-    self.__y_err =  VectorField(mesh)
-    self.__y_tmp =  VectorField(mesh)
-    self.__k     = [None] * self.__tab.getNumSteps()
+        self.__tab = RungeKutta.TABLEAUX[method]()
+        self.__controller = stepsize_controller
 
-    logger.info("Runge Kutta evolver: method is %s, step size controller is %s.", method, self.__controller)
+        self.__y0    =  VectorField(mesh)
+        self.__y_err =  VectorField(mesh)
+        self.__y_tmp =  VectorField(mesh)
+        self.__k     = [None] * self.__tab.getNumSteps()
 
-  def evolve(self, state, t_max):
-    # shortcuts
-    y, y0, y_err = (state.y, self.__y0, self.__y_err)
+        logger.info("Runge Kutta evolver: method is %s, step size controller is %s.", method, self.__controller)
 
-    # This is needed to be able to roll back one step
-    y0.assign(y)
+    def evolve(self, state, t_max):
+        # shortcuts
+        y, y0, y_err = (state.y, self.__y0, self.__y_err)
 
-    # Get time step to try.
-    try:
-      h_try = state.__runge_kutta_next_h
-    except AttributeError:
-      h_try = state.h
+        # This is needed to be able to roll back one step
+        y0.assign(y)
 
-    while True:
-      # Try a step from state.t to state.t+h_try
-      dydt = self.apply(state, h_try)
+        # Get time step to try.
+        try:
+            h_try = state.__runge_kutta_next_h
+        except AttributeError:
+            h_try = state.h
 
-      # Step size control (was h too big?)
-      # calculate the minimal acceptable step size
-      accept, h_new = self.__controller.adjust_stepsize(state, h_try, self.__tab.order, y, y_err, dydt)
-      if not accept: # oh, tried step size was too big.
-        y.assign(y0) # reverse last step
-        h_try = h_new # try again with new (smaller) h.
-        continue # need to retry -> redo loop
-      else:
-        break # done -> exit loop
+        while True:
+            # Try a step from state.t to state.t+h_try
+            dydt = self.apply(state, h_try)
 
-    # But: Don't overshoot past t_max!
-    if state.t + h_try > t_max: 
-      h_try = t_max - state.t   # make h_try smaller.
-      y.assign(y0)              # reverse last step
-      self.apply(state, h_try)  # assume that a smaller step size is o.k.
+            # Step size control (was h too big?)
+            # calculate the minimal acceptable step size
+            accept, h_new = self.__controller.adjust_stepsize(state, h_try, self.__tab.order, y, y_err, dydt)
+            if not accept: # oh, tried step size was too big.
+                y.assign(y0) # reverse last step
+                h_try = h_new # try again with new (smaller) h.
+                continue # need to retry -> redo loop
+            else:
+                break # done -> exit loop
 
-    # Update state
-    state.t += h_try
-    state.h  = h_try; state.__runge_kutta_next_h = h_new
-    state.step += 1
-    state.substep = 0
-    state.flush_cache()
-    state.finish_step()
-    return state
+        # But: Don't overshoot past t_max!
+        if state.t + h_try > t_max:
+            h_try = t_max - state.t   # make h_try smaller.
+            y.assign(y0)              # reverse last step
+            self.apply(state, h_try)  # assume that a smaller step size is o.k.
 
-  def apply(self, state, h):
-    y, y_tmp, y_err = state.y, self.__y_tmp, self.__y_err
-    tab = self.__tab
-    num_steps = tab.getNumSteps()
-    k = self.__k
+        # Update state
+        state.t += h_try
+        state.h  = h_try; state.__runge_kutta_next_h = h_new
+        state.step += 1
+        state.substep = 0
+        state.flush_cache()
+        state.finish_step()
+        return state
 
-    # I. Calculate step vectors k[0] to k[5]
+    def apply(self, state, h):
+        y, y_tmp, y_err = state.y, self.__y_tmp, self.__y_err
+        tab = self.__tab
+        num_steps = tab.getNumSteps()
+        k = self.__k
 
-    # step 0 (if method has first-step-as-last (fsal) property, we might already know the first step vector.)
-    state0 = state
-    if tab.fsal and hasattr(state, "dydt_in") and state.dydt_in is not None:
-      k[0] = state.dydt_in
-    else:
-      k[0] = state0.differentiate()
+        # I. Calculate step vectors k[0] to k[5]
 
-    # step 1 to 5
-    for step in range(1, num_steps): 
-      # calculate ytmp...
-      if num_steps != 6: # High-level version for num_steps != 6
-        y_tmp.assign(y)
-        for j in range(0, step):
-          y_tmp.add(k[j], h * tab.getB(step, j))
-      else:
-        # C++ version for num_steps==6 (rkf45,cc45)
-        magneto.rk_prepare_step(step, h, tab, k[0], k[1] or k[0], k[2] or k[0], k[3] or k[0], k[4] or k[0], k[5] or k[0], y, y_tmp)
+        # step 0 (if method has first-step-as-last (fsal) property, we might already know the first step vector.)
+        state0 = state
+        if tab.fsal and hasattr(state, "dydt_in") and state.dydt_in is not None:
+            k[0] = state.dydt_in
+        else:
+            k[0] = state0.differentiate()
 
-      state1 = state0.clone(y_tmp) 
-      state1.t = state0.t + h * tab.getA(step)
-      state1.substep = step
-      k[step] = state1.differentiate()
+        # step 1 to 5
+        for step in range(1, num_steps):
+            # calculate ytmp...
+            if num_steps != 6: # High-level version for num_steps != 6
+                y_tmp.assign(y)
+                for j in range(0, step):
+                    y_tmp.add(k[j], h * tab.getB(step, j))
+            else:
+                # C++ version for num_steps==6 (rkf45,cc45)
+                magneto.rk_prepare_step(step, h, tab, k[0], k[1] or k[0], k[2] or k[0], k[3] or k[0], k[4] or k[0], k[5] or k[0], y, y_tmp)
 
-    # II. Linear-combine step vectors, add them to y, calculate error y_err
-    if num_steps == 6:
-      magneto.rk_combine_result(h, tab, k[0], k[1], k[2], k[3], k[4], k[5], y, y_err)
-    elif num_steps == 3:
-      magneto.rk_combine_result(h, tab, k[0], k[1], k[2], y, y_err)
-    else:
-      y_err.clear()
-      for step in range(0, num_steps):
-        y    .add(k[step], h * tab.getC (step))
-        y_err.add(k[step], h * tab.getEC(step))
+            state1 = state0.clone(y_tmp)
+            state1.t = state0.t + h * tab.getA(step)
+            state1.substep = step
+            k[step] = state1.differentiate()
 
-    # III. Exploit fsal property?
-    if tab.fsal:
-      # save last dydt for next step
-      state.dydt_in = k[num_steps-1]
+        # II. Linear-combine step vectors, add them to y, calculate error y_err
+        if num_steps == 6:
+            magneto.rk_combine_result(h, tab, k[0], k[1], k[2], k[3], k[4], k[5], y, y_err)
+        elif num_steps == 3:
+            magneto.rk_combine_result(h, tab, k[0], k[1], k[2], y, y_err)
+        else:
+            y_err.clear()
+            for step in range(0, num_steps):
+                y    .add(k[step], h * tab.getC (step))
+                y_err.add(k[step], h * tab.getEC(step))
 
-    # Also, return dydt (which is k[0])
-    return k[0]
+        # III. Exploit fsal property?
+        if tab.fsal:
+            # save last dydt for next step
+            state.dydt_in = k[num_steps-1]
+
+        # Also, return dydt (which is k[0])
+        return k[0]
