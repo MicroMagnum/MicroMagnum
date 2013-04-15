@@ -15,7 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .vtk import *
+from .vtk import VtkFile, VtkRectilinearGrid, VtkFloat64
+import struct
 
 def writeVTK(filename, field):
     mesh = field.mesh
@@ -35,9 +36,9 @@ def writeVTK(filename, field):
 
     # - Coordinate data
     w.openElement("Coordinates")
-    w.addData("x_coordinate", VtkFloat64, n[0]+1, 1)
-    w.addData("y_coordinate", VtkFloat64, n[1]+1, 1)
-    w.addData("z_coordinate", VtkFloat64, n[2]+1, 1)
+    w.addData("x_coordinate", VtkFloat64, n[0] + 1, 1)
+    w.addData("y_coordinate", VtkFloat64, n[1] + 1, 1)
+    w.addData("z_coordinate", VtkFloat64, n[2] + 1, 1)
     w.closeElement("Coordinates")
 
     w.closePiece()

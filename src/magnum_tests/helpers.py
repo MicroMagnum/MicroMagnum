@@ -17,7 +17,7 @@
 
 from __future__ import print_function
 
-from magnum import *
+from magnum import RectangularMesh, Field, VectorField
 
 import unittest
 
@@ -41,7 +41,7 @@ def right_rotate_vector_field(M):
     mesh = RectangularMesh((nn[2], nn[0], nn[1]), (dd[2], dd[0], dd[1]), pbc2, pbc_rep2)
 
     M2 = VectorField(mesh)
-    for x,y,z in M.mesh.iterateCellIndices():
+    for x, y, z in M.mesh.iterateCellIndices():
         a = M.get(x,y,z)
         M2.set(z,x,y, (a[2], a[0], a[1]))
     return M2
@@ -58,7 +58,7 @@ def left_rotate_vector_field(M):
     mesh = RectangularMesh((nn[1], nn[2], nn[0]), (dd[1], dd[2], dd[0]), pbc2, pbc_rep2)
 
     M2 = VectorField(mesh)
-    for x,y,z in M.mesh.iterateCellIndices():
+    for x, y, z in M.mesh.iterateCellIndices():
         a = M.get(x,y,z)
         M2.set(y,z,x, (a[1], a[2], a[0]))
     return M2
@@ -75,7 +75,7 @@ def right_rotate_field(M):
     mesh = RectangularMesh((nn[2], nn[0], nn[1]), (dd[2], dd[0], dd[1]), pbc2, pbc_rep2)
 
     M2 = Field(mesh)
-    for x,y,z in M.mesh.iterateCellIndices():
+    for x, y, z in M.mesh.iterateCellIndices():
         a = M.get(x,y,z)
         M2.set(z,x,y, a)
     return M2

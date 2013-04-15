@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from magnum import *
+from magnum import RectangularMesh, Field, VectorField
 import magnum.magneto as magneto
 
 import unittest

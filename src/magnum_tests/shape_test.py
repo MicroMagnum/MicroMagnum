@@ -17,10 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from magnum import *
+from magnum import RectangularMesh, Sphere, Cylinder, Cuboid, Everywhere
 
-import unittest
 import math
+import unittest
 
 class SphereTest(unittest.TestCase):
 

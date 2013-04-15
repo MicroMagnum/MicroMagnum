@@ -18,7 +18,7 @@
 from .storage_stephandler import StorageStepHandler
 
 from magnum.micromagnetics.io import writeVTK
-from magnum.micromagnetics.io.vtk import *
+from magnum.micromagnetics.io.vtk import VtkGroup
 
 import os.path
 

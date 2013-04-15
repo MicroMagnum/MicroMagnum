@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from magnum import *
+from magnum import RectangularMesh, World, Body, Material, Everywhere, Cylinder
 import unittest
 
 class WorldTest(unittest.TestCase):
@@ -35,7 +35,7 @@ class WorldTest(unittest.TestCase):
         self.assertTrue(isinstance(body1, Body))
         self.assertEqual(body1.id, "body1")
         try:
-            body3 = self.world.findBody("body3")
+            self.world.findBody("body3")
             self.fail()
         except: pass
 
@@ -50,21 +50,24 @@ class WorldTest(unittest.TestCase):
 
         # Not ok: Need direct Material if no body is given.
         try:
-            world = World(self.mesh)
+            World(self.mesh)
             self.fail()
-        except: pass
+        except:
+            pass
 
         # Not ok: Duplicate Material
         try:
             world = World(self.mesh, Material.Py(), Material.Py())
             self.fail()
-        except: pass
+        except:
+            pass
 
         # Not ok: Material and Body(s) given
         try:
             world = World(self.mesh, Material.Py(), Body("body1", Material.Py()))
             self.fail()
-        except: pass
+        except:
+            pass
 
 # start tests
 if __name__ == '__main__':
