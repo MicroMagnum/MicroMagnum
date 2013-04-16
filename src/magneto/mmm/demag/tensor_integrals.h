@@ -17,6 +17,10 @@
  * along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * This file was developed by Benjamin Krueger.
+ */
+
 #ifndef TENSOR_INTEGRALS_H
 #define TENSOR_INTEGRALS_H
 

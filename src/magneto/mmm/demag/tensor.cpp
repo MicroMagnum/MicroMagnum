@@ -17,6 +17,10 @@
  * along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * This file was developed by Benjamin Krueger.
+ */
+
 #include "config.h"
 #include "tensor.h"
 #include "tensor_integrals.h"
