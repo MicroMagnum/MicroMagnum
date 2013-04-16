@@ -12,10 +12,13 @@ MicroMagnum has a robust and highly modular architecture. This enables its easy 
 Team
 ====
 
-Andre Drews
-Gunnar Selke
+* Andre Drews
+* Gunnar Selke
 
-Benjamin Krueger   Accurate (and fast!) calculation of the demagnetization tensor, with support for periodic boundary conditions.
-                   Oersted field module (in development)
-Claas Abert        Calculation of the demagnetization field from its scalar potential.
-Theo Gerhardt      Geometrical shapes for the simulation description.
+* Benjamin Krueger   
+  - Accurate (and fast!) calculation of the demagnetization tensor, with support for periodic boundary conditions.
+  - Oersted field module (in development)
+* Claas Abert        
+  - Calculation of the demagnetization field from its scalar potential.
+* Theo Gerhardt      
+  - Geometrical shapes for the simulation description.
