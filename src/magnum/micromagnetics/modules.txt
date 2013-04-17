@@ -1,0 +1,14 @@
+Basic model:
+  LandauLifshitzGilbert
+  StrayField
+  ExchangeField
+  AnisotropyField
+  ExternalField
+  SpinTorque
+
+  AlternatingCurrent
+  AlternatingField
+  HomogeneousCurrent
+  HomogeneousField
+  SimpleExternalField
+  SimpleVectorField
