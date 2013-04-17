@@ -51,7 +51,7 @@ class ExchangeField(module.Module):
             #dx, dy, dz = self.system.mesh.delta
             #bcx, bcy, bcz = self.__peri_x, self.__peri_y, self.__peri_z
 
-            magneto.exchange(self.system.Ms, self.system.A, state.M, H_exch)
+            magneto.exchange(state.Ms, state.A, state.M, H_exch)
             return H_exch
 
         elif id == "E_exch":

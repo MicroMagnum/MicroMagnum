@@ -15,11 +15,20 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from . import shape
-
 from .material import Material
 from .body import Body
 from .world import World
 
-__all__ = ["Material", "Body", "World"] + shape.__all__
-from .shape import *
+# shapes
+from .shape       import Shape
+from .everywhere  import Everywhere
+from .cuboid      import Cuboid
+from .sphere      import Sphere
+from .cylinder    import Cylinder
+from .prism       import Prism
+from .image_shape import ImageShape, ImageShapeCreator
+
+__all__ = [
+        "Material", "Body", "World",
+        "Shape", "Everywhere", "Cuboid", "Sphere", "Cylinder", "Prism", "ImageShape", "ImageShapeCreator"
+]

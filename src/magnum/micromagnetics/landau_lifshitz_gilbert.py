@@ -84,7 +84,7 @@ class LandauLifshitzGilbert(module.Module):
         if id == "M":
             logger.info("Assigning new magnetic state M")
             module.assign(state.y, value)
-            state.y.normalize(self.system.Ms)   # XXX: Is this a good idea? (Solution: Use unit magnetization everywhere.)
+            state.y.normalize(state.Ms)   # XXX: Is this a good idea? (Solution: Use unit magnetization everywhere.)
             state.flush_cache()
         else:
             raise KeyError(id)

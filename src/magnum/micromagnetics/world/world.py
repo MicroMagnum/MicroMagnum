@@ -18,7 +18,7 @@
 from magnum.mesh import RectangularMesh
 
 from .body import Body
-from .shape import Everywhere
+from .everywhere import Everywhere
 from .material import Material
 
 class World(object):
@@ -99,7 +99,6 @@ class World(object):
         .. code-block:: python
 
            print(world.mesh) # Retrieve the world's mesh.
-
         """
         return self.__mesh
 
@@ -111,6 +110,5 @@ class World(object):
         .. code-block:: python
 
            print(world.bodies)  # Retrieve a list of all world's bodies.
-
         """
         return self.__bodies
