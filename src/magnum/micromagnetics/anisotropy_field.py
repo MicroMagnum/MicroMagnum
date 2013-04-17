@@ -46,7 +46,7 @@ class AnisotropyField(module.Module):
         if id in self.params() + ["Ms"]:
             axis1, axi2 = self.axis1, self.axis2
             k_uni, k_cub = self.k_uniaxial, self.k_cubic
-            Ms = self.system.Ms
+            Ms = self.system.get_param("Ms")
 
             def compute_none(state, H_aniso):
                 H_aniso.fill((0.0, 0.0, 0.0))

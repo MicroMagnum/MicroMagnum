@@ -50,7 +50,7 @@ class SpinTorque(module.Module):
             dx, dy, dz = self.system.mesh.delta
             magneto.fdm_zhangli(
               nx, ny, nz, dx, dy, dz, self.__do_precess,
-              self.P, self.xi, self.system.Ms, self.system.alpha,
+              self.P, self.xi, self.system.get_param("Ms"), self.system.get_param("alpha"),
               state.j, state.M,
               dMdt_ST
             )
