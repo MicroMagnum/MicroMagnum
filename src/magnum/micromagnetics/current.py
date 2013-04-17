@@ -16,7 +16,12 @@
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
 from .alternating_field import AlternatingField
+from .static_field import StaticField
 
 class AlternatingCurrent(AlternatingField):
     def __init__(self, var_id = "j"):
         super(AlternatingCurrent, self).__init__(var_id)
+
+class StaticCurrent(AlternatingField):
+    def __init__(self, var_id = "j"):
+        super(StaticCurrent, self).__init__(var_id)

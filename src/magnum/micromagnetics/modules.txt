@@ -1,14 +1,13 @@
 Basic model:
   LandauLifshitzGilbert
-  StrayField
   ExchangeField
+  StrayField
   AnisotropyField
-  ExternalField
-  SpinTorque
+  AlternatingExternalField (= ExternalField), StaticExternalField
 
-  AlternatingCurrent
-  AlternatingField
-  HomogeneousCurrent
-  HomogeneousField
-  SimpleExternalField
-  SimpleVectorField
+Extensions for currents:
+  SpinTorque 
+  AlternatingCurrent, StaticCurrent
+
+Custom modules:
+  AlternatingField, StaticField

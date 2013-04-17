@@ -25,20 +25,26 @@ from .constants import MU0, H_BAR, ELECTRON_CHARGE, MU_BOHR, GYROMAGNETIC_RATIO,
 from .landau_lifshitz_gilbert import LandauLifshitzGilbert
 from .exchange_field import ExchangeField
 from .stray_field import StrayField, StrayFieldCalculator
-from .external_field import ExternalField
 from .anisotropy_field import AnisotropyField
-from .homogeneous_field import HomogeneousField, HomogeneousCurrent
+from .external_field import AlternatingExternalField, StaticExternalField, ExternalField
 from .spin_torque import SpinTorque
+from .current import AlternatingCurrent, StaticCurrent
 from .alternating_field import AlternatingField
-from .alternating_current import AlternatingCurrent
-from .simple_field import SimpleExternalField, SimpleVectorField
+from .static_field import StaticField
 
 __all__ = [
-    "MicroMagnetics", "MicroMagneticsSolver", "create_solver",
+    "create_solver",
     "MU0", "H_BAR", "ELECTRON_CHARGE", "MU_BOHR", "GYROMAGNETIC_RATIO", "BOLTZMANN_CONSTANT",
-    "LandauLifshitzGilbert", "ExchangeField", "StrayField", "StrayFieldCalculator",
-    "ExternalField", "AnisotropyField", "HomogeneousField", "HomogeneousCurrent",
-    "SpinTorque", "AlternatingField", "AlternatingCurrent", "SimpleExternalField", "SimpleVectorField"
+
+    "LandauLifshitzGilbert", 
+    "ExchangeField", 
+    "StrayField", "StrayFieldCalculator",
+    "AnisotropyField",
+    "AlternatingExternalField", "StaticExternalField", "ExternalField",
+    "SpinTorque", 
+    "AlternatingCurrent", "StaticCurrent",
+    "AlternatingField", 
+    "StaticField"
 ]
 
 ## submodules

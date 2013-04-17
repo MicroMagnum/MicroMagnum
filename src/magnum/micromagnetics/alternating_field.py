@@ -20,7 +20,6 @@ from magnum.mesh import VectorField, Field
 from magnum.logger import logger
 from math import sin
 
-# AlternatingHomogeneousField
 class AlternatingField(module.Module):
     def __init__(self, var_id):
         super(AlternatingField, self).__init__()
