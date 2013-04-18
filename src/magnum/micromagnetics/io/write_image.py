@@ -18,23 +18,28 @@
 from .io_tools import try_io_operation
 
 try:
-    import numpy, Image
+    import numpy
+    import Image
 except ImportError:
     from magnum.logger import logger
     _msg = "image export not enabled because the 'numpy' and/or 'Image' modules where not found, sorry."
-    def createImage(*args, **kwargs): logger.warn(_msg)
-    def writeImage(*args, **kwargs): logger.warn(_msg)
+
+    def createImage(*args, **kwargs):
+        logger.warn(_msg)
+
+    def writeImage(*args, **kwargs):
+        logger.warn(_msg)
 
 else:
 
-    def map_field_to_array(field, map_fn, scale_from_range = (None, None)):
+    def map_field_to_array(field, map_fn, scale_from_range=(None, None)):
         nn = field.mesh.num_nodes
         arr = numpy.zeros((nn[0], nn[1]))
 
         # map field to numpy array
         for x, y, z in field.mesh.iterateCellIndices():
             if z != 0: break
-            arr[x,y] = map_fn(field.get(x,y,z))
+            arr[x,y] = map_fn(field.get(x, y, z))
 
         # scale from range
         s0 = scale_from_range[0] or numpy.min(arr)
@@ -54,26 +59,23 @@ else:
                 img.putpixel((x,ny-y-1), (r,g,b))
         return img
 
-    def exportImage(field, map_fn, color_fn, scale_from_range = (None, None)):
-        return img
-
     def createImage(filename, field, map_fn, color_fn = "black-white", color_range = (None, None), scale = 1.0):
         from math import atan2, sqrt
 
         map_fns = {
-          'id': lambda val: val,
-          'x': lambda val: val[0],
-          'y': lambda val: val[1],
-          'z': lambda val: val[2],
-          'xy-angle': lambda val: atan2(val[1], val[0]),
-          'xz-angle': lambda val: atan2(val[2], val[0]),
-          'yz-angle': lambda val: atan2(val[2], val[1]),
-          'mag': lambda val: sqrt(val[0]**2 + val[1]**2 + val[2]**2),
+            'id': lambda val: val,
+            'x': lambda val: val[0],
+            'y': lambda val: val[1],
+            'z': lambda val: val[2],
+            'xy-angle': lambda val: atan2(val[1], val[0]),
+            'xz-angle': lambda val: atan2(val[2], val[0]),
+            'yz-angle': lambda val: atan2(val[2], val[1]),
+            'mag': lambda val: sqrt(val[0]**2 + val[1]**2 + val[2]**2),
         }
 
         color_fns = {
-          'black-white': lambda i: (i,i,i),
-          'white-black': lambda i: (1.0-i,1.0-i,1.0-i),
+            'black-white': lambda i: (i,i,i),
+            'white-black': lambda i: (1.0-i,1.0-i,1.0-i),
         }
 
         if isinstance(color_fn, str): color_fn = color_fns[color_fn]
@@ -83,9 +85,9 @@ else:
         img = map_array_to_image(arr, color_fn)
         if scale != 1.0:
             scaled_size = tuple(x*scale for x in img.size)
-            img = img.resize(scale_size, "BICUBIC")
+            img = img.resize(scaled_size, "BICUBIC")
         return img
 
-    def writeImage(filename, *args, **kwargs):
-        img = createImage(filename, *args, **kwargs)
+    def writeImage(filename, field, map_fn, color_fn = "black-white", color_range = (None, None), scale = 1.0):
+        img = createImage(filename, field, map_fn, color_fn, color_range, scale)
         try_io_operation(lambda: img.save(filename))
