@@ -27,6 +27,8 @@ Not dependant on the magnum package:
   simplemag             demonstrates how the stray field is computed using fast convolutions. requires numpy.
   generator             HTML script that generates simple simulation scripts.
 
+All examples in this directory are released into the public domain.
+
 [0] http://www.ctcms.nist.gov/~rdm/std4/spec4.html
 [1] http://www.southampton.ac.uk/~fangohr/publications/2009-proposal-for-a-standard-problem-for-micromagnetic-simulations-including-spin-transfer-torque/index.html
     http://micromagnum-tis.informatik.uni-hamburg.de/examples/sp5
