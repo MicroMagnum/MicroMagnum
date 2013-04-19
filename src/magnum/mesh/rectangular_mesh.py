@@ -26,7 +26,7 @@ class RectangularMesh(magneto.RectangularMesh):
 
         if not periodic_repeat:
             # count number of periodic directions (0, 1, 2, or 3)
-            num_dirs = sum(1 for s in ("x", "y", "z") if periodic_bc.find(s) != -1)
+            num_dirs = sum(1 for s in ("x", "y", "z") if s in periodic_bc)
             # defaults for peri_repeat for counted num_dirs.
             periodic_repeat = {0:1, 1:15, 2:3, 3:2}[num_dirs]
 

@@ -86,9 +86,7 @@ class StrayFieldCalculator(object):
     def __init__(self, mesh, method = "tensor", padding = TensorField.PADDING_ROUND_4):
         # are we periodic?
         peri, peri_repeat = mesh.periodic_bc
-        peri_x = peri.find("x") != -1
-        peri_y = peri.find("y") != -1
-        peri_z = peri.find("z") != -1
+        peri_x, peri_y, peri_z = (s in peri for s in ("x", "y", "z"))
 
         # number of cells and cell sizes
         nx, ny, nz = mesh.num_nodes
