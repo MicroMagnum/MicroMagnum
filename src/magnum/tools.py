@@ -17,7 +17,8 @@
 
 from __future__ import absolute_import, print_function
 
-import os, sys
+import sys
+import os
 
 def flush():
     import gc
@@ -49,6 +50,13 @@ else:
         return ""
     def nocolor():
         return ""
+
+## Portable xrange ######################################
+
+if sys.version_info < (3, 0):
+    irange = xrange # Python 2.x
+else:
+    irange = range # Python 3.x
 
 ## Interactive menus ####################################
 
@@ -113,3 +121,5 @@ def frange(*args):
             raise StopIteration
         yield v
         v += step
+
+

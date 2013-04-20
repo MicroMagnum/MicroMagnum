@@ -36,7 +36,7 @@ class MicroMagneticsSolver(solver.Solver):
     def relax(self, *args, **kwargs):
         return self.solve(solver.condition.Relaxed(*args, **kwargs))
 
-    def handle_interrupt(self):
+    def handle_sigint(self):
         print()
 
         text = ""
