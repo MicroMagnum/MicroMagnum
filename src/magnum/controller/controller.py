@@ -46,10 +46,10 @@ class LocalController(ControllerBase):
             if i < self.num_params:
                 self.my_params.append((i, self.all_params[i]))
             else:
-                logger.warn("Ignoring parameter id %s (no such parameter set!)" % i)
+                logger.warning("Ignoring parameter id %s (no such parameter set!)" % i)
 
         if len(self.my_params) == 0:
-            logger.warn("Controller: No parameter sets selected!")
+            logger.warning("Controller: No parameter sets selected!")
 
     def start(self):
         for idx, param in self.my_params:
@@ -87,7 +87,7 @@ class EnvironmentVariableController(ControllerBase):
             raise
 
         if task_id >= len(self.all_params):
-            logger.warn("SGE task id is greater than the number of parameter sets.")
+            logger.warning("SGE task id is greater than the number of parameter sets.")
             self.my_params = []
         else:
             self.my_params = [(task_id, self.all_params[task_id])]

@@ -15,17 +15,21 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-import magnum.module as module
-from magnum.mesh import Field, VectorField
 import numbers
 
-class StaticField(module.Module):
+import magnum.module as module
 
-    def __init__(self, var_id):
+from magnum.mesh import Field, VectorField
+
+class StaticField(module.Module):
+    def __init__(self, var_id, default_val=None):
         super(StaticField, self).__init__()
-        self.__var_id      = var_id
-        self.__default_val = default_val
-        self.__field       = None
+
+        self.__var_id = var_id
+        self.__field = None
+
+        if default_val:
+            self.set_param(self.__var_id, default_val)
 
     def calculates(self):
         return [self.__var_id]
@@ -41,16 +45,16 @@ class StaticField(module.Module):
 
     def calculate(self, state, id):
         if id == self.__var_id:
-            fld = self.__field
+            return self.__field
         else:
             raise ValueError("%s: Don't know how to calculate %s." % (self.name(), id))
 
     def set_param(self, id, val):
         if id == self.__var_id:
             if isinstance(val, numbers.Number):
-              fld = Field(self.system.mesh)
-              fld.fill(val)
-            elif hasattr(value, "__iter__") and len(value) == 3:
+                fld = Field(self.system.mesh)
+                fld.fill(val)
+            elif hasattr(val, "__iter__") and len(val) == 3:
                 val = tuple(map(float, val))
                 field = VectorField(self.system.mesh)
                 field.fill(val)

@@ -16,16 +16,16 @@
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
 import magnum.magneto as magneto
+import magnum.logger as logger
 
 from magnum.config import cfg
-from magnum.logger import logger
 
 class TensorField(object):
-    PADDING_DISABLE             = magneto.PADDING_DISABLE
-    PADDING_ROUND_2             = magneto.PADDING_ROUND_2
-    PADDING_ROUND_4             = magneto.PADDING_ROUND_4
-    PADDING_ROUND_8             = magneto.PADDING_ROUND_8
-    PADDING_ROUND_POT           = magneto.PADDING_ROUND_POT
+    PADDING_DISABLE = magneto.PADDING_DISABLE
+    PADDING_ROUND_2 = magneto.PADDING_ROUND_2
+    PADDING_ROUND_4 = magneto.PADDING_ROUND_4
+    PADDING_ROUND_8 = magneto.PADDING_ROUND_8
+    PADDING_ROUND_POT = magneto.PADDING_ROUND_POT
     PADDING_SMALL_PRIME_FACTORS = magneto.PADDING_SMALL_PRIME_FACTORS
 
     def __init__(self, mesh, padding):
@@ -47,7 +47,7 @@ class TensorField(object):
         raise NotImplementedError("TensorField.generate")
 
 class DemagTensorField(TensorField):
-    def __init__(self, mesh, padding = TensorField.PADDING_ROUND_4):
+    def __init__(self, mesh, padding=TensorField.PADDING_ROUND_4):
         super(DemagTensorField, self).__init__(mesh, padding)
 
     def generate(self):
@@ -65,7 +65,7 @@ class DemagTensorField(TensorField):
         return N
 
 class PhiTensorField(TensorField):
-    def __init__(self, mesh, padding = TensorField.PADDING_ROUND_4):
+    def __init__(self, mesh, padding=TensorField.PADDING_ROUND_4):
         super(PhiTensorField, self).__init__(mesh, padding)
 
     def generate(self):
@@ -78,12 +78,12 @@ class PhiTensorField(TensorField):
             dx, dy, dz,
             pbc_x, pbc_y, pbc_z, pbc_repeat,
             self.padding,
-            magnum_config.global_cache_directory
+            cfg.global_cache_directory
         )
         return N
 
 class StrayFieldCalculator(object):
-    def __init__(self, mesh, method = "tensor", padding = TensorField.PADDING_ROUND_4):
+    def __init__(self, mesh, method="tensor", padding=TensorField.PADDING_ROUND_4):
         # are we periodic?
         peri, peri_repeat = mesh.periodic_bc
         peri_x, peri_y, peri_z = (s in peri for s in ("x", "y", "z"))
@@ -111,7 +111,7 @@ class StrayFieldCalculator(object):
                 if nx == 1 and (ny != 1 or nz != 1):
                     use_fft = False
                 else:
-                    use_fft = (nx * ny * nz >= 32) # this is the break-even point for using FFT convolutions on my system.
+                    use_fft = (nx * ny * nz >= 32)  # this is the break-even point for using FFT convolutions on my system.
 
             if use_fft:
                 conv = magneto.SymmetricMatrixVectorConvolution_FFT(tensor.generate(), nx, ny, nz)
@@ -125,15 +125,14 @@ class StrayFieldCalculator(object):
             tensor.setPeriodicBoundaries(peri_x, peri_y, peri_z, peri_repeat)
             conv = magneto.VectorVectorConvolution_FFT(tensor.generate(), nx, ny, nz, dx, dy, dz)
             self.__calc = lambda M, H: conv.execute(M, H)
-        # experimental, don't use (and not implemented :) )
-        elif method == "single":
-            assert not peri_x and not peri_y and not peri_z
-            stray = magneto.StrayField_single(nx, ny, nz, dx, dy, dz)
-            self.__calc = lambda M, H: stray.calculate(M, H)
-        elif method == "multi":
-            assert not peri_x and not peri_y and not peri_z
-            stray = magneto.StrayField_multi(nx, ny, nz, dx, dy, dz)
-            self.__calc = lambda M, H: stray.calculate(M, H)
+        #elif method == "single":
+        #    assert not peri_x and not peri_y and not peri_z
+        #    stray = magneto.StrayField_single(nx, ny, nz, dx, dy, dz)
+        #    self.__calc = lambda M, H: stray.calculate(M, H)
+        #elif method == "multi":
+        #    assert not peri_x and not peri_y and not peri_z
+        #    stray = magneto.StrayField_multi(nx, ny, nz, dx, dy, dz)
+        #    self.__calc = lambda M, H: stray.calculate(M, H)
         else:
             assert False
 

@@ -15,15 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
+import math
+
 import magnum.module as module
 import magnum.magneto as magneto
 
 from magnum.logger import logger
 from magnum.mesh import VectorField, Field
 
-from .constants import GYROMAGNETIC_RATIO
-
-import math
+from magnum.micromagnetics.constants import GYROMAGNETIC_RATIO
 
 class LandauLifshitzGilbert(module.Module):
     def __init__(self, do_precess=True):

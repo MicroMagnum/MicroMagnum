@@ -17,11 +17,10 @@
 
 import magnum.module as module
 import magnum.evolver as evolver
+
 from magnum.mesh import Field, VectorField
-from magnum.logger import logger
 
 class MicroMagnetics(module.System):
-
     def __init__(self, world):
         super(MicroMagnetics, self).__init__(world.mesh)
         self.__world = world
@@ -37,14 +36,14 @@ class MicroMagnetics(module.System):
                 def __init__(this, state, body):
                     this.__state = state
                     this.__mask = body.shape.getCellIndices(self.mesh)
-            
+
                 def __setattr__(this, key, val):
                     try:
                         state = this.__state
                         mask  = this.__mask
                     except:
                         return super(BodyProxy, this).__setattr__(key, val)
-            
+
                     old = getattr(state, key)
                     if not isinstance(old, (Field, VectorField)):
                         raise KeyError("For a single body, can only assign to model variables that contain a field or vector field: %s" % key)
@@ -64,7 +63,7 @@ class MicroMagnetics(module.System):
 
                 def __getitem__(this, key):
                     if self.world.hasBody(key):
-                        return BodyProxy(state=this, body=self.world.findBody(key)) # BodyProxy defined at bottom of this file.
+                        return BodyProxy(state=this, body=self.world.findBody(key))
                     else:
                         raise KeyError("No such body: %s" % key)
 

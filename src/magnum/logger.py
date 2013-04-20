@@ -20,15 +20,6 @@ import logging
 import magnum.magneto as magneto
 import magnum.tools as tools
 
-__all__ = [
-    "logger",
-    "debug",
-    "info",
-    "warning",
-    "error",
-    "critical",
-]
-
 # I. Custom log message formater (with colors!)
 
 class Formatter(logging.Formatter):
@@ -54,11 +45,12 @@ logger = logging.getLogger("magnum")
 logger.addHandler(ch)
 logger.setLevel(logging.DEBUG)
 
-info     = logger.info
-warning  = logger.warning
-debug    = logger.debug
-error    = logger.error
+info = logger.info
+warning = logger.warning
+debug = logger.debug
+error = logger.error
 critical = logger.critical
+warn = logger.warn
 
 # III. Set debug callback (called from C++ code to communicate with Python logger)
 def callback(level, msg):

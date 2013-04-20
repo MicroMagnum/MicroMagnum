@@ -37,9 +37,6 @@ class ExchangeField(module.Module):
     def initialize(self, system):
         self.system = system
         self.A = Field(self.system.mesh); self.A.fill(0.0)
-        self.__peri_x = "x" in system.mesh.periodic_bc[0]
-        self.__peri_y = "y" in system.mesh.periodic_bc[0]
-        self.__peri_z = "z" in system.mesh.periodic_bc[0]
 
     def calculate(self, state, id):
         cache = state.cache
@@ -48,15 +45,11 @@ class ExchangeField(module.Module):
             if hasattr(cache, "H_exch"): return cache.H_exch
             H_exch = cache.H_exch = VectorField(self.system.mesh)
 
-            #nx, ny, nz = self.system.mesh.num_nodes
-            #dx, dy, dz = self.system.mesh.delta
-            #bcx, bcy, bcz = self.__peri_x, self.__peri_y, self.__peri_z
-
             magneto.exchange(state.Ms, state.A, state.M, H_exch)
             return H_exch
 
         elif id == "E_exch":
-            return -MU0/2.0 * self.system.mesh.cell_volume * state.M.dotSum(state.H_exch)
+            return -MU0 / 2.0 * self.system.mesh.cell_volume * state.M.dotSum(state.H_exch)
 
         else:
             raise KeyError("ExchangeField.calculate: Can't calculate %s", id)

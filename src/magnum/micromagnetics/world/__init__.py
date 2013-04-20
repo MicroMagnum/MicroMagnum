@@ -29,6 +29,6 @@ from .prism       import Prism
 from .image_shape import ImageShape, ImageShapeCreator
 
 __all__ = [
-        "Material", "Body", "World",
-        "Shape", "Everywhere", "Cuboid", "Sphere", "Cylinder", "Prism", "ImageShape", "ImageShapeCreator"
+    "Material", "Body", "World",
+    "Shape", "Everywhere", "Cuboid", "Sphere", "Cylinder", "Prism", "ImageShape", "ImageShapeCreator"
 ]
