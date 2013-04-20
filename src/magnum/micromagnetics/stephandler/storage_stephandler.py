@@ -15,10 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from magnum.solver import StepHandler
-
 import os
 import collections
+
+from magnum.solver import StepHandler
 
 class StorageStepHandler(StepHandler):
 
@@ -36,13 +36,13 @@ class StorageStepHandler(StepHandler):
 
     def __init__(self, output_dir):
         super(StorageStepHandler, self).__init__()
-        self.__ids = {} # maps var_id to StorageId instance
+        self.__ids = {}  # maps var_id to StorageId instance
         self.__comments = []
         self.__output_dir = os.path.normpath(output_dir)
-        if not os.path.isdir(self.__output_dir): os.makedirs(self.__output_dir)
+        if not os.path.isdir(self.__output_dir):
+            os.makedirs(self.__output_dir)
 
     def addComment(self, name, fn):
-        #if not isinstance(name, str) or not callable(fn): #2to3
         if not isinstance(name, str) or not isinstance(fn, collections.Callable):
             raise TypeError("StorageStepHandler.addComment: 'name' must be a string and 'fn' must be a function")
         self.__comments.append((name, fn))
@@ -53,8 +53,9 @@ class StorageStepHandler(StepHandler):
     def getOutputDirectory(self):
         return self.__output_dir
 
-    def addVariable(self, var_id, file_fn, field_fn = None):
-        if not field_fn: field_fn = lambda state: getattr(state, var_id)
+    def addVariable(self, var_id, file_fn, field_fn=None):
+        if not field_fn:
+            field_fn = lambda state: getattr(state, var_id)
         self.__ids[var_id] = StorageStepHandler.StorageId(var_id, file_fn, field_fn)
 
     def handle(self, state):

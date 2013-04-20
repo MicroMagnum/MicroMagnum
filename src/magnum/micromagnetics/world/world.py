@@ -61,18 +61,19 @@ class World(object):
         if len(mat) == 0:
             pass
         elif len(mat) == 1:
-            if len(self.__bodies) > 0: raise ValueError("World: Can't accept direct material argument if there are any Bodies specified")
-            self.__bodies = [ (Body("all", mat[0], Everywhere())) ]
-        else: # len(mat) > 1
-            raise ValueError("World: I can accept at maximum one direct material argument")
+            if len(self.__bodies) > 0:
+                raise ValueError("World: Can't accept direct material argument if there are any Bodies specified")
+            self.__bodies = [(Body("all", mat[0], Everywhere()))]
+        else:  # len(mat) > 1
+            raise ValueError("World: I can accept only one direct material argument")
 
     def __repr__(self):
         return "World(%r, %s)" % (self.mesh, ", ".join(map(repr, self.bodies)))
-        #return "World@%s" % hex(id(self))
 
     def findBody(self, body_id):
         """
-        Return the body with the given id string. It is an error if the body does not exist.
+        Return the body with the given id string. It is an error if the
+        body does not exist.
 
         .. code-block:: python
 
@@ -88,13 +89,14 @@ class World(object):
         try:
             self.findBody(body_id)
             return True
-        except RuntimeError:
+        except IndexError:
             return False
 
     @property
     def mesh(self):
         """
-        Read-only property that returns the mesh that is associated with this world.
+        Read-only property that returns the mesh that is associated with
+        this world.
 
         .. code-block:: python
 

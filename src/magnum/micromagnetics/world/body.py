@@ -24,7 +24,7 @@ class Body(object):
     volume.
     """
 
-    def __init__(self, id, material, shape = None):
+    def __init__(self, id, material, shape=None):
         """
         Create a body object with an ID, a material, and a shape. If no
         shape is given, the Everywhere shape, which encompasses the whole

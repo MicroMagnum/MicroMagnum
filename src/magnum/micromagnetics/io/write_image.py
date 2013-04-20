@@ -38,14 +38,16 @@ else:
 
         # map field to numpy array
         for x, y, z in field.mesh.iterateCellIndices():
-            if z != 0: break
-            arr[x,y] = map_fn(field.get(x, y, z))
+            if z != 0:
+                break
+            arr[x, y] = map_fn(field.get(x, y, z))
 
         # scale from range
         s0 = scale_from_range[0] or numpy.min(arr)
         s1 = scale_from_range[1] or numpy.max(arr)
         arr -= s0
-        if s0 != s1: arr /= (s1-s0)
+        if s0 != s1:
+            arr /= (s1 - s0)
         arr.clip(0.0, 1.0, arr)
         return arr
 
@@ -54,12 +56,12 @@ else:
         img = Image.new("RGB", (nx, ny))
         for y in range(ny):
             for x in range(nx):
-                col = color_fn(arr[x,y])
-                r, g, b = int(256*col[0]), int(256*col[1]), int(256*col[2])
-                img.putpixel((x,ny-y-1), (r,g,b))
+                col = color_fn(arr[x, y])
+                r, g, b = int(256 * col[0]), int(256 * col[1]), int(256 * col[2])
+                img.putpixel((x, ny - y - 1), (r, g, b))
         return img
 
-    def createImage(filename, field, map_fn, color_fn = "black-white", color_range = (None, None), scale = 1.0):
+    def createImage(filename, field, map_fn, color_fn="black-white", color_range=(None, None), scale=1.0):
         from math import atan2, sqrt
 
         map_fns = {
@@ -74,8 +76,8 @@ else:
         }
 
         color_fns = {
-            'black-white': lambda i: (i,i,i),
-            'white-black': lambda i: (1.0-i,1.0-i,1.0-i),
+            'black-white': lambda i: (i, i, i),
+            'white-black': lambda i: (1.0 - i, 1.0 - i, 1.0 - i),
         }
 
         if isinstance(color_fn, str): color_fn = color_fns[color_fn]
@@ -84,10 +86,10 @@ else:
         arr = map_field_to_array(field, map_fn, color_range)
         img = map_array_to_image(arr, color_fn)
         if scale != 1.0:
-            scaled_size = tuple(x*scale for x in img.size)
+            scaled_size = tuple(x * scale for x in img.size)
             img = img.resize(scaled_size, "BICUBIC")
         return img
 
-    def writeImage(filename, field, map_fn, color_fn = "black-white", color_range = (None, None), scale = 1.0):
+    def writeImage(filename, field, map_fn, color_fn="black-white", color_range=(None, None), scale=1.0):
         img = createImage(filename, field, map_fn, color_fn, color_range, scale)
         try_io_operation(lambda: img.save(filename))

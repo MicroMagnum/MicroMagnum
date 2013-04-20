@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
+
 from .log_stephandler import LogStepHandler
 
 class DataTableLog(LogStepHandler):
@@ -23,21 +25,24 @@ class DataTableLog(LogStepHandler):
     OOMMF .odt file format.  By default, the simulation time, the step size,
     the averaged magnetizations and the wall time is included in the log.
     """
-    def __init__(self, path, title = "(no title)"):
-        import os.path
+    def __init__(self, path, title="(no title)"):
         path = os.path.normpath(path)
 
-        # make sure the target directory (if given in path) exists, otherwise 'open' will fail.
+        # make sure the target directory (if given in path) exists,
+        # otherwise 'open' will fail.
         d = os.path.dirname(path)
-        if len(d) > 0 and not os.path.exists(d): os.makedirs(d)
+        if len(d) > 0 and not os.path.exists(d):
+            os.makedirs(d)
 
         self.file = open(path, "w+")
+        self.__title = title
+
         super(DataTableLog, self).__init__(self.file)
+
         self.addTimeColumn()
         self.addStepSizeColumn()
         self.addAverageMagColumn()
         self.addWallTimeColumn()
-        self.__title = title
 
     def done(self):
         LogStepHandler.done(self)
@@ -45,7 +50,8 @@ class DataTableLog(LogStepHandler):
 
     def writeHeader(self):
 
-        def pad(txt, width): return txt + " " * (width - len(txt))
+        def pad(txt, width):
+            return txt + " " * (width - len(txt))
 
         num_columns = 0
         col_spec, unit_spec = "", ""

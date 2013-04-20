@@ -15,46 +15,52 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .vtk import VtkFile, VtkRectilinearGrid, VtkFloat64
 import struct
 
+from .vtk import VtkFile, VtkRectilinearGrid, VtkFloat64
+from .io_tools import try_io_operation
+
 def writeVTK(filename, field):
-    mesh = field.mesh
-    n = mesh.num_nodes
-    d = mesh.delta
 
-    # I. Describe data entries in file
-    start, end = (0, 0, 0), (n[0], n[1], n[2])
-    w = VtkFile(filename, VtkRectilinearGrid)
-    w.openGrid(start = start, end = end)
-    w.openPiece(start = start, end = end)
+    def do_it():
+        mesh = field.mesh
+        n = mesh.num_nodes
+        d = mesh.delta
 
-    # - Magnetization data
-    w.openData("Cell", vectors = "M")
-    w.addData("M", VtkFloat64, field.size(), 3)
-    w.closeData("Cell")
+        # I. Describe data entries in file
+        start, end = (0, 0, 0), (n[0], n[1], n[2])
+        w = VtkFile(filename, VtkRectilinearGrid)
+        w.openGrid(start=start, end=end)
+        w.openPiece(start=start, end=end)
 
-    # - Coordinate data
-    w.openElement("Coordinates")
-    w.addData("x_coordinate", VtkFloat64, n[0] + 1, 1)
-    w.addData("y_coordinate", VtkFloat64, n[1] + 1, 1)
-    w.addData("z_coordinate", VtkFloat64, n[2] + 1, 1)
-    w.closeElement("Coordinates")
+        # - Magnetization data
+        w.openData("Cell", vectors = "M")
+        w.addData("M", VtkFloat64, field.size(), 3)
+        w.closeData("Cell")
 
-    w.closePiece()
-    w.closeGrid()
+        # - Coordinate data
+        w.openElement("Coordinates")
+        w.addData("x_coordinate", VtkFloat64, n[0] + 1, 1)
+        w.addData("y_coordinate", VtkFloat64, n[1] + 1, 1)
+        w.addData("z_coordinate", VtkFloat64, n[2] + 1, 1)
+        w.closeElement("Coordinates")
 
-    # II. Append binary parts to file
-    def coordRange(start, step, n):
-        result = bytearray(0)
-        for i in range(0, n+1):
-            result = result + struct.pack('d', start + step * i)
-        return result
+        w.closePiece()
+        w.closeGrid()
 
-    w.appendData(field.toByteArray())
-    w.appendData(coordRange(0.0, d[0], n[0]))
-    w.appendData(coordRange(0.0, d[1], n[1]))
-    w.appendData(coordRange(0.0, d[2], n[2]))
+        # II. Append binary parts to file
+        def coordRange(start, step, n):
+            result = bytearray(0)
+            for i in range(0, n + 1):
+                result = result + struct.pack('d', start + step * i)
+            return result
 
-    # III. Save & close
-    w.save()
+        w.appendData(field.toByteArray())
+        w.appendData(coordRange(0.0, d[0], n[0]))
+        w.appendData(coordRange(0.0, d[1], n[1]))
+        w.appendData(coordRange(0.0, d[2], n[2]))
+
+        # III. Save & close
+        w.save()
+
+    try_io_operation(do_it)

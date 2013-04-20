@@ -20,7 +20,7 @@ from .storage_stephandler import StorageStepHandler
 from magnum.micromagnetics.io import writeOMF, OMF_FORMAT_ASCII
 
 class OOMMFStorage(StorageStepHandler):
-    def __init__(self, output_dir, field_id_or_ids, omf_format = OMF_FORMAT_ASCII):
+    def __init__(self, output_dir, field_id_or_ids, omf_format=OMF_FORMAT_ASCII):
         super(OOMMFStorage, self).__init__(output_dir)
 
         if hasattr(field_id_or_ids, "__iter__"):

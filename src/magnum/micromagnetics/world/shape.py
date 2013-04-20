@@ -25,7 +25,7 @@
 #    |- Cuboid
 #    |- Cylinder
 #    |- Everywhere
-#    |- ImageShape
+#    |- ImageShape     (created by ImageShapeCreator.pick("color"))
 #    |- Prism
 #    |- UnionShape     (compound shape)
 #    |- IntersectShape (compound shape)
@@ -34,12 +34,15 @@
 class Shape(object):
     """
     The abstract Shape class defines a geometrical shape in 3-D space.
-    Shapes are used to define regions in the simulated volume in order to set up spatially varying material parameters (see World and Body classes).
-    The most important method is *isPointInside*, which has to be implemented by concrete subclasses.
+    Shapes are used to define regions in the simulated volume in order
+    to set up spatially varying material parameters (see World and Body
+    classes).  The most important method is *isPointInside*, which has
+    to be implemented by concrete subclasses.
 
     There are predefinded shapes to use and change.
 
-    Complex shapes can be created from atomic shapes via set operations: union, intersect, invert.
+    Complex shapes can be created from atomic shapes via set operations:
+    union, intersect, invert.
     (see e.g. http://en.wikipedia.org/wiki/Constructive_solid_geometry )
     """
 
@@ -51,7 +54,7 @@ class Shape(object):
         return inside_indices
 
     def isPointInside(self, pt):
-        raise NotImplementedError("A shape class needs to implement isPointInside")
+        raise NotImplementedError("Shape.isPointInside is purely virtual")
 
     def union(self, other):
         return UnionShape(self, other)
@@ -62,11 +65,16 @@ class Shape(object):
     def invert(self):
         return InvertedShape(self)
 
-    ### Operators to call union, intersect and invert ########
+    # Operators to call union, intersect and invert:
 
-    def __or__ (self, other): return self.union(other)
-    def __and__(self, other): return self.intersect(other)
-    def __not__(self): return self.invert()
+    def __or__(self, other):
+        return self.union(other)
+
+    def __and__(self, other):
+        return self.intersect(other)
+
+    def __not__(self):
+        return self.invert()
 
 class InvertedShape(Shape):
     def __init__(self, a):
@@ -77,7 +85,7 @@ class InvertedShape(Shape):
         return not self.__a.isPointInside(pt)
 
     def __repr__(self):
-        return "invert(" + repr(self.__a) + ")"
+        return "InvertedShape(" + repr(self.__a) + ")"
 
 class UnionShape(Shape):
     def __init__(self, a, b):
@@ -88,7 +96,7 @@ class UnionShape(Shape):
         return self.__a.isPointInside(pt) or self.__b.isPointInside(pt)
 
     def __repr__(self):
-        return "union(" + repr(self.__a) + ", " + repr(self.__b) + ")"
+        return "UnionShape(" + repr(self.__a) + ", " + repr(self.__b) + ")"
 
 class IntersectShape(Shape):
     def __init__(self, a, b):
@@ -99,4 +107,4 @@ class IntersectShape(Shape):
         return self.__a.isPointInside(pt) and self.__b.isPointInside(pt)
 
     def __repr__(self):
-        return "intersection(" + repr(self.__a) + ", " + repr(self.__b) + ")"
+        return "IntersectShape(" + repr(self.__a) + ", " + repr(self.__b) + ")"

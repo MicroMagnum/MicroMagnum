@@ -31,9 +31,9 @@ class Cuboid(Shape):
         def sort2(tup):
             a, b = tup
             if a < b:
-                return a,b
+                return a, b
             else:
-                return b,a
+                return b, a
         self.__p1, self.__p2 = zip(*map(sort2, zip(p1, p2)))
 
     def getBoundingBox(self):

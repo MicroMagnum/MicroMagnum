@@ -15,15 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .storage_stephandler import StorageStepHandler
+import os
 
 from magnum.micromagnetics.io import writeVTK
 from magnum.micromagnetics.io.vtk import VtkGroup
 
-import os.path
+from .storage_stephandler import StorageStepHandler
 
 class VTKStorage(StorageStepHandler):
-    def __init__(self, output_dir, field_id_or_ids = []):
+    def __init__(self, output_dir, field_id_or_ids=[]):
         super(VTKStorage, self).__init__(output_dir)
 
         if hasattr(field_id_or_ids, "__iter__"):
@@ -57,7 +57,7 @@ class VTKStorage(StorageStepHandler):
         for group in self.__groups.values():
             group.save()
 
-    def addVariable(self, var_id, file_fn, field_fn = None):
+    def addVariable(self, var_id, file_fn, field_fn=None):
         super(VTKStorage, self).addVariable(var_id, file_fn, field_fn)
         pvd_filename = "Group-%s.pvd" % var_id
         self.__groups[var_id] = VtkGroup(self.getOutputDirectory(), pvd_filename)
