@@ -15,10 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from magnum.config import cfg
-from magnum.logger import logger
-
 import os
+
+from magnum.config import cfg
+import magnum.logger as logger
 
 from .controller import LocalController, EnvironmentVariableController, SunGridEngineController, PrintParametersController
 

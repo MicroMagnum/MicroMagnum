@@ -21,13 +21,13 @@ class RectangularMesh(magneto.RectangularMesh):
 
     def __init__(self, num_nodes, cell_size, periodic_bc="", periodic_repeat=None):
 
-        nx, ny, nz = map(  int, num_nodes)
+        nx, ny, nz = map(int, num_nodes)
         dx, dy, dz = map(float, cell_size)
 
         if not periodic_repeat:
             # count number of periodic directions (0, 1, 2, or 3)
             num_dirs = sum(1 for s in ("x", "y", "z") if s in periodic_bc)
             # defaults for peri_repeat for counted num_dirs.
-            periodic_repeat = {0:1, 1:15, 2:3, 3:2}[num_dirs]
+            periodic_repeat = {0: 1, 1: 15, 2: 3, 3: 2}[num_dirs]
 
         super(RectangularMesh, self).__init__(nx, ny, nz, dx, dy, dz, periodic_bc, periodic_repeat)

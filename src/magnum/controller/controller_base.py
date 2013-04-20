@@ -15,9 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from magnum.logger import logger
-
 import itertools
+
+import magnum.logger as logger
 
 class ControllerBase(object):
 

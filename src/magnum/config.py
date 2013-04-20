@@ -18,7 +18,7 @@
 import os, re, sys, socket, atexit, logging
 from optparse import OptionParser, OptionValueError, OptionGroup
 
-from magnum.logger import logger
+import magnum.logger as logger
 import magnum.magneto as magneto
 
 class MagnumConfig(object):
@@ -206,7 +206,7 @@ class MagnumConfig(object):
 
         # --loglevel, -l
         ll_map = [logging.DEBUG, logging.INFO, logging.WARN, logging.ERROR, logging.CRITICAL]
-        logger.setLevel(ll_map[options.loglevel])
+        logger.logger.setLevel(ll_map[options.loglevel])
 
         logger.info("----------------------------------------------------------------------")
         logger.info("MicroMagnum %s" % magnum.__version__)

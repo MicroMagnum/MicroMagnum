@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from magnum.logger import logger
+import magnum.logger as logger
 
 class System(object):
 
@@ -63,7 +63,7 @@ class System(object):
 
     def initialize(self):
         assert not self.initialized
-        
+
         # Create model-variable lookup tables
 
         self.calculators    = {}  # map model var id to calculating module

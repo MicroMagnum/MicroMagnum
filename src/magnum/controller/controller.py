@@ -17,7 +17,7 @@
 
 from __future__ import print_function
 
-from magnum.logger import logger
+import magnum.logger as logger
 from magnum.config import cfg
 
 from .controller_base import ControllerBase

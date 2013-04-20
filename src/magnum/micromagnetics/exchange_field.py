@@ -17,8 +17,9 @@
 
 import magnum.module as module
 import magnum.magneto as magneto
+
 from magnum.mesh import VectorField, Field
-from .constants import MU0
+from magnum.micromagnetics.constants import MU0
 
 class ExchangeField(module.Module):
     def __init__(self):
@@ -36,9 +37,9 @@ class ExchangeField(module.Module):
     def initialize(self, system):
         self.system = system
         self.A = Field(self.system.mesh); self.A.fill(0.0)
-        self.__peri_x = system.mesh.periodic_bc[0].find("x") != -1
-        self.__peri_y = system.mesh.periodic_bc[0].find("y") != -1
-        self.__peri_z = system.mesh.periodic_bc[0].find("z") != -1
+        self.__peri_x = "x" in system.mesh.periodic_bc[0]
+        self.__peri_y = "y" in system.mesh.periodic_bc[0]
+        self.__peri_z = "z" in system.mesh.periodic_bc[0]
 
     def calculate(self, state, id):
         cache = state.cache

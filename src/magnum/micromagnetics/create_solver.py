@@ -25,7 +25,7 @@ from .stephandler import ScreenLog
 
 import magnum.evolver as evolver
 import magnum.solver.condition as condition
-from magnum.logger import logger
+import magnum.logger as logger
 
 def create_solver(world, module_list, **kwargs):
 
