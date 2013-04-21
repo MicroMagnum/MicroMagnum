@@ -17,5 +17,6 @@
 
 from magnum.module.system import System
 from magnum.module.module import Module
+from magnum.module.assign import assign
 
-__all__ = ["System", "Module"]
+__all__ = ["System", "Module", "assign"]
