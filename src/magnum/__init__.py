@@ -40,10 +40,13 @@ from .solver import *
 from .micromagnetics import *
 
 # VI. Initialize micromagnum via the main config object
-def do_initialize():
-    import sys
+import sys
+import atexit
+if 'sphinx-build' in sys.argv[0]:
     # No nothing when magnum is imported for documentation generation
-    if 'sphinx-build' in sys.argv[0]: return
-    config.cfg.initialize(sys.argv)
-do_initialize()
-del do_initialize
+    pass
+else:
+    config.initialize(sys.argv)
+    atexit.register(config.deinitialize)
+del sys
+del atexit

@@ -38,8 +38,9 @@ def cpu_count():
 
 ## Fancy colors #########################################
 
-# Enable colors if not windows and console is interactive (and thus hopefully supports ansi escape codes)
-# Fixme: Maybe check $TERM variable.
+# Enable colors if not windows and console is interactive (and thus
+# hopefully supports ansi escape codes)
+# TODO: Maybe check $TERM variable.
 if os.name != "nt" and hasattr(sys.stdout, "isatty") and sys.stdout.isatty():
     def color(c):
         return "\033[" + str(30+c) + "m"
@@ -54,20 +55,21 @@ else:
 ## Portable xrange ######################################
 
 if sys.version_info < (3, 0):
-    irange = xrange # Python 2.x
+    irange = xrange
 else:
-    irange = range # Python 3.x
+    irange = range
 
 ## Interactive menus ####################################
 
 if sys.version_info < (3, 0):
-    getline = raw_input # Python 2.x
+    getline = raw_input
 else:
-    getline = input # Python 3.x
+    getline = input
+
 
 def print_header(header, width):
     pad = (width - len(header)) - 2
-    hdr = "="*pad + "[" + header + "]" + "="*pad
+    hdr = "=" * pad + "[" + header + "]" + "=" * pad
     print(hdr)
 
 def interactive_menu(header, text, options):
@@ -122,4 +124,16 @@ def frange(*args):
         yield v
         v += step
 
-
+def makedirs(path):
+    if not os.path.exists(path):
+        try:
+            os.makedirs(path)
+        except:
+            # Sometimes many parallel MicroMagNum are started at
+            # the same time. Another process might have created
+            # the directory already, so that the os.makedirs call
+            # above fails. In this case, we can savely ignore the
+            # exception if the path now exists.
+            if not os.path.exists(path):
+                raise
+    return path

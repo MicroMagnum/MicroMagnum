@@ -20,8 +20,8 @@ import logging
 import magnum.magneto as magneto
 import magnum.tools as tools
 
-# I. Custom log message formater (with colors!)
 
+# I. Custom log message formatter (with colors!)
 class Formatter(logging.Formatter):
     color_map = {
         logging.DEBUG: 2,
@@ -31,20 +31,31 @@ class Formatter(logging.Formatter):
         logging.CRITICAL: 1
     }
 
+    message_fmt = "[%(levelname)7s] - %(message)s"
+
+    time_fmt = "%Y-%m-%d %H:%M:%S"
+
     def __init__(self):
-        super(Formatter, self).__init__("[%(levelname)7s] - %(message)s", "%Y-%m-%d %H:%M:%S")
+        super(Formatter, self).__init__(self.message_fmt, self.time_fmt)
 
     def format(self, record):
-        return tools.color(Formatter.color_map[record.levelno]) + logging.Formatter.format(self, record) + tools.nocolor()
+        col = self.color_map.get(record.levelno, 2)
+        return "".join([
+            tools.color(col),
+            super(Formatter, self).format(record),
+            tools.nocolor(),
+        ])
 
 ch = logging.StreamHandler()
 ch.setFormatter(Formatter())
+
 
 # II. Create logger
 logger = logging.getLogger("magnum")
 logger.addHandler(ch)
 logger.setLevel(logging.DEBUG)
 
+# shortcuts
 info = logger.info
 warning = logger.warning
 debug = logger.debug
@@ -52,7 +63,18 @@ error = logger.error
 critical = logger.critical
 warn = logger.warn
 
-# III. Set debug callback (called from C++ code to communicate with Python logger)
+# loglevel constants
+LOGLEVELS = [
+    (logging.DEBUG, "debug"),
+    (logging.INFO, "info"),
+    (logging.WARNING, "warning"),
+    (logging.ERROR, "error"),
+    (logging.CRITICAL, "critical"),
+]
+
+
+# III. Set debug callback
+#      (called from C++ code to communicate with Python logger)
 def callback(level, msg):
     if level == 0:
         logger.debug(msg)
