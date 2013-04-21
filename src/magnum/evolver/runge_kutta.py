@@ -20,8 +20,9 @@ from magnum.logger import logger
 
 import magnum.magneto as magneto
 
-from .evolver import Evolver
-from .tableaus import rkf45, cc45, dp54, rk23
+from magnum.evolver.evolver import Evolver
+from magnum.evolver.tableaus import rkf45, cc45, dp54, rk23
+
 
 class RungeKutta(Evolver):
     TABLES = {

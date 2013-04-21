@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .io_tools import try_io_operation
+from magnum.micromagnetics.io.io_tools import try_io_operation
 
 try:
     import numpy

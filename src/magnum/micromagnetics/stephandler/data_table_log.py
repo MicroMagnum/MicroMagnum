@@ -17,7 +17,8 @@
 
 import os
 
-from .log_stephandler import LogStepHandler
+from magnum.micromagnetics.stephandler.log_stephandler import LogStepHandler
+
 
 class DataTableLog(LogStepHandler):
     """

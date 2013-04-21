@@ -20,11 +20,60 @@ from __future__ import print_function
 import magnum.logger as logger
 from magnum.config import cfg
 
-from .controller_base import ControllerBase
-
 import os
+import itertools
 
-# Controllers defined here: LocalController, PrintParametersController, EnvironmentVariableController, SunGridEngineController
+# Controllers defined here:
+#   LocalController, PrintParametersController,
+#   EnvironmentVariableController, SunGridEngineController
+
+
+class ControllerBase(object):
+    """
+    Base class for all controllers.
+    """
+
+    def __init__(self, run, params):
+        if not hasattr(run, '__call__'):
+            raise TypeError("Controller: 'run' argument must be callable")
+        self.__run = run
+        self.__all_params = ControllerBase.unpackParameters(params)
+
+    run = property(lambda self: self.__run)
+    all_params = property(lambda self: self.__all_params)
+    num_params = property(lambda self: len(self.__all_params))
+
+    def start(self):
+        raise NotImplementedError("ControllerBase.start is purely abstract")
+
+    def logCallMessage(self, idx, param):
+        if len(param) == 1:
+            param, = param
+        logger.info("==========================================================")
+        logger.info("Controller: Calling simulation function (param set: %s)", idx)
+        logger.info("            Parameters: %s", param)
+
+    @staticmethod
+    def unpackParameters(param_spec):
+        # I. Preprocess tuples
+        def mapping(p):
+            def scalar_to_list(i):
+                if type(i) == list: return i
+                else: return [i]
+            # treat scalars as 1-tuples
+            if not type(p) == tuple: p = (p,)
+            # map scalar tuple entries to lists (with one scalar entry)
+            return tuple(map(scalar_to_list, p))
+        param_spec = list(map(mapping, param_spec))
+
+        # II. Map parameters to their cartesian product
+        result = []
+        for param in param_spec:
+            for element in itertools.product(*param):
+                result.append(element)
+
+        return result
+
 
 class LocalController(ControllerBase):
     """
@@ -46,7 +95,7 @@ class LocalController(ControllerBase):
             if i < self.num_params:
                 self.my_params.append((i, self.all_params[i]))
             else:
-                logger.warning("Ignoring parameter id %s (no such parameter set!)" % i)
+                logger.warning("Ignoring parameter %s (no such parameter set!)" % i)
 
         if len(self.my_params) == 0:
             logger.warning("Controller: No parameter sets selected!")
@@ -55,6 +104,7 @@ class LocalController(ControllerBase):
         for idx, param in self.my_params:
             self.logCallMessage(idx, param)
             self.run(*param)
+
 
 class PrintParametersController(ControllerBase):
     """
@@ -72,13 +122,14 @@ class PrintParametersController(ControllerBase):
             for idx, param in enumerate(self.all_params):
                 print("PARAMETER %s %s" % (idx, param))
 
+
 class EnvironmentVariableController(ControllerBase):
     """
     This controller uses an environment variable to select one parameter set.
     """
 
-    def __init__(self, run, params, env, offset=0, *args, **kwargs):
-        super(EnvironmentVariableController, self).__init__(run, params, *args, **kwargs)
+    def __init__(self, run, params, env, offset=0):
+        super(EnvironmentVariableController, self).__init__(run, params)
 
         try:
             task_id = int(os.environ[env]) - offset
@@ -97,11 +148,16 @@ class EnvironmentVariableController(ControllerBase):
             self.logCallMessage(idx, param)
             self.run(*param)
 
+
 class SunGridEngineController(EnvironmentVariableController):
     """
-    This controller uses the 'SGE_TASK_ID' enviroment variable to select one parameter set.
-    To be used in conjunction with task arrays using the Sun Grid Engine.
+    This controller uses the 'SGE_TASK_ID' enviroment variable to select
+    one parameter set. To be used in conjunction with task arrays using
+    the Sun Grid Engine.
     """
 
-    def __init__(self, run, params, *args, **kwargs):
-        super(SunGridEngineController, self).__init__(run, params, env="SGE_TASK_ID", offset=1, *args, **kwargs)
+    def __init__(self, run, params):
+        super(SunGridEngineController, self).__init__(
+            run, params,
+            env="SGE_TASK_ID", offset=1,
+        )

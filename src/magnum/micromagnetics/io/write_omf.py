@@ -18,7 +18,7 @@
 import magnum.magneto as magneto
 from magnum.logger import logger
 
-from .io_tools import try_io_operation
+from magnum.micromagnetics.io.io_tools import try_io_operation
 
 OMF_FORMAT_ASCII = magneto.OMF_FORMAT_ASCII
 OMF_FORMAT_BINARY_4 = magneto.OMF_FORMAT_BINARY_4

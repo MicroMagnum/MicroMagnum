@@ -15,14 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .write_omf import writeOMF, OMF_FORMAT_ASCII, OMF_FORMAT_BINARY_4, OMF_FORMAT_BINARY_8
-from .read_omf import readOMF
-from .write_vtk import writeVTK
-from .write_image import writeImage, createImage
+from magnum.micromagnetics.io.write_omf import writeOMF, OMF_FORMAT_ASCII, OMF_FORMAT_BINARY_4, OMF_FORMAT_BINARY_8
+from magnum.micromagnetics.io.read_omf import readOMF
+from magnum.micromagnetics.io.write_vtk import writeVTK
+from magnum.micromagnetics.io.write_image import writeImage, createImage
 
 __all__ = [
-        "writeOMF", "OMF_FORMAT_ASCII", "OMF_FORMAT_BINARY_4", "OMF_FORMAT_BINARY_8",
-        "readOMF",
-        "writeVTK",
-        "writeImage", "createImage",
+    "writeOMF", "OMF_FORMAT_ASCII", "OMF_FORMAT_BINARY_4", "OMF_FORMAT_BINARY_8",
+    "readOMF",
+    "writeVTK",
+    "writeImage", "createImage",
 ]

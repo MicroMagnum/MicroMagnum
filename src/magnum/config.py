@@ -52,11 +52,10 @@ class Configuration(object):
 
     @property
     def banner(self):
-        import magnum
         return [
             "---------------------------------------------------------------------",
-            "MicroMagnum %s" % magnum.__version__,
-            "Copyright (C) 2012 by the MicroMagnum team.",
+            self.version,
+            "Copyright (C) 2012, 2013 by the MicroMagnum team.",
             "This program comes with ABSOLUTELY NO WARRANTY.",
             "This is free software, and you are welcome to redistribute it under",
             "certain conditions; see the file COPYING in the distribution package.",
@@ -107,11 +106,10 @@ class Configuration(object):
         if options.profiling_enabled:
             self.enableProfiling(True)
             logger.info("Profiling enabled")
-        else:
-            logger.info("Profiling disabled")
 
         # Number of fftw threads: -t
-        self.setFFTWThreads(options.num_fftw_threads)
+        if options.num_fftw_threads != 1:
+            self.setFFTWThreads(options.num_fftw_threads)
 
         # GPU enable: -g, -G
         if options.gpu32 and options.gpu64:

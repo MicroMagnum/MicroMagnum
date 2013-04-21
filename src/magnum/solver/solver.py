@@ -23,8 +23,8 @@ import pdb
 import magnum.module as module
 import magnum.evolver as evolver
 
-from .step_handler import StepHandler
-from .condition import Condition
+from magnum.solver.step_handler import StepHandler
+from magnum.solver.condition import Condition
 
 class Solver(object):
     class FinishSolving(Exception): pass

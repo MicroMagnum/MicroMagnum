@@ -20,11 +20,18 @@ import os
 from magnum.config import cfg
 import magnum.logger as logger
 
-from .controller import LocalController, EnvironmentVariableController, SunGridEngineController, PrintParametersController
+from magnum.controller.controllers import (
+    LocalController,
+    EnvironmentVariableController,
+    SunGridEngineController,
+    PrintParametersController
+)
+
 
 def create_controller(run, params, *args, **kwargs):
     """
-    Create a controller object, depending on the environment in which the script was executed:
+    Create a controller object, depending on the environment in which
+    the script was executed:
     TODO: Explain.
     """
 
@@ -53,6 +60,7 @@ def create_controller(run, params, *args, **kwargs):
 
     # Case 4: This controller is used when the script was executed locally. It optionally uses the -p argument passed to the sim script.
     return LocalController(run, params, *args, **kwargs)
+
 
 def Controller(run, params, *args, **kwargs):
     logger.warn("The 'Controller' function is deprecated, please use 'create_controller' instead.")

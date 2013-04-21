@@ -15,9 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from magnum.mesh import VectorField
+from magnum.evolver.evolver import Evolver
 
-from .evolver import Evolver
 
 class Euler(Evolver):
     def __init__(self, mesh, step_size):

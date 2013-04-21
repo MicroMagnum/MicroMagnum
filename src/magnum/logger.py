@@ -53,7 +53,7 @@ ch.setFormatter(Formatter())
 # II. Create logger
 logger = logging.getLogger("magnum")
 logger.addHandler(ch)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 # shortcuts
 info = logger.info

@@ -19,6 +19,7 @@ from magnum.mesh import VectorField
 
 from copy import copy
 
+
 class State(object):
     class Cache(object):
         pass
