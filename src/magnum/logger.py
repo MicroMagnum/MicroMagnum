@@ -32,16 +32,16 @@ class Formatter(logging.Formatter):
     }
 
     message_fmt = "[%(levelname)7s] - %(message)s"
-
-    time_fmt = "%Y-%m-%d %H:%M:%S"
+    date_fmt = "%Y-%m-%d %H:%M:%S"
 
     def __init__(self):
-        super(Formatter, self).__init__(self.message_fmt, self.time_fmt)
+        super(Formatter, self).__init__(self.message_fmt)
 
     def format(self, record):
         col = self.color_map.get(record.levelno, 2)
         return "".join([
             tools.color(col),
+            super(Formatter, self).formatTime(record, self.date_fmt), " ",
             super(Formatter, self).format(record),
             tools.nocolor(),
         ])
