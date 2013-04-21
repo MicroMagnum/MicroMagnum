@@ -23,7 +23,7 @@ from magnum.mesh import VectorField, Field
 class SpinTorque(module.Module):
     def __init__(self, do_precess=True):
         super(SpinTorque, self).__init__()
-        self.__do_precess = do_precess
+        self.do_precess = do_precess
 
     def calculates(self):
         return ["dMdt_ST"]
@@ -49,7 +49,7 @@ class SpinTorque(module.Module):
             nx, ny, nz = self.system.mesh.num_nodes
             dx, dy, dz = self.system.mesh.delta
             magneto.fdm_zhangli(
-                nx, ny, nz, dx, dy, dz, self.__do_precess,
+                nx, ny, nz, dx, dy, dz, self.do_precess,
                 self.P, self.xi,
                 self.system.get_param("Ms"), self.system.get_param("alpha"),
                 state.j, state.M,
