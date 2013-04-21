@@ -28,15 +28,15 @@ class ControllerTest(unittest.TestCase):
 
     def test_simple_parameters(self):
         c = create_controller(lambda x: None, [1, 3, 5])
-        self.assertEqual([(1,), (3,), (5,)], c.all_params)
+        self.assertEqual(list(enumerate([(1,), (3,), (5,)])), c.all_params)
 
     def test_product_parameters(self):
         c = create_controller(lambda x, y: None, [(1, [2, 3])])
-        self.assertEqual([(1, 2), (1, 3)], c.all_params)
+        self.assertEqual(list(enumerate([(1, 2), (1, 3)])), c.all_params)
 
     def test_complicated_parameters(self):
         c = create_controller(lambda x, y: None, [(1, [2, 3]), (4, 5)])
-        self.assertEqual([(1, 2), (1, 3), (4, 5)], c.all_params)
+        self.assertEqual(list(enumerate([(1, 2), (1, 3), (4, 5)])), c.all_params)
 
 if __name__ == '__main__':
     unittest.main()

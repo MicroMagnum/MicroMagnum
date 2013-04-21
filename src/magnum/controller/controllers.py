@@ -17,11 +17,11 @@
 
 from __future__ import print_function
 
-import magnum.logger as logger
-from magnum.config import cfg
-
 import os
 import itertools
+
+import magnum.logger as logger
+from magnum.config import cfg
 
 # Controllers defined here:
 #   LocalController, PrintParametersController,
@@ -34,17 +34,13 @@ class ControllerBase(object):
     """
 
     def __init__(self, run, params):
+
         if not hasattr(run, '__call__'):
             raise TypeError("Controller: 'run' argument must be callable")
-        self.__run = run
-        self.__all_params = ControllerBase.unpackParameters(params)
 
-    run = property(lambda self: self.__run)
-    all_params = property(lambda self: self.__all_params)
-    num_params = property(lambda self: len(self.__all_params))
-
-    def start(self):
-        raise NotImplementedError("ControllerBase.start is purely abstract")
+        self.run = run
+        self.all_params = list(enumerate(unpackParameters(params)))
+        self.num_params = len(self.all_params)
 
     def logCallMessage(self, idx, param):
         if len(param) == 1:
@@ -53,67 +49,71 @@ class ControllerBase(object):
         logger.info("Controller: Calling simulation function (param set: %s)", idx)
         logger.info("            Parameters: %s", param)
 
-    @staticmethod
-    def unpackParameters(param_spec):
-        # I. Preprocess tuples
-        def mapping(p):
-            def scalar_to_list(i):
-                if type(i) == list: return i
-                else: return [i]
-            # treat scalars as 1-tuples
-            if not type(p) == tuple: p = (p,)
-            # map scalar tuple entries to lists (with one scalar entry)
-            return tuple(map(scalar_to_list, p))
-        param_spec = list(map(mapping, param_spec))
-
-        # II. Map parameters to their cartesian product
-        result = []
-        for param in param_spec:
-            for element in itertools.product(*param):
-                result.append(element)
-
-        return result
-
-
-class LocalController(ControllerBase):
-    """
-    This controller will iterate through all parameter sets, if no --prange
-    argument is given. If --prange=a,b is given, the controller will iterate
-    through the interval given by range(a,b).
-    """
-
-    def __init__(self, run, params, *args, **kwargs):
-        super(LocalController, self).__init__(run, params, *args, **kwargs)
-
-        if hasattr(cfg.options, 'prange'):
-            prange = cfg.options.prange
-        else:
-            prange = range(self.num_params)
-
-        self.my_params = []
-        for i in prange:
-            if i < self.num_params:
-                self.my_params.append((i, self.all_params[i]))
-            else:
-                logger.warning("Ignoring parameter %s (no such parameter set!)" % i)
-
-        if len(self.my_params) == 0:
-            logger.warning("Controller: No parameter sets selected!")
-
     def start(self):
         for idx, param in self.my_params:
             self.logCallMessage(idx, param)
             self.run(*param)
+
+    def select(self, range):
+        self.my_params = [self.all_params[i] for i in range if 0 <= i < self.num_params]
+
+
+def unpackParameters(param_spec):
+    # I. Preprocess tuples
+    def mapping(p):
+        def scalar_to_list(i):
+            if type(i) == list: return i
+            else: return [i]
+        # treat scalars as 1-tuples
+        if not type(p) == tuple: p = (p,)
+        # map scalar tuple entries to lists (with one scalar entry)
+        return tuple(map(scalar_to_list, p))
+    param_spec = list(map(mapping, param_spec))
+
+    # II. Map parameters to their cartesian product
+    result = []
+    for param in param_spec:
+        for element in itertools.product(*param):
+            result.append(element)
+    return result
+
+
+class LocalController(ControllerBase):
+    """
+    This controller will iterate through all parameter sets, if no -p
+    argument is given. If -p=a,b is given, the controller will iterate
+    through the interval given by range(a,b), i.e. from a to (b-1) inclusive.
+    """
+
+    def __init__(self, run, params):
+        super(LocalController, self).__init__(run, params)
+
+        idx_range = getattr(
+            cfg.options, 'prange',
+            range(self.num_params)
+        )
+
+        for i in idx_range:
+            if 0 <= i < self.num_params:
+                continue
+            logger.warn("Controller: No such parameter set with index %s!" % i)
+
+        if len(idx_range) == 0:
+            logger.warn("Controller: No parameter sets selected!")
+
+        self.select(idx_range)
 
 
 class PrintParametersController(ControllerBase):
     """
     """
 
-    def __init__(self, run, params, print_num_params, print_all_params, *args, **kwargs):
-        super(PrintParametersController, self).__init__(run, params, *args, **kwargs)
+    def __init__(self, run, params, print_num_params, print_all_params):
+        super(PrintParametersController, self).__init__(run, params)
+
         self.print_num_params = print_num_params
         self.print_all_params = print_all_params
+        self.select([])
 
     def start(self):
         if self.print_num_params:
@@ -125,28 +125,24 @@ class PrintParametersController(ControllerBase):
 
 class EnvironmentVariableController(ControllerBase):
     """
-    This controller uses an environment variable to select one parameter set.
+    This controller uses an environment variable to select exactly one
+    parameter set.
     """
 
     def __init__(self, run, params, env, offset=0):
         super(EnvironmentVariableController, self).__init__(run, params)
 
         try:
-            task_id = int(os.environ[env]) - offset
+            p_idx = int(os.environ[env]) - offset
         except:
             logger.error("Could not read environment variable '%s'." % env)
             raise
 
-        if task_id >= len(self.all_params):
-            logger.warning("SGE task id is greater than the number of parameter sets.")
-            self.my_params = []
+        if 0 >= p_idx < self.num_params:
+            self.select([p_idx])
         else:
-            self.my_params = [(task_id, self.all_params[task_id])]
-
-    def start(self):
-        for idx, param in self.my_params:
-            self.logCallMessage(idx, param)
-            self.run(*param)
+            logger.warn("Controller: No such parameter set with index %s!" % p_idx)
+            self.select([])
 
 
 class SunGridEngineController(EnvironmentVariableController):
