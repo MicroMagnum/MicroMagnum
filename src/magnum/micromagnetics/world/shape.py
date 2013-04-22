@@ -76,6 +76,7 @@ class Shape(object):
     def __not__(self):
         return self.invert()
 
+
 class InvertedShape(Shape):
     def __init__(self, a):
         super(InvertedShape, self).__init__()
@@ -87,6 +88,7 @@ class InvertedShape(Shape):
     def __repr__(self):
         return "InvertedShape(" + repr(self.__a) + ")"
 
+
 class UnionShape(Shape):
     def __init__(self, a, b):
         super(UnionShape, self).__init__()
@@ -97,6 +99,7 @@ class UnionShape(Shape):
 
     def __repr__(self):
         return "UnionShape(" + repr(self.__a) + ", " + repr(self.__b) + ")"
+
 
 class IntersectShape(Shape):
     def __init__(self, a, b):

@@ -17,9 +17,10 @@
 
 from magnum.mesh import RectangularMesh
 
-from .body import Body
-from .everywhere import Everywhere
-from .material import Material
+from magnum.micromagnetics.world.body import Body
+from magnum.micromagnetics.world.everywhere import Everywhere
+from magnum.micromagnetics.world.material import Material
+
 
 class World(object):
     """

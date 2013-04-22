@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .everywhere import Everywhere
+from magnum.micromagnetics.world.everywhere import Everywhere
 
 class Body(object):
     """

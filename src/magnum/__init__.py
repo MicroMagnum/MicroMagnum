@@ -44,9 +44,7 @@ def merge_package(src):
 
 merge_package(magnum.controller)
 merge_package(magnum.mesh)
-#merge_package(magnum.module)
 merge_package(magnum.solver)
-#merge_package(magnum.evolver)
 merge_package(magnum.micromagnetics)
 merge_package(magnum.micromagnetics.io)
 merge_package(magnum.micromagnetics.world)

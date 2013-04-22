@@ -18,8 +18,8 @@
 import sys
 
 import magnum.tools as tools
+from magnum.micromagnetics.stephandler.log_stephandler import LogStepHandler
 
-from .log_stephandler import LogStepHandler
 
 class ScreenLog(LogStepHandler):
     """

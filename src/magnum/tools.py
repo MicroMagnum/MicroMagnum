@@ -24,8 +24,8 @@ import itertools
 
 def flush():
     import gc
+    from magnum.magneto import flush
     gc.collect()
-    from .magneto import flush
     flush()
 
 

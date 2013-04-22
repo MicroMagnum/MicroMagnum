@@ -19,8 +19,8 @@ import os
 
 from magnum.micromagnetics.io import writeVTK
 from magnum.micromagnetics.io.vtk import VtkGroup
+from magnum.micromagnetics.stephandler.storage_stephandler import StorageStepHandler
 
-from .storage_stephandler import StorageStepHandler
 
 class VTKStorage(StorageStepHandler):
     def __init__(self, output_dir, field_id_or_ids=[]):

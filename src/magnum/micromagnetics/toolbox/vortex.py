@@ -15,9 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
+import math
+
 from magnum.mesh import RectangularMesh
 
-import math
 
 __all__ = ["magnetizationFunction", "magnetizationFunction2", "findCore", "findCore2"]
 

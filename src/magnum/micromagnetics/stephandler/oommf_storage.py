@@ -15,9 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .storage_stephandler import StorageStepHandler
-
 from magnum.micromagnetics.io import writeOMF, OMF_FORMAT_ASCII
+from magnum.micromagnetics.stephandler.storage_stephandler import StorageStepHandler
 
 class OOMMFStorage(StorageStepHandler):
     def __init__(self, output_dir, field_id_or_ids, omf_format=OMF_FORMAT_ASCII):
