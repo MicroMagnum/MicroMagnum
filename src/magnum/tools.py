@@ -19,6 +19,8 @@ from __future__ import absolute_import, print_function
 
 import sys
 import os
+import itertools
+
 
 def flush():
     import gc
@@ -43,12 +45,14 @@ def cpu_count():
 # TODO: Maybe check $TERM variable.
 if os.name != "nt" and hasattr(sys.stdout, "isatty") and sys.stdout.isatty():
     def color(c):
-        return "\033[" + str(30+c) + "m"
+        return "\033[" + str(30 + c) + "m"
+
     def nocolor():
         return "\033[0m"
 else:
     def color(c):
         return ""
+
     def nocolor():
         return ""
 
@@ -72,22 +76,24 @@ def print_header(header, width):
     hdr = "=" * pad + "[" + header + "]" + "=" * pad
     print(hdr)
 
+
 def interactive_menu(header, text, options):
     print_header(header, 60)
     print(text)
     for idx, opt in enumerate(options):
-        print("  %i. %s" % (idx+1, opt))
+        print("  %i. %s" % (idx + 1, opt))
     while True:
         print("Choice: ", end="")
         try:
             ans = int(getline())
-            if ans < 1 or ans > len(options)+1:
+            if ans < 1 or ans > len(options) + 1:
                 raise ValueError()
         except:
             print("Type a number between 1 and %i." % len(options))
             continue
         break
     return ans
+
 
 ## Generate a list of floats from a range ###############
 
@@ -123,6 +129,11 @@ def frange(*args):
             raise StopIteration
         yield v
         v += step
+
+
+def range_3d(nx, ny, nz):
+    return itertools.product(range(nx), range(ny), range(nz))
+
 
 def makedirs(path):
     if not os.path.exists(path):

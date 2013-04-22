@@ -17,12 +17,14 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from magnum import RectangularMesh, ImageShapeCreator
 import unittest
+
+from magnum import RectangularMesh, ImageShapeCreator
+
 
 try:
     import Image
-except ImportError: # if python imaging lib is not installed
+except ImportError:  # if python imaging lib is not installed
     pass
 else:
     class ImageShapeTest(unittest.TestCase):
@@ -30,10 +32,10 @@ else:
             mesh = RectangularMesh((100, 100, 1), (1, 1, 1))
             isc = ImageShapeCreator("image_shape_creator_test.png", mesh)
 
-            self.shape0 = isc.pick("blue")  # bottom-left of img -> (0,0)
-            self.shape1 = isc.pick("green") # bottom-right -> (99,0)
-            self.shape2 = isc.pick("black") # top-left -> (0,99)
-            self.shape3 = isc.pick("red")   # top-right -> (99,99)
+            self.shape0 = isc.pick("blue")   # bottom-left of img -> (0,0)
+            self.shape1 = isc.pick("green")  # bottom-right -> (99,0)
+            self.shape2 = isc.pick("black")  # top-left -> (0,99)
+            self.shape3 = isc.pick("red")    # top-right -> (99,99)
 
         def test_2d(self):
             mesh = RectangularMesh((100, 100, 1), (1, 1, 1))

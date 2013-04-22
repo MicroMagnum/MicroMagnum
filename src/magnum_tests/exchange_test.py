@@ -17,14 +17,15 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from magnum import *
-import magnum.magneto as magneto
-
-from helpers import MyTestCase, right_rotate_vector_field, right_rotate_field, left_rotate_vector_field
-
 import unittest
 import random
 import itertools
+
+from magnum import readOMF, Field, VectorField, RectangularMesh, Material
+import magnum.magneto as magneto
+
+from magnum_tests.helpers import MyTestCase, right_rotate_vector_field, right_rotate_field, left_rotate_vector_field
+
 
 class ExchangeTest(MyTestCase):
 

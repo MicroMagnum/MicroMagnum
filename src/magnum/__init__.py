@@ -19,8 +19,8 @@ __version__ = "0.2rc4"
 
 
 # I. Import public API of modules in this package
-from magnum.tools import flush, frange, irange
-__all__ = ["flush", "frange", "irange"]
+from magnum.tools import flush, frange, irange, range_3d
+__all__ = ["flush", "frange", "irange", "range_3d"]
 
 
 # II. Import subpackages

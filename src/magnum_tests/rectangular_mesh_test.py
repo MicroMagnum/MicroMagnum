@@ -17,23 +17,25 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from magnum import RectangularMesh
 import unittest
+
+from magnum import RectangularMesh
+
 
 class RectangularMeshTest(unittest.TestCase):
 
     def test_properties(self):
-        mesh = RectangularMesh((1,2,3),(4.0,5.0,6.0))
-        self.assertEqual(mesh.num_nodes, (1,2,3))
-        self.assertEqual(mesh.delta, (4.0,5.0,6.0))
+        mesh = RectangularMesh((1, 2, 3), (4.0, 5.0, 6.0))
+        self.assertEqual(mesh.num_nodes, (1, 2, 3))
+        self.assertEqual(mesh.delta, (4.0, 5.0, 6.0))
 
     def test_derived_quantities(self):
-        mesh = RectangularMesh((10,10,10),(2,2,2))
+        mesh = RectangularMesh((10, 10, 10), (2, 2, 2))
         self.assertEqual(mesh.cell_volume, 8)
         self.assertEqual(mesh.volume, 8000)
-        self.assertEqual(mesh.size, (20,20,20))
-        self.assertEqual(mesh.delta, (2,2,2))
-        self.assertEqual(mesh.num_nodes, (10,10,10))
+        self.assertEqual(mesh.size, (20, 20, 20))
+        self.assertEqual(mesh.delta, (2, 2, 2))
+        self.assertEqual(mesh.num_nodes, (10, 10, 10))
         self.assertEqual(mesh.total_nodes, 1000)
         self.assertEqual(mesh.periodic_bc, ("", 1))
 

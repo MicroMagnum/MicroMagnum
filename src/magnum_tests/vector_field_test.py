@@ -17,14 +17,16 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from magnum import *
 import unittest
+
+from magnum import RectangularMesh, VectorField
+
 
 class VectorFieldTest(unittest.TestCase):
 
     def test_interpolate(self):
         mesh0 = RectangularMesh((100, 100, 1), (1e-9, 1e-9, 6e-9))
-        mesh1 = RectangularMesh(( 50,  50, 1), (2e-9, 2e-9, 6e-9))
+        mesh1 = RectangularMesh((50, 50, 1), (2e-9, 2e-9, 6e-9))
 
         M = VectorField(mesh0)
         M.fill((10, 20, 30))
@@ -37,11 +39,10 @@ class VectorFieldTest(unittest.TestCase):
         self.assertEquals(30, M2_avg[2])
 
     def test_findExtremum(self):
-        mesh0 = RectangularMesh((100, 100, 1), (1e-9, 1e-9, 6e-9))
-        mesh1 = RectangularMesh(( 50,  50, 1), (2e-9, 2e-9, 6e-9))
+        mesh = RectangularMesh((100, 100, 1), (1e-9, 1e-9, 6e-9))
 
-        M = VectorField(mesh0)
-        M.fill((100,100,100))
+        M = VectorField(mesh)
+        M.fill((100, 100, 100))
         M.findExtremum(z_slice=0, component=0)
 
 if __name__ == '__main__':

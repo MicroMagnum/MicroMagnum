@@ -17,13 +17,15 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from magnum import Material
 import unittest
+
+from magnum import Material
+
 
 class MaterialTest(unittest.TestCase):
 
     def test_getter(self):
-        mat = Material({'Ms':8e3})
+        mat = Material({'Ms': 8e3})
         self.assertEqual(8e3, mat.get('Ms'))
         self.assertEqual(8e3, mat.Ms)
 
@@ -36,6 +38,5 @@ class MaterialTest(unittest.TestCase):
         mod_py = Material.Py(Ms=7e5)
         self.assertEqual(7e5, mod_py.Ms)
 
-# start tests
 if __name__ == '__main__':
     unittest.main()

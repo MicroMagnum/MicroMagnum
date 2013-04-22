@@ -17,8 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from magnum import create_controller
 import unittest
+
+from magnum import create_controller
+
 
 class ControllerTest(unittest.TestCase):
 

@@ -17,11 +17,11 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from magnum import *
-from magnum.magneto import Matrix, VectorMatrix, Shape
-
 import unittest
 import itertools
+
+from magnum.magneto import Matrix, VectorMatrix, Shape
+
 
 try:
     import numpy as np
@@ -42,8 +42,8 @@ else:
             def flub(x,y,z): return x*y*z + 42 + (5*x)*(2-y) + 8*z
 
             A = Matrix(Shape(10,20,30))
-            for x,y,z in itertools.product(range(10), range(20), range(30)):
-                A.set(x,y,z, flub(x,y,z))
+            for x, y, z in itertools.product(range(10), range(20), range(30)):
+                A.set(x, y, z, flub(x, y, z))
 
             B = A.to_numpy()
             self.assertEquals(A.shape, B.shape)

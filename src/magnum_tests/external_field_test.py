@@ -17,8 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from magnum import *
 import unittest
+
+from magnum import World, RectangularMesh, create_solver, ExternalField, VectorField
+
 
 class ExternalFieldTest(unittest.TestCase):
 
@@ -44,7 +46,7 @@ class ExternalFieldTest(unittest.TestCase):
 
     def test_nonuniform_user_fn_field(self):
         H_ext = VectorField(self.solver.world.mesh)
-        H_ext.fill((1.0, 2.0, 3.0)) # this counts as non-uniform because H_ext is not a Python 3-vector.
+        H_ext.fill((1.0, 2.0, 3.0))  # this counts as non-uniform because H_ext is not a Python 3-vector.
 
         self.solver.state.H_ext_amp   = (0.0, 0.0, 0.0)
         self.solver.state.H_ext_phase = (0.0, 0.0, 0.0)
@@ -61,7 +63,7 @@ class ExternalFieldTest(unittest.TestCase):
         self.solver.state.H_ext_fn    = lambda t: (1,2,3)
         try:
             # Error: Can't have H_ext_fn and other parameters non-zero at the same time.
-            _ = self.solver.state.H_ext.average()
+            self.solver.state.H_ext.average()
         except ValueError:  # this is expected
             pass
         else:
