@@ -35,33 +35,47 @@ def create_controller(run, params, *args, **kwargs):
     TODO: Explain.
     """
 
-    # Case 1: Report to stdout, then exit, if requested by command line options.
-    print_num_params = cfg.options.print_num_params_requested
-    print_all_params = cfg.options.print_all_params_requested
+    # Case 1: Report to stdout, then exit, if requested by command
+    #         line options.
+    print_num_params = cfg.options.print_num_params
+    print_all_params = cfg.options.print_all_params
     if print_num_params or print_all_params:
-        return PrintParametersController(run, params, print_num_params, print_all_params, *args, **kwargs)
+        return PrintParametersController(
+            run, params, print_num_params, print_all_params
+        )
 
     # Case 2: Use environment variable to select parameter set
     env = kwargs.pop("env", None)
     env_offset = kwargs.pop("env_offset", 0)
     if env:
         if env in os.environ:
-            return EnvironmentVariableController(run, params, env, env_offset, *args, **kwargs)
+            return EnvironmentVariableController(run, params, env, env_offset)
         else:
-            logger.warn("Environment variable '%s' not found, ignoring 'env' parameter in controller creation" % env)
+            logger.warn(
+                "Environment variable '%s' not found, ignoring 'env' "
+                "parameter in controller creation" % env
+            )
 
     # Case 3: Sun grid engine controller
     sge = kwargs.pop("sun_grid_engine", False)
     if sge:
         if "SGE_TASK_ID" in os.environ:
-            return SunGridEngineController(run, params, *args, **kwargs)
+            return SunGridEngineController(run, params)
         else:
-            logger.warn("Environment variable 'SGE_TASK_ID' not found, ignoring 'sun_grid_engine' parameter in controller creation")
+            logger.warn(
+                "Environment variable 'SGE_TASK_ID' not found, "
+                "ignoring 'sun_grid_engine' parameter in controller creation"
+            )
 
-    # Case 4: This controller is used when the script was executed locally. It optionally uses the -p argument passed to the sim script.
-    return LocalController(run, params, *args, **kwargs)
+    # Case 4: This controller is used when the script was executed
+    #         locally. It optionally uses the -p argument passed to
+    #         the simulation script.
+    return LocalController(run, params)
 
 
 def Controller(run, params, *args, **kwargs):
-    logger.warn("The 'Controller' function is deprecated, please use 'create_controller' instead.")
+    logger.warn(
+        "The 'Controller' function is deprecated, please use "
+        "'create_controller' instead."
+    )
     return create_controller(run, params, *args, **kwargs)
