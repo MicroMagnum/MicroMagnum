@@ -36,7 +36,8 @@ def parse(argv, version):
         help="Enable GPU processing (using 32-bit accuracy) on CUDA device with"
              "device-id GPU_ID. The simulator will fall back to CPU mode if it "
              "was not compiled with CUDA support or when no CUDA capable "
-             "graphics cards were detected.",
+             "graphics cards were detected. Instead of a CUDA id, 'auto' may be "
+             "specified, which selects the first available GPU on the system.",
         metavar="GPU_ID",
         dest="gpu32",
         default=None,
@@ -46,8 +47,8 @@ def parse(argv, version):
         "-G",
         type="string",
         help="Enable GPU processing (using 64-bit accuracy for all terms except "
-             "the demagnetization field computation) on a CUDA device with "
-             "device-id GPU_ID. TODO: Describe fallback behaviour.",
+             "the demagnetization field computation). See '-g' flag for valid "
+             "values of GPU_ID.",
         metavar="GPU_ID",
         dest="gpu64",
         default=None,
