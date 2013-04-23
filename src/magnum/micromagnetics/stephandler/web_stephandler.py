@@ -1,58 +1,59 @@
-import BaseHTTPServer
-import SocketServer
+from magnum.external.bottle import Bottle, static_file
 
 import magnum.solver.step_handler as stephandler
 import magnum.logger as logger
 
 import threading
 import webbrowser
-#import json
 
+from wsgiref.simple_server import make_server
 
-class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+import sys
+import os
 
-    def do_GET(self):
-        siminfo = self.server.stephandler.get_new_siminfo()
+def make_bottle_app(stephandler):
 
-        msg = "<html><body>\n"
-        msg += "Simulation info:<br>"
-        msg += "".join("<p>%s: %s</p>\n" % (k, v) for k, v in siminfo.data)
-        msg += "</body></html>\n"
+    app = Bottle()
 
-        self.send_response(200)
-        self.send_header("Content-type", "text/html; charset=utf8")
-        self.send_header("Content-Length", str(msg))
-        #self.send_header("Last-Modified", self.date_time_string(fs.st_mtime))
-        self.end_headers()
+    @app.route("/")
+    def get():
+        siminfo = stephandler.get_siminfo(refresh=True)
+        return "<ul>" + "".join("<li>%s: %s</li>" % (k, v) for k, v in siminfo.data.items()) + "</ul>"
 
-        self.wfile.write(msg)
+    @app.route("/json")
+    def get():
+        siminfo = stephandler.get_siminfo(refresh=True)
+        return siminfo.data
 
-    def log_message(self, fmt, *args):
-        logger.info("Webservice - " + fmt % args)
+    static_path = os.path.dirname(sys.modules[__name__].__file__) + "/static"
 
+    @app.route('/static/<filename>')
+    def serve_static(filename):
+        return static_file(filename, root=static_path)
 
-class MyServer(BaseHTTPServer.HTTPServer, SocketServer.ThreadingMixIn):
-    def __init__(self, server_address):
-        super(MyServer, self).__init__(server_address, MyHandler)
+    @app.route('/favicon.ico')
+    def favicon():
+        return static_file('favicon.ico', root=static_path)
+
+    return app
 
 class SimInfo(object):
     IDS = []
-    IDS += ["t", "h", "deg_per_ns"]
+    IDS += ["t", "h", "deg_per_ns", "step"]
     IDS += ["E_tot", "E_exch", "E_stray", "E_aniso", "E_ext"]
 
     def __init__(self, state):
-        self.data = []
-        for id in SimInfo.IDS:
+        self.data = {}
+        for id in self.IDS:
             if hasattr(state, id):
-                self.data.append((id, getattr(state, id)))
-        self.data.append(("M_avg", state.M.average()))
-        self.data = sorted(self.data, key=lambda x: x[0])
+                self.data[id] = getattr(state, id)
+        self.data["M_avg"] = state.M.average()
 
 class WebStepHandler(stephandler.StepHandler):
 
     def __init__(self, **kwargs):
-        self.httpd = BaseHTTPServer.HTTPServer(("", 0), MyHandler)
-        self.httpd.stephandler = self
+        app = make_bottle_app(self)
+        self.httpd = make_server('', 0, app)
 
         self.httpd_thread = threading.Thread(target=self.httpd.serve_forever)
         self.httpd_thread.daemon = True
@@ -76,9 +77,9 @@ class WebStepHandler(stephandler.StepHandler):
         self.httpd.shutdown()
         self.httpd_thread.join()
 
-    def get_new_siminfo(self):
-        # TODO: Use Condition variable or threading.Event
-        self.siminfo_request = True
-        while self.siminfo_request:
-            pass
+    def get_siminfo(self, refresh=False):
+        if refresh or not self.siminfo:
+            self.siminfo_request = True
+            while self.siminfo_request:
+                pass
         return self.siminfo
