@@ -16,6 +16,7 @@
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
 __version__ = "0.2rc4"
+__license__ = 'GPL3'
 
 
 # I. Import public API of modules in this package
