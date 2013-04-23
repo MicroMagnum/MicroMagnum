@@ -144,7 +144,7 @@ if(ENABLE_CUDA)
 else()
   set(SWIG_MODULE_NAME "magneto_cpu")
 endif(ENABLE_CUDA)
-set_source_files_properties (${BINDINGS_SOURCE} PROPERTIES SWIG_FLAGS "-O;-module;${SWIG_MODULE_NAME}")
+set_source_files_properties (${BINDINGS_SOURCE} PROPERTIES SWIG_FLAGS "-O;-threads;-module;${SWIG_MODULE_NAME}")
 swig_add_module(${SWIG_MODULE_NAME} python ${PROJECT_SOURCE_DIR}/magneto/bindings/magneto.i ${MAGNETO_SRC})
 swig_link_libraries(${SWIG_MODULE_NAME} ${FFTW_LIBRARIES})
 

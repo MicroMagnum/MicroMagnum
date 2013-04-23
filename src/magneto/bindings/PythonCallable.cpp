@@ -22,7 +22,7 @@
 
 #include <algorithm>
 
-#define DO_LOCK_GIL 0
+#define DO_LOCK_GIL 1
 
 PythonCallable::PythonCallable()
 	: func(0)
@@ -99,4 +99,3 @@ void PythonCallable::call(int i, const std::string &str)
 	unlock_gil();
 #endif
 }
-
