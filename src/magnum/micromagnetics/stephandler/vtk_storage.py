@@ -17,8 +17,8 @@
 
 import os
 
+from magnum.external.vtk import VtkGroup
 from magnum.micromagnetics.io import writeVTK
-from magnum.micromagnetics.io.vtk import VtkGroup
 from magnum.micromagnetics.stephandler.storage_stephandler import StorageStepHandler
 
 

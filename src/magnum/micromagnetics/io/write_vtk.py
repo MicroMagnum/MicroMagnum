@@ -17,7 +17,7 @@
 
 import struct
 
-from magnum.micromagnetics.io.vtk import VtkFile, VtkRectilinearGrid, VtkFloat64
+from magnum.external.vtk import VtkFile, VtkRectilinearGrid, VtkFloat64
 from magnum.micromagnetics.io.io_tools import try_io_operation
 
 def writeVTK(filename, field):
