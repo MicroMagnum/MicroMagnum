@@ -15,14 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-# evolvers
-from .evolver import Evolver # base class
-from .euler import Euler
-from .runge_kutta import RungeKutta
-from .runge_kutta_4 import RungeKutta4
-from .stepsize_controller import StepSizeController, NRStepSizeController, FixedStepSizeController
+from magnum.evolver.evolver import Evolver
+from magnum.evolver.euler import Euler
+from magnum.evolver.runge_kutta import RungeKutta
+from magnum.evolver.runge_kutta_4 import RungeKutta4
+from magnum.evolver.stepsize_controller import StepSizeController, NRStepSizeController, FixedStepSizeController
+from magnum.evolver.state import State  # evolver state class
 
-# evolver state class
-from .state import State
-
-__all__ = ["Evolver", "Euler", "RungeKutta", "RungeKutta4", "StepSizeController", "NRStepSizeController", "FixedStepSizeController", "State"]
+__all__ = [
+    "Evolver", "Euler", "RungeKutta", "RungeKutta4",
+    "StepSizeController", "NRStepSizeController", "FixedStepSizeController",
+    "State"
+]

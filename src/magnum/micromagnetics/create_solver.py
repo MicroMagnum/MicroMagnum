@@ -17,15 +17,15 @@
 
 import numbers
 
-from .micro_magnetics import MicroMagnetics
-from .micro_magnetics_solver import MicroMagneticsSolver
-from .micro_magnetics_stepsize_controller import MicroMagneticsStepSizeController
-from .landau_lifshitz_gilbert import LandauLifshitzGilbert
-from .stephandler import ScreenLog
+from magnum.micromagnetics.micro_magnetics import MicroMagnetics
+from magnum.micromagnetics.micro_magnetics_solver import MicroMagneticsSolver
+from magnum.micromagnetics.micro_magnetics_stepsize_controller import MicroMagneticsStepSizeController
+from magnum.micromagnetics.landau_lifshitz_gilbert import LandauLifshitzGilbert
+from magnum.micromagnetics.stephandler import ScreenLog
 
 import magnum.evolver as evolver
+import magnum.logger as logger
 import magnum.solver.condition as condition
-from magnum.logger import logger
 
 def create_solver(world, module_list, **kwargs):
 

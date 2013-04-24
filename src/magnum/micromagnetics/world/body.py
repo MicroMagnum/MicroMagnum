@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .everywhere import Everywhere
+from magnum.micromagnetics.world.everywhere import Everywhere
 
 class Body(object):
     """
@@ -24,7 +24,7 @@ class Body(object):
     volume.
     """
 
-    def __init__(self, id, material, shape = None):
+    def __init__(self, id, material, shape=None):
         """
         Create a body object with an ID, a material, and a shape. If no
         shape is given, the Everywhere shape, which encompasses the whole

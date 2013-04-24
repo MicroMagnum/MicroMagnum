@@ -15,10 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .log_stephandler import LogStepHandler
-import magnum.tools as tools
-
 import sys
+
+import magnum.tools as tools
+from magnum.micromagnetics.stephandler.log_stephandler import LogStepHandler
+
 
 class ScreenLog(LogStepHandler):
     """

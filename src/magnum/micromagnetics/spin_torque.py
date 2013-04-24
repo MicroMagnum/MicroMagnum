@@ -17,12 +17,13 @@
 
 import magnum.module as module
 import magnum.magneto as magneto
+
 from magnum.mesh import VectorField, Field
 
 class SpinTorque(module.Module):
-    def __init__(self, do_precess = True):
+    def __init__(self, do_precess=True):
         super(SpinTorque, self).__init__()
-        self.__do_precess = do_precess
+        self.do_precess = do_precess
 
     def calculates(self):
         return ["dMdt_ST"]
@@ -40,7 +41,6 @@ class SpinTorque(module.Module):
 
     def calculate(self, state, id):
         cache = state.cache
-
         if id == "dMdt_ST":
             if hasattr(cache, "dMdt_ST"): return cache.dMdt_ST
             dMdt_ST = cache.dMdt_ST = VectorField(self.system.mesh)
@@ -49,10 +49,11 @@ class SpinTorque(module.Module):
             nx, ny, nz = self.system.mesh.num_nodes
             dx, dy, dz = self.system.mesh.delta
             magneto.fdm_zhangli(
-              nx, ny, nz, dx, dy, dz, self.__do_precess,
-              self.P, self.xi, self.system.get_param("Ms"), self.system.get_param("alpha"),
-              state.j, state.M,
-              dMdt_ST
+                nx, ny, nz, dx, dy, dz, self.do_precess,
+                self.P, self.xi,
+                self.system.get_param("Ms"), self.system.get_param("alpha"),
+                state.j, state.M,
+                dMdt_ST
             )
             return dMdt_ST
 

@@ -15,9 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .storage_stephandler import StorageStepHandler
-
 import math
+
+from magnum.micromagnetics.stephandler.storage_stephandler import StorageStepHandler
+
+
 try:
     import Gnuplot #, Gnuplot.PlotItems, Gnuplot.funcutils
 except:

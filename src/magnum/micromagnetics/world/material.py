@@ -17,6 +17,7 @@
 
 from magnum.logger import logger
 
+
 class Material(object):
     def __init__(self, params):
         """

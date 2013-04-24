@@ -15,8 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .alternating_field import AlternatingField
-from .static_field import StaticField
+from magnum.micromagnetics.alternating_field import AlternatingField
+from magnum.micromagnetics.static_field import StaticField
 
 class AlternatingCurrent(AlternatingField):
     def __init__(self, var_id = "j"):

@@ -19,6 +19,7 @@ from magnum.mesh import VectorField
 
 from copy import copy
 
+
 class State(object):
     class Cache(object):
         pass
@@ -27,7 +28,6 @@ class State(object):
         self.t = 0
         self.h = 0
         self.step = 0
-        self.substep = 0
         self.mesh = mesh
         self.y = VectorField(mesh)
         self.flush_cache()
@@ -35,10 +35,8 @@ class State(object):
     def differentiate(self, dst):
         raise NotImplementedError("State.differentiate")
 
-    cache = property(lambda self: self.__cache)
-
     def flush_cache(self):
-        self.__cache = State.Cache()
+        self.cache = State.Cache()
 
     def finish_step(self):
         pass

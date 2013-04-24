@@ -1,5 +1,5 @@
 # Copyright 2012, 2013 by the Micromagnum authors.
-#
+    #
 # This file is part of MicroMagnum.
 #
 # MicroMagnum is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .alternating_field import AlternatingField
-from .static_field import StaticField
-from .constants import MU0
+from magnum.micromagnetics.alternating_field import AlternatingField
+from magnum.micromagnetics.static_field import StaticField
+from magnum.micromagnetics.constants import MU0
 
 class AlternatingExternalField(AlternatingField):
     def __init__(self):
@@ -42,7 +42,7 @@ ExternalField = AlternatingExternalField  # alias
 class StaticExternalField(StaticField):
     def __init__(self, field_id="H_ext", energy_id="E_ext"):
         super(StaticExternalField, self).__init__(field_id)
-        self.__field_id = var_id
+        self.__field_id = field_id
         self.__energy_id = energy_id
 
     def calculates(self):

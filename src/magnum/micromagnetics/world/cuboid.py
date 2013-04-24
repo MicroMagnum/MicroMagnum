@@ -15,7 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .shape import Shape
+from magnum.micromagnetics.world.shape import Shape
+
 
 class Cuboid(Shape):
     """
@@ -31,9 +32,9 @@ class Cuboid(Shape):
         def sort2(tup):
             a, b = tup
             if a < b:
-                return a,b
+                return a, b
             else:
-                return b,a
+                return b, a
         self.__p1, self.__p2 = zip(*map(sort2, zip(p1, p2)))
 
     def getBoundingBox(self):

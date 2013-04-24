@@ -15,20 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .material import Material
-from .body import Body
-from .world import World
-
-# shapes
-from .shape       import Shape
-from .everywhere  import Everywhere
-from .cuboid      import Cuboid
-from .sphere      import Sphere
-from .cylinder    import Cylinder
-from .prism       import Prism
-from .image_shape import ImageShape, ImageShapeCreator
+from magnum.micromagnetics.world.world import World
+from magnum.micromagnetics.world.body import Body
+from magnum.micromagnetics.world.material import Material
+from magnum.micromagnetics.world.shape import Shape
+from magnum.micromagnetics.world.everywhere import Everywhere
+from magnum.micromagnetics.world.cuboid import Cuboid
+from magnum.micromagnetics.world.sphere import Sphere
+from magnum.micromagnetics.world.cylinder import Cylinder
+from magnum.micromagnetics.world.prism import Prism
+from magnum.micromagnetics.world.image_shape import ImageShape, ImageShapeCreator
 
 __all__ = [
-        "Material", "Body", "World",
-        "Shape", "Everywhere", "Cuboid", "Sphere", "Cylinder", "Prism", "ImageShape", "ImageShapeCreator"
+    "Material", "Body", "World",
+    "Shape", "Everywhere", "Cuboid", "Sphere", "Cylinder", "Prism", "ImageShape", "ImageShapeCreator"
 ]

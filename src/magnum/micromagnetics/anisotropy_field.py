@@ -19,7 +19,6 @@ import magnum.module as module
 import magnum.magneto as magneto
 
 from magnum.mesh import VectorField, Field
-from .constants import MU0
 
 class AnisotropyField(module.Module):
     def __init__(self):
@@ -42,9 +41,8 @@ class AnisotropyField(module.Module):
         self.axis2 = VectorField(self.system.mesh); self.axis2.fill((0.0, 0.0, 0.0))
 
     def on_param_update(self, id):
-
         if id in self.params() + ["Ms"]:
-            axis1, axi2 = self.axis1, self.axis2
+            axis1, axis2 = self.axis1, self.axis2
             k_uni, k_cub = self.k_uniaxial, self.k_cubic
             Ms = self.system.get_param("Ms")
 
@@ -75,16 +73,17 @@ class AnisotropyField(module.Module):
             self.__compute_fn = fns[have_uni, have_cub]
 
     def calculate(self, state, id):
+        cache = state.cache
         if id == "H_aniso":
-            if hasattr(state.cache, "H_aniso"): return state.cache.H_aniso
-            H_aniso = state.cache.H_aniso = VectorField(self.system.mesh)
-            state.cache.E_aniso_sum = self.__compute_fn(state, H_aniso)
+            if hasattr(cache, "H_aniso"): return cache.H_aniso
+            H_aniso = cache.H_aniso = VectorField(self.system.mesh)
+            cache.E_aniso_sum = self.__compute_fn(state, H_aniso)
             return H_aniso
 
         elif id == "E_aniso":
-            if not hasattr(state.cache, "E_aniso_sum"):
+            if not hasattr(cache, "E_aniso_sum"):
                 self.calculate("H_aniso")
-            return state.cache.E_aniso_sum * self.system.mesh.cell_volume
+            return cache.E_aniso_sum * self.system.mesh.cell_volume
 
         else:
             raise KeyError("AnisotropyField.calculate: Can't calculate %s", id)

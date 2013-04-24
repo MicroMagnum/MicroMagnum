@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .assign import assign
+from magnum.module.assign import assign
 
 class Module(object):
 

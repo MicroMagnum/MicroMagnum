@@ -17,6 +17,7 @@
 
 import magnum.magneto as magneto
 
+
 class StepSizeController(object):
     def __init__(self):
         pass
@@ -25,9 +26,10 @@ class StepSizeController(object):
         raise NotImplementedError("StepSizeController.adjust_stepsize")
         #return accept, new_h
 
+
 # Algorithm from Numerical Recepies (NR) book
 class NRStepSizeController(StepSizeController):
-    def __init__(self, eps_abs = 1e-3, eps_rel = 1e-3):
+    def __init__(self, eps_abs=1e-3, eps_rel=1e-3):
         self.eps_abs = eps_abs
         self.eps_rel = eps_rel
 
@@ -38,6 +40,7 @@ class NRStepSizeController(StepSizeController):
 
     def __str__(self):
         return "NR(eps_abs=%s, eps_rel=%s)" % (self.eps_abs, self.eps_rel)
+
 
 class FixedStepSizeController(StepSizeController):
     def __init__(self, h):

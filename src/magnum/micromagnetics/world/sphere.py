@@ -15,21 +15,33 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .shape import Shape
+from magnum.micromagnetics.world.shape import Shape
 
 class Sphere(Shape):
-    def __init__(self, p, r):
+    """
+    A sphere defined by its midpoint position and its radius.
+    """
+
+    def __init__(self, position, radius):
+        """
+        Constructor: Sphere(position, radius).
+
+        E.g.: Sphere((2e-9, 4e-9, 7e-9), 1e-9))
+        """
         super(Shape, self).__init__()
-        self.__p = p
-        self.__r = r
+
+        self.x, self.y, self.z = position
+        self.r = radius
 
     def getBoundingBox(self):
-        se = tuple(x - dx for x, dx in zip(self.__p, (self.__r, self.__r)))
-        nw = tuple(x + dx for x, dx in zip(self.__p, (self.__r, self.__r)))
-        return se, nw
+        x, y, z, r = self.x, self.y, self.z, self.r
+        return ((x - r, y - r, z - r), (x + r, y + r, z + r))
 
     def isPointInside(self, pt):
-        return sum((a - b)**2 for a, b in zip(pt, self.__p)) < self.__r**2
+        dx = self.x - pt[0]
+        dy = self.y - pt[1]
+        dz = self.z - pt[2]
+        return dx**2 + dy**2 + dz**2 < self.r**2
 
     def __repr__(self):
-        return "Sphere(" + repr(self.__p) + ", " + repr(self.__r) + ")"
+        return "Sphere(%s, %s)" % ((self.x, self.y, self.z), self.r)

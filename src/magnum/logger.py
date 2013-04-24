@@ -16,32 +16,65 @@
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
+
 import magnum.magneto as magneto
 import magnum.tools as tools
 
-# I. Custom log message formater (with colors!)
 
-_color_map = {
-  logging.DEBUG: 2,
-  logging.INFO: 2,
-  logging.WARNING: 6,
-  logging.ERROR: 1,
-  logging.CRITICAL: 1
-}
+# I. Custom log message formatter (with colors!)
+class Formatter(logging.Formatter):
+    color_map = {
+        logging.DEBUG: 2,
+        logging.INFO: 2,
+        logging.WARNING: 6,
+        logging.ERROR: 1,
+        logging.CRITICAL: 1
+    }
 
-class _MyFormatter(logging.Formatter):
+    message_fmt = "[%(levelname)7s] - %(message)s"
+    date_fmt = "%Y-%m-%d %H:%M:%S"
+
+    def __init__(self):
+        super(Formatter, self).__init__(self.message_fmt)
+
     def format(self, record):
-        return tools.color(_color_map[record.levelno]) + logging.Formatter.format(self, record) + tools.nocolor()
+        col = self.color_map.get(record.levelno, 2)
+        return "".join([
+            tools.color(col),
+            super(Formatter, self).formatTime(record, self.date_fmt), " ",
+            super(Formatter, self).format(record),
+            tools.nocolor(),
+        ])
+
+ch = logging.StreamHandler()
+ch.setFormatter(Formatter())
+
 
 # II. Create logger
-ch = logging.StreamHandler()
-ch.setFormatter(_MyFormatter("[%(levelname)7s] - %(message)s", "%Y-%m-%d %H:%M:%S"))
-logger = logging.getLogger("MagNum")
+logger = logging.getLogger("magnum")
 logger.addHandler(ch)
-logger.setLevel(logging.DEBUG)
-del ch
+logger.setLevel(logging.INFO)
 
-# III. Set debug callback (called from C++ code to communicate with Python logger)
+# shortcuts
+info = logger.info
+warning = logger.warning
+debug = logger.debug
+error = logger.error
+critical = logger.critical
+warn = logger.warn
+
+# loglevel constants
+LOGLEVELS = [
+    (logging.DEBUG, "debug"),
+    (logging.INFO, "info"),
+    (logging.WARNING, "warning"),
+    (logging.ERROR, "error"),
+    (logging.CRITICAL, "critical"),
+]
+
+
+# III. Set debug callback
+#      (called from C++ code to communicate with Python logger)
 def callback(level, msg):
     if level == 0:
         logger.debug(msg)
@@ -54,4 +87,7 @@ def callback(level, msg):
     elif level == 4:
         logger.critical(msg)
 magneto.setDebugCallback(callback)
+
+# cleanup
+del ch
 del callback
