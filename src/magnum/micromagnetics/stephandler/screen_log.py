@@ -37,22 +37,16 @@ class ScreenLog(LogStepHandler):
         self.addColumn(("deg_per_ns", "deg_per_ns", "deg/ns", "%r"), lambda state: state.deg_per_ns)
 
     def generateRow(self, state):
-        first = True
-
         fmt = tools.color(5) + "%s=" + tools.nocolor() + "%s";
         sep = tools.color(5) + ", "  + tools.nocolor()
 
-        row = ""
+        row = []
         for mc in self.columns:
             values = mc.func(state)
             if type(values) != tuple: values = (values,)
             for n, col in enumerate(mc.columns):
-                if not first:
-                    row += sep
-                else:
-                    first = False
-                row += fmt % (col.id, col.fmt % values[n])
-        return row
+                row.append(fmt % (col.id, col.fmt % values[n]))
+        return sep.join(row)
 
     def done(self):
-        LogStepHandler.done(self)
+        super(ScreenLog, self).done()

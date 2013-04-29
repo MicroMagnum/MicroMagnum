@@ -38,7 +38,7 @@ class VTKStorage(StorageStepHandler):
             pattern = "%s-%%07i.vtr" % field_id
             return lambda state: pattern % state.step
 
-        self.__groups = {}
+        self.groups = {}
 
         for field_id in field_ids:
             self.addVariable(field_id, make_file_fn(field_id))
@@ -51,13 +51,13 @@ class VTKStorage(StorageStepHandler):
         writeVTK(path, field)
 
         # To add the entry to the pvd group, strip the file name from path.
-        self.__groups[id].addFile(filepath=os.path.basename(path), **dict(comments))
+        self.groups[id].addFile(filepath=os.path.basename(path), **dict(comments))
 
     def done(self):
-        for group in self.__groups.values():
+        for group in self.groups.values():
             group.save()
 
     def addVariable(self, var_id, file_fn, field_fn=None):
         super(VTKStorage, self).addVariable(var_id, file_fn, field_fn)
         pvd_filename = "Group-%s.pvd" % var_id
-        self.__groups[var_id] = VtkGroup(self.getOutputDirectory(), pvd_filename)
+        self.groups[var_id] = VtkGroup(self.getOutputDirectory(), pvd_filename)
