@@ -17,7 +17,7 @@
 
 from math import pi
 
-# MU0
+# Permeability of vacuum [V*s/(A*m)] = [H/m] = [N/A^2] = [T*m/A] = [Wb/(A*m)]
 MU0 = 4.0 * pi * 1e-7
 
 # Plancks constant [kg*m^2/s]

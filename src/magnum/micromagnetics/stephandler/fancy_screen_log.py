@@ -21,6 +21,7 @@ import sys
 
 from magnum.solver import StepHandler
 
+
 class FancyScreenLog(StepHandler):
     info = [
         ("Step number..... : %i", lambda state: state.step),

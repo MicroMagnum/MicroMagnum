@@ -15,9 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys, time
+import sys
+import time
 
 from magnum.solver import StepHandler
+
 
 class LogStepHandler(StepHandler):
 
@@ -32,22 +34,19 @@ class LogStepHandler(StepHandler):
         def __init__(self, fn):
             self.columns = []
             self.func = fn
+
         def addColumn(self, id, desc = "(no descr.)", unit = "unknown", fmt = "%r"):
             self.columns.append(LogStepHandler.MultiColumn.Column(id, desc, unit, fmt))
+
         def getColumn(self, n):
             return self.columns[n]
-        def count(self):
-            return len(self.columns)
 
     def __init__(self, out_stream):
         super(LogStepHandler, self).__init__()
 
-        #assert type(out_stream) == file, "out_stream parameter must be of type 'file'"
-
         self.f = out_stream
         self.first_call = True
         self.columns = []
-        self.__walltime0 = time.time()
 
     def writeHeader(self):
         row = "# "
@@ -99,11 +98,8 @@ class LogStepHandler(StepHandler):
         self.addColumn(("t", "time", "s", "%r"), lambda state: state.t)
 
     def addWallTimeColumn(self):
-        def walltime(state):
-            t0 = self.__walltime0 # at begin of simulation
-            t1 = time.time()      # now
-            return t1 - t0
-        self.addColumn(("t_wall", "wall clock time", "s", "%.3f"), walltime)
+        t0 = time.time()
+        self.addColumn(("t_wall", "wall clock time", "s", "%.3f"), lambda state: time.time() - t0)
 
     def addStepSizeColumn(self):
         """
@@ -124,10 +120,13 @@ class LogStepHandler(StepHandler):
 
     def addEnergyColumn(self, energy_variable):
         """
-        Adds a column with the field energy interals.
+        Adds a column with the field energy integrals.
         Examples:
           sh.addEnergyColumn("E_stray")
           sh.addEnergyColumn("E_exch")
           sh.addEnergyColumn("E_tot")
         """
-        self.addColumn((energy_variable, "%s-energy" % energy_variable, "J", "%r"), lambda state: getattr(state, energy_variable))
+        self.addColumn(
+            (energy_variable, "%s-energy" % energy_variable, "J", "%r"),
+            lambda state: getattr(state, energy_variable)
+        )
