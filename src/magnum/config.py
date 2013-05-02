@@ -22,6 +22,7 @@ import magnum.logger as logger
 import magnum.magneto as magneto
 import magnum.tools as tools
 import magnum.command_line as command_line
+import magnum.nvidia_smi as nvidia_smi
 
 
 class Configuration(object):
@@ -115,13 +116,28 @@ class Configuration(object):
         if options.gpu32 and options.gpu64:
             logger.warn("Ignoring -g because -G was given")
 
-        def parse_gpu_id(arg):
-            return -1 if arg == "auto" else int(arg)
+        def determine_gpu_id(arg):
+            # 'auto'
+            if arg == "auto":
+                try:
+                    nv = nvidia_smi.NVidiaSmi()
+                    nv.refresh()
+                except:
+                    pass
+                available = nv.available
+                if len(available) == 0:
+                    logger.warn("Could not find any available GPUs (out of %s detected GPUs)." % len(nv.all))
+                    return -1
+                else:
+                    return nv.available[0]
+            else:
+                # id specified by user
+                return int(arg)
 
         if options.gpu64:
-            cuda_mode, cuda_dev = magneto.CUDA_64, parse_gpu_id(options.gpu64)
+            cuda_mode, cuda_dev = magneto.CUDA_64, determine_gpu_id(options.gpu64)
         elif options.gpu32:
-            cuda_mode, cuda_dev = magneto.CUDA_32, parse_gpu_id(options.gpu32)
+            cuda_mode, cuda_dev = magneto.CUDA_32, determine_gpu_id(options.gpu32)
         else:
             cuda_mode, cuda_dev = magneto.CUDA_DISABLED, -1
 

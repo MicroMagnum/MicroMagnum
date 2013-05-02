@@ -37,7 +37,9 @@ def parse(argv, version):
              "device-id GPU_ID. The simulator will fall back to CPU mode if it "
              "was not compiled with CUDA support or when no CUDA capable "
              "graphics cards were detected. Instead of a CUDA id, 'auto' may be "
-             "specified, which selects the first available GPU on the system.",
+             "specified. In this case MicroMagnum tries to detect which GPU is "
+             "available and least loaded (by running the nvidia-smi tool in the "
+             "CUDA toolkit), and selects this GPU.",
         metavar="GPU_ID",
         dest="gpu32",
         default=None,

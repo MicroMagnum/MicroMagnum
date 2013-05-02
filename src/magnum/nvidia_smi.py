@@ -10,9 +10,12 @@ class NVidiaSmi(object):
         def __repr__(self):
             return "NvidiaSmi.GPU(%s)" % self.__dict__
 
+    def __init__(self):
+        self.gpus = []
+
     def refresh(self):
-        #cmd = "nvidia-smi -q -x".split()
-        cmd = "cat nvidia_smi.out".split()
+        cmd = "nvidia-smi -q -x".split()
+        #cmd = "cat nvidia_smi.out".split()
         try:
             p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
             out, err = p.communicate()
