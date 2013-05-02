@@ -129,6 +129,7 @@ class Configuration(object):
 
         cuda_support = "yes" if self.haveCudaSupport() else "no"
         logger.info("CUDA GPU support: %s", cuda_support)
+        logger.info("Running on host %s", socket.gethostname())
 
 
 # Main configuration object, at this point still uninitialized.

@@ -119,8 +119,8 @@ class PrintParametersController(ControllerBase):
         if self.print_num_params:
             print("NUM_PARAMETERS %s" % self.num_params)
         if self.print_all_params:
-            for idx, param in enumerate(self.all_params):
-                print("PARAMETER %s %s" % (idx, param))
+            for param in self.all_params:
+                print("PARAMETER %s %s" % (param[0], param[1]))
 
 
 class EnvironmentVariableController(ControllerBase):

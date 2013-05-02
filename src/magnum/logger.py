@@ -35,16 +35,14 @@ class Formatter(logging.Formatter):
     date_fmt = "%Y-%m-%d %H:%M:%S"
 
     def __init__(self):
-        super(Formatter, self).__init__(self.message_fmt)
+        logging.Formatter.__init__(self, self.message_fmt, self.date_fmt)
 
     def format(self, record):
-        col = self.color_map.get(record.levelno, 2)
-        return "".join([
-            tools.color(col),
-            super(Formatter, self).formatTime(record, self.date_fmt), " ",
-            super(Formatter, self).format(record),
-            tools.nocolor(),
-        ])
+        msg_str = logging.Formatter.format(self, record)
+        time_str = logging.Formatter.formatTime(self, record, self.date_fmt)
+
+        col = self.color_map.get(record.levelno, 6)
+        return "".join([tools.color(col), time_str, " - ", msg_str, tools.nocolor()])
 
 ch = logging.StreamHandler()
 ch.setFormatter(Formatter())
