@@ -1,5 +1,8 @@
 import subprocess
-import xml.etree.ElementTree as etree
+import xml.etree.ElementTree as ElementTree
+
+import magnum.logger as logger
+
 
 class NVidiaSmi(object):
 
@@ -13,26 +16,44 @@ class NVidiaSmi(object):
         try:
             p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
             out, err = p.communicate()
-            return self.parse(etree.fromstring(out))
+            return self._parse(ElementTree.fromstring(out))
+        except ElementTree.ParseError:
+            logger.error("NVidiaSmi: nvidia-smi output could not be parsed.")
+            raise
         except OSError:
-            return None
+            logger.error("NVidiaSmi: nvidia-smi tool could not be executed.")
+            raise
+
+    @property
+    def all(self):
+        """
+        Returns info about all GPUs reported by the nvidia-smi tool.
+        """
+        return self.gpus
 
     @property
     def available(self):
-        # Find available GPUs
+        """
+        Return GPUs reported by nvidia-smi that are available. Available
+        means: Compute mode is either Default (allowing more than one
+        process per GPU) or the GPU is currently unused (the number of
+        processes on that GPU is zero). The returned list is sorted by
+        the GPU load, with the least loaded cards first.
+        """
         def check(gpu):
+            # Check if GPU is available
             if gpu.mode == 'Default':
                 return True
             elif gpu.mode == 'Prohibited':
                 return False
             else: # Exclusive_Thread, Exclusive_Process
-                return gpu.num_processes == 0
+                return gpu.num_processes == 0 # available only if no-one is using the GPU.
         avail = [info[0] for info in enumerate(self.gpus) if check(info[1])]
 
         # Sort by memory load
         return sorted(avail, key=lambda id: self.gpus[id].mem_util, reverse=True)
 
-    def parse(self, xml):
+    def _parse(self, xml):
         self.xml = xml
         self.gpus = []
 
@@ -57,87 +78,3 @@ class NVidiaSmi(object):
             gpu.num_processes = len(gpu.xml.findall('compute_processes/process_info'))
 
             self.gpus.append(gpu)
-
-        return self.gpus
-
-x = NVidiaSmi()
-x.refresh()
-print x.gpus[0]
-
-#  	<gpu id="0000:14:00.0">
-#  		<product_name>Tesla M2090</product_name>
-#  		<display_mode>Disabled</display_mode>
-#  		<persistence_mode>Disabled</persistence_mode>
-#  		<driver_model>
-#  			<current_dm>N/A</current_dm>
-#  			<pending_dm>N/A</pending_dm>
-#  		</driver_model>
-#  		<serial>0324411088200</serial>
-#  		<uuid>GPU-94c0c0f86546c136-ec582b09-95936242-25cd57e2-bdd5469ab0ec20002880d19b</uuid>
-#  		<vbios_version>70.10.46.00.01</vbios_version>
-#  		<inforom_version>
-#  			<oem_object>1.1</oem_object>
-#  			<ecc_object>2.0</ecc_object>
-#  			<pwr_object>4.0</pwr_object>
-#  		</inforom_version>
-#  		<pci>
-#  			<pci_bus>14</pci_bus>
-#  			<pci_device>00</pci_device>
-#  			<pci_domain>0000</pci_domain>
-#  			<pci_device_id>109110DE</pci_device_id>
-#  			<pci_bus_id>0000:14:00.0</pci_bus_id>
-#  			<pci_sub_system_id>088710DE</pci_sub_system_id>
-#  			<pci_gpu_link_info>
-#  				<pcie_gen>
-#  					<max_link_gen>2</max_link_gen>
-#  					<current_link_gen>2</current_link_gen>
-#  				</pcie_gen>
-#  				<link_widths>
-#  					<max_link_width>16x</max_link_width>
-#  					<current_link_width>16x</current_link_width>
-#  				</link_widths>
-#  			</pci_gpu_link_info>
-#  		</pci>
-#  		<fan_speed>N/A</fan_speed>
-#  		<performance_state>P0</performance_state>
-#  		<memory_usage>
-#  			<total>5375 MB</total>
-#  			<used>2594 MB</used>
-#  			<free>2781 MB</free>
-#  		</memory_usage>
-#  		<compute_mode>Exclusive_Thread</compute_mode>
-#  		<utilization>
-#  			<gpu_util>98 %</gpu_util>
-#  			<memory_util>79 %</memory_util>
-#  		</utilization>
-#  		<ecc_mode>
-#  			<current_ecc>Enabled</current_ecc>
-#  			<pending_ecc>Enabled</pending_ecc>
-#  		</ecc_mode>
-#  		<temperature>
-#  			<gpu_temp>N/A</gpu_temp>
-#  		</temperature>
-#  		<power_readings>
-#  			<power_state>P0</power_state>
-#  			<power_management>Supported</power_management>
-#  			<power_draw>207.28 W</power_draw>
-#  			<power_limit>225 W</power_limit>
-#  		</power_readings>
-#  		<clocks>
-#  			<graphics_clock>650 MHz</graphics_clock>
-#  			<sm_clock>1301 MHz</sm_clock>
-#  			<mem_clock>1848 MHz</mem_clock>
-#  		</clocks>
-#  		<max_clocks>
-#  			<graphics_clock>650 MHz</graphics_clock>
-#  			<sm_clock>1301 MHz</sm_clock>
-#  			<mem_clock>1848 MHz</mem_clock>
-#  		</max_clocks>
-#  		<compute_processes>
-#  			<process_info>
-#  				<pid>26931</pid>
-#  				<process_name>/usr/bin/python</process_name>
-#  				<used_memory>2577 MB</used_memory>
-#  			</process_info>
-#  		</compute_processes>
-#  	</gpu>
