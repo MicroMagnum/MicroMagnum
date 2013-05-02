@@ -37,7 +37,7 @@ class Cuboid(Shape):
         self.__p1, self.__p2 = zip(*map(sort2, zip(p1, p2)))
 
     def getBoundingBox(self):
-        return self.__pos1, self.__pos2
+        return self.__p1, self.__p2
 
     def isPointInside(self, pt):
         p1, p2 = self.__p1, self.__p2
