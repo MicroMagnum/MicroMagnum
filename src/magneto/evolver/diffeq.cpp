@@ -31,43 +31,30 @@ DiffEq::DiffEq(VectorMatrix &My)
   std::cout << "Größe My: " << size() << "\n";
 }
 
-void DiffEq::diffX(const VectorMatrix &My, VectorMatrix &Mydot)
+DiffEq::~DiffEq()
 {
-  std::cout << "DIFFX C++\n";
-}
-VectorMatrix DiffEq::diff(const VectorMatrix &My)
-{
-  std::cout << "DIFF C++\n";
-  return My;
 }
 
-void DiffEq::diffN(const N_Vector& Ny, N_Vector& Nydot)
+void DiffEq::diffN(const N_Vector& Ny, N_Vector& Nydot, realtype t)
 {
-  // konvertiere Ny->My
-  // diff()
-  // konvertiere Mydot->Nydot
+  /*
+   * convert Ny->My
+   * diff()
+   * convert Mydot->Nydot
+   */
 
   std::cout << "diffN 1\n";
   getVectorMatrix(Ny,_My);
   std::cout << "diffN 2\n";
 
-  _Mydot = diff(_My);
-  //diffX(_My,_Mydot);
+  //_Mydot = diff(_My);
+  diffX(_My,_Mydot,t);
 
   std::cout << "diffN 3\n";
-  //std::cout << "diffN VectorMatrix:\n";
-  //printVectorMatrix(_Mydot);
   getN_Vector(_Mydot,Nydot);
   std::cout << "diffN 4\n";
 }
 
-VectorMatrix DiffEq::getY()
-{
-  VectorMatrix y;
-  std::cout << "getY C++\n";
-
-  return y;
-}
 
 /**
  * nvec muss mit der richtigen Größe initialisiert sein (N_VNew_Serial(3*size)).
@@ -83,7 +70,8 @@ void DiffEq::getN_Vector(const VectorMatrix& mat, N_Vector& nvec)
 
 	for (int z=0; z<dim_z; ++z)
   for (int y=0; y<dim_y; ++y)
-  for (int x=0; x<dim_x; ++x) {
+  for (int x=0; x<dim_x; ++x) 
+  {
     const int i = z*dim_xy + y*dim_x + x; // linear index of (x,y,z)
     Vector3d vec3 = Macc.get(i);
     Ith(nvec,3*i+1) = vec3[0];
@@ -120,6 +108,7 @@ void DiffEq::printN_Vector(const N_Vector& nvec)
   getVectorMatrix(nvec, _My);
   printVectorMatrix(_My);
 }
+
 void DiffEq::printVectorMatrix(const VectorMatrix& mat)
 {
   int dim_x = mat.dimX();
@@ -225,4 +214,42 @@ void DiffEq::matrixTest(VectorMatrix mat)
 int DiffEq::size()
 {
   return 3*_My.size();
+}
+
+
+
+
+
+
+/*
+ * C++ dummy. Should not be called!
+ */
+void DiffEq::diffX(const VectorMatrix &My, VectorMatrix &Mydot, double t)
+{
+  fprintf(stderr,"diffX: Python Director does not work!");
+  exit(0);
+}
+
+/*
+ * C++ dummy. Should not be called!
+ */
+VectorMatrix DiffEq::getY()
+{
+  VectorMatrix y;
+
+  fprintf(stderr,"getY: Python Director does not work!");
+  exit(0);
+
+  return y;
+}
+
+/*
+ * C++ dummy. Should not be called!
+ */
+VectorMatrix DiffEq::diff(const VectorMatrix &My)
+{
+  fprintf(stderr,"diff: Python Director does not work!");
+  exit(0);
+
+  return My;
 }

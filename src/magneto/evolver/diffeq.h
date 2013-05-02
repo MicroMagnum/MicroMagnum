@@ -28,23 +28,66 @@
 //using namespace matty;
 class DiffEq {
   public:
+    /*
+     * @param My  Initial state VectorMatrix
+     */
     DiffEq(VectorMatrix &My);
-    //virtual void diff(const VectorMatrix &My, VectorMatrix &Mydot);
+    virtual ~DiffEq();
+
+    /*
+     * Function called to calculate micromagnetics.
+     *
+     * @param Ny     current State N_Vector
+     * @param Nydot  result        N_Vector
+     * @param t      current time  realtype
+     */
+    void diffN(const N_Vector& Ny, N_Vector& Nydot, realtype t);
+
+    /*
+     * Director class, calculates micromagnetics in python.
+     * returns a copy of result. Inefficient!
+     */
     virtual VectorMatrix diff(const VectorMatrix &My);
-    virtual void diffX(const VectorMatrix &My, VectorMatrix &Mydot);
-    void diffN(const N_Vector& Ny, N_Vector& Nydot);
+
+    /*
+     * Director class, calculates micromagnetics in python.
+     * 
+     * @param Mydot result
+     */
+    virtual void diffX(const VectorMatrix &My, VectorMatrix &Mydot, double t);
+
+    /*
+     * Returns a copy of initial VectorMatrix.
+     * TODO reference.
+     */
     virtual VectorMatrix getY();
 
-    VectorMatrix &_My, &_Mydot;
-    //N_Vector& Ny, Nydot;
-
+    /*
+     * converts N_Vector to VectorMatrix
+     */
     static void getVectorMatrix(const N_Vector& vec, VectorMatrix& mat);
+
+    /*
+     * converts VectorMatrix to N_Vector
+     */
     static void getN_Vector(const matty::VectorMatrix& vec, N_Vector& nvec);
+
+    /*
+     * Print methods
+     */
     static void printVectorMatrix(const VectorMatrix& mat);
     void printN_Vector(const N_Vector& nvec);
     void printOutput(const realtype &t, const N_Vector& nvec);
-    int size();
 
+    /*
+     * tests matrix conversion.
+     */
     static void matrixTest(VectorMatrix mat);
+
+    /*
+     * Object variables
+     */
+    VectorMatrix &_My, &_Mydot;
+    int size();
 };
 #endif

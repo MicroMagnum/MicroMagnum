@@ -17,7 +17,8 @@ solver.relax(1.0)
 
 llg = LlgDiffEq(solver.state)
 c = m.Cvode(llg)
-i = c.cvodeTest()
+writeOMF("test1.omf",solver.state.M)
+i = c.cvodeCalculate()
 print("fertig")
 print(i)
-
+writeOMF("test2.omf",solver.state.M)

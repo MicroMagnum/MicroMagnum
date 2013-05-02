@@ -20,54 +20,39 @@
 // System
 #include <stdlib.h>
 #include <iostream>
-//#include <stdio.h>
-//#include <math.h>
+#include <assert.h>
 
 // CVode includes
 #include "cvode.h"
 #include <cvode/cvode.h>
 #include <cvode/cvode_dense.h>       /* prototype for CVDense */
 #include <nvector/nvector_serial.h>
-//#include <cvode/cvode_band.h>
-//#include <cvode/cvode_band.h>        /* use CVBAND linear solver */
-//#include <cvode/cvode_diag.h>        /* use CVDIAG linear solver */
-//#include <sundials/sundials_types.h>
-//#include <sundials/sundials_math.h>
-//#include <sundials/sundials_band.h>
 
 // Magnum
 //#include "config.h"
 #include "Magneto.h"
 #include "diffeq.h"
-//#include "matrix/matty.h"
-//#include "Vector3d.h"
 
 Cvode::Cvode(DiffEq &diff)
-  : _Ny(), _Nydot(), _abstol(), _diff(diff)
+  : _Ny(), _diff(diff)
 {
   _size = _diff.size();
   std::cout << "size: " << _size << "\n";
 
   _Ny = N_VNew_Serial(_size);
-  _Nydot = N_VNew_Serial(_size);
-  _abstol = N_VNew_Serial(_size);
 
   _diff.getN_Vector(_diff.getY(), _Ny);
   _diff.printN_Vector(_Ny);
 
-  _reltol = 0.1;
-
-  for (int i=1; i<=_size; ++i)
-  {
-    Ith(_abstol,i) = 0.1;
-  }
+  _reltol = 1e-60;
+  _abstol = 4e8;
 }
 
 Cvode::~Cvode()
 {
 }
 
-int Cvode::cvodeTest() 
+void Cvode::cvodeCalculate() 
 {
   realtype t;
   N_Vector yout;
@@ -76,59 +61,46 @@ int Cvode::cvodeTest()
 
   yout = NULL;
   cvode_mem = NULL;
-  //user_data = NULL;
-
-  //y = N_VNew_Serial(3);
-  //ydot = N_VNew_Serial(3);
   yout = N_VNew_Serial(_size);
 
-  /* Call CVodeCreate to create the solver memory and specify the 
-   * Backward Differentiation Formula and the use of a Newton iteration */
   cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
-  if (check_flag((void *)cvode_mem, (char *) "CVodeCreate", 0)) return(1);
+  assert(check_flag((void *)cvode_mem, (char *) "CVodeCreate", 0) == 0);
 
-  /* Set the pointer to user-defined data */
   flag = CVodeSetUserData(cvode_mem, &_diff);
-  if(check_flag(&flag, (char *) "CVodeSetUserData", 1)) return(1);
+  assert(check_flag(&flag, (char *) "CVodeSetUserData", 1) == 0);
 
-  /* Call CVodeInit to initialize the integrator memory and specify the
-   * user's right hand side function in y'=f(t,y), the inital time T0, and
-   * the initial dependent variable vector y. */
   flag = CVodeInit(cvode_mem, callf, T0, _Ny);
-  if (check_flag(&flag, (char *) "CVodeInit", 1)) return(1);
+  assert(check_flag(&flag, (char *) "CVodeInit", 1) == 0);
 
-  /* Call CVodeSVtolerances to specify the scalar relative tolerance
-   * and vector absolute tolerances */
-  flag = CVodeSVtolerances(cvode_mem, _reltol, _abstol);
-  if (check_flag(&flag, (char *) "CVodeSVtolerances", 1)) return(1);
+  flag = CVodeSStolerances(cvode_mem, _reltol, _abstol);
+  assert(check_flag(&flag, (char *) "CVodeSVtolerances", 1) == 0);
 
-  /* Call CVDense to specify the CVDENSE dense linear solver */
   flag = CVDense(cvode_mem, 3);
-  if (check_flag(&flag, (char *) "CVDense", 1)) return(1);
+  assert(check_flag(&flag, (char *) "CVDense", 1) == 0);
 
   std::cout << "cvode 1\n";
 
-  flag = CVode(cvode_mem, 1, yout, &t, CV_NORMAL);
-  if(check_flag(&flag, (char *) "CVode", 1)) return(1);
+  flag = CVode(cvode_mem, Tmax, yout, &t, CV_NORMAL);
+  assert(check_flag(&flag, (char *) "CVode", 1) == 0);
   std::cout << "cvode 2\n";
 
   _diff.printOutput(t,yout);
+  assert(yout != NULL);
   std::cout << "cvode 3\n";
 
-  free(cvode_mem);
-  return ans;
+  //CVodeFree(&cvode_mem);
+  std::cout << "cvode 4\n";
+  N_VDestroy_Serial(_Ny);
+  std::cout << "cvode 5\n";
 }
 
-/*
- * f routine. Compute function f(t,y). 
- */
 
 int Cvode::callf(realtype t, N_Vector Ny, N_Vector Nydot, void *user_data)
 {
   DiffEq* ode = (DiffEq*) user_data;
 
   std::cout << "callf 1\n";
-  ode->diffN(Ny, Nydot);
+  ode->diffN(Ny, Nydot, t);
   std::cout << "callf 2\n";
   ode->printOutput(t,Nydot);
   std::cout << "callf 3\n";
@@ -136,15 +108,6 @@ int Cvode::callf(realtype t, N_Vector Ny, N_Vector Nydot, void *user_data)
   return(0);
 }
 
-/*
- * Check function return value...
- * opt == 0 means SUNDIALS function allocates memory so check if
- *          returned NULL pointer
- * opt == 1 means SUNDIALS function returns a flag so check if
- *          flag >= 0
- * opt == 2 means function allocates memory so check if returned
- *          NULL pointer 
- */
 
 int Cvode::check_flag(void *flagvalue, char *funcname, int opt)
 {
