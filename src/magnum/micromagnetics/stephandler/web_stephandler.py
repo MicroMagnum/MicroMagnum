@@ -1,5 +1,4 @@
-from magnum.external.bottle import Bottle, static_file
-
+import magnum.external.bottle as bottle
 import magnum.solver.step_handler as stephandler
 import magnum.logger as logger
 
@@ -13,7 +12,7 @@ import os
 
 def make_bottle_app(stephandler):
 
-    app = Bottle()
+    app = bottle.Bottle()
 
     @app.route("/")
     def get():
@@ -28,12 +27,12 @@ def make_bottle_app(stephandler):
     static_path = os.path.dirname(sys.modules[__name__].__file__) + "/static"
 
     @app.route('/static/<filename>')
-    def serve_static(filename):
-        return static_file(filename, root=static_path)
+    def static(filename):
+        return bottle.static_file(filename, root=static_path)
 
     @app.route('/favicon.ico')
     def favicon():
-        return static_file('favicon.ico', root=static_path)
+        return bottle.static_file('favicon.ico', root=static_path)
 
     return app
 
