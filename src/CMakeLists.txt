@@ -3,7 +3,7 @@
 ##############################################################
 
 # general settings
-cmake_minimum_required (VERSION 2.8.8)
+cmake_minimum_required (VERSION 2.8.0)
 project (Magneto)
 
 option(ENABLE_CUDA_32 "Enable CUDA (only 32 bit support)" OFF)
@@ -164,17 +164,10 @@ configure_file(
 )
 
 ##############################################################
-###    Tests                                               ###
-##############################################################
-
-ENABLE_TESTING()
-add_test(NAME allTests WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../tests COMMAND python${PYTHON_MAJOR} run-all-tests.py --skip-long-tests)
-
-##############################################################
 ###    Install rule                                        ###
 ##############################################################
 
-#message("${PYTHONLIBS_VERSION_STRING}")
+message("${PYTHONLIBS_VERSION_STRING}")
 STRING(SUBSTRING "${PYTHONLIBS_VERSION_STRING}" 0 3 PYTHON_MAJOR)
 
 # set PYTHON_SITE_PACKAGES path
