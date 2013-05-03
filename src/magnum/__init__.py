@@ -18,9 +18,6 @@
 __version__ = "0.2rc4"
 __license__ = 'GPL3'
 
-import sys
-print sys.argv
-
 
 # I. Import public API of modules in this package
 from magnum.tools import flush, frange, irange, range_3d
