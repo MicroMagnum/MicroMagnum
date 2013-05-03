@@ -120,16 +120,14 @@ class Configuration(object):
             # 'auto'
             if arg == "auto":
                 try:
-                    nv = nvidia_smi.NVidiaSmi()
-                    nv.refresh()
+                    gpus = nvidia_smi.run()
+                    available = nvidia_smi.available(gpus)
+                    if len(available == 0):
+                        logger.warn("Could not find any available GPUs (out of %s detected GPUs)." % len(gpus))
+                        return -1
+                    return available[0]
                 except:
-                    pass
-                available = nv.available
-                if len(available) == 0:
-                    logger.warn("Could not find any available GPUs (out of %s detected GPUs)." % len(nv.all))
                     return -1
-                else:
-                    return nv.available[0]
             else:
                 # id specified by user
                 return int(arg)
