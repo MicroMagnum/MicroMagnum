@@ -24,12 +24,8 @@
 #include "matrix/matty.h"
 #include "diffeq.h"
 
-#define Y1    RCONST(1.0)      /* initial y components */
-#define Y2    RCONST(1.0)
-#define Y3    RCONST(1.0)
 #define T0    RCONST(0.0)      /* initial time           */
 #define Tmax  RCONST(1e-9)
-#define Ith(v,i)    NV_Ith_S(v,i-1)       /* Ith numbers components 1..NEQ */
 
 
 class Cvode {

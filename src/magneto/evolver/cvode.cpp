@@ -42,7 +42,7 @@ Cvode::Cvode(DiffEq &diff)
   _Ny = N_VNew_Serial(_size);
 
   _diff.getN_Vector(_diff.getY(), _Ny);
-  _diff.printN_Vector(_Ny);
+  //_diff.printN_Vector(_Ny);
 
   _reltol = 1e-60;
   _abstol = 4e8;
@@ -88,7 +88,7 @@ void Cvode::cvodeCalculate()
   assert(yout != NULL);
   std::cout << "cvode 3\n";
 
-  //CVodeFree(&cvode_mem);
+  CVodeFree(&cvode_mem);
   std::cout << "cvode 4\n";
   N_VDestroy_Serial(_Ny);
   std::cout << "cvode 5\n";

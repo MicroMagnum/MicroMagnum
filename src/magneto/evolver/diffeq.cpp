@@ -74,9 +74,9 @@ void DiffEq::getN_Vector(const VectorMatrix& mat, N_Vector& nvec)
   {
     const int i = z*dim_xy + y*dim_x + x; // linear index of (x,y,z)
     Vector3d vec3 = Macc.get(i);
-    Ith(nvec,3*i+1) = vec3[0];
-    Ith(nvec,3*i+2) = vec3[1];
-    Ith(nvec,3*i+3) = vec3[2];
+    Ith(nvec,3*i+0) = vec3[0];
+    Ith(nvec,3*i+1) = vec3[1];
+    Ith(nvec,3*i+2) = vec3[2];
   }
 }
 
@@ -96,9 +96,9 @@ void DiffEq::getVectorMatrix(const N_Vector& vec, VectorMatrix& mat)
 
     Vector3d vec3;
 
-    vec3[0] = Ith(vec,3*i+1);
-    vec3[1] = Ith(vec,3*i+2);
-    vec3[2] = Ith(vec,3*i+3);
+    vec3[0] = Ith(vec,3*i+0);
+    vec3[1] = Ith(vec,3*i+1);
+    vec3[2] = Ith(vec,3*i+2);
     Macc.set(i, vec3);
   }
 }
@@ -116,10 +116,10 @@ void DiffEq::printVectorMatrix(const VectorMatrix& mat)
   int dim_z = mat.dimZ();
   const int dim_xy = dim_x * dim_y;
 
-  std::cout << "matrixTest size: " << mat.size() << "\n";
-  std::cout << "matrixTest dimX: " << mat.dimX() << "\n";
-  std::cout << "matrixTest dimY: " << mat.dimY() << "\n";
-  std::cout << "matrixTest dimZ: " << mat.dimZ() << "\n";
+  std::cout << "VectorMatrix size: " << mat.size() << "\n";
+  std::cout << "VectorMatrix dimX: " << mat.dimX() << "\n";
+  std::cout << "VectorMatrix dimY: " << mat.dimY() << "\n";
+  std::cout << "VectorMatrix dimZ: " << mat.dimZ() << "\n";
 
   {
     VectorMatrix::const_accessor Macc(mat);

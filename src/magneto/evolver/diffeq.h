@@ -23,7 +23,7 @@
 #include "matrix/matty.h"
 #include <nvector/nvector_serial.h>
 
-#define Ith(v,i)    NV_Ith_S(v,i-1)       /* Ith numbers components 1..NEQ */
+#define Ith(v,i)    NV_Ith_S(v,i)       /* Ith numbers components 1..NEQ */
 
 //using namespace matty;
 class DiffEq {
@@ -57,8 +57,7 @@ class DiffEq {
     virtual void diffX(const VectorMatrix &My, VectorMatrix &Mydot, double t);
 
     /*
-     * Returns a copy of initial VectorMatrix.
-     * TODO reference.
+     * Returns a reference of initial VectorMatrix.
      */
     virtual VectorMatrix getY();
 
@@ -81,6 +80,7 @@ class DiffEq {
 
     /*
      * tests matrix conversion.
+     * TODO move to Magnum tests
      */
     static void matrixTest(VectorMatrix mat);
 
