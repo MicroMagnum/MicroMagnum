@@ -168,7 +168,7 @@ configure_file(
 ##############################################################
 
 ENABLE_TESTING()
-add_test(NAME allTests WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../tests COMMAND python${PYTHON_MAJOR} run-all-tests.py --skip-long-tests)
+add_test(NAME allTests WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/.. COMMAND python${PYTHON_MAJOR} run-all-tests.py)
 
 ##############################################################
 ###    Install rule                                        ###
