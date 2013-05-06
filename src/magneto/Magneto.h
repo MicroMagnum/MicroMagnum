@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 by the Micromagnum authors.
+ * Copyright 2012, 2013 by the Micromagnum authors.
  *
  * This file is part of MicroMagnum.
  * 
@@ -41,6 +41,12 @@ void printProfilingReport();
 
 #define CUTIC(id) { if (isProfilingEnabled()) { cudaThreadSynchronize(); Benchmark::inst().tic(id); } }
 #define CUTOC(id) { if (isProfilingEnabled()) { cudaThreadSynchronize(); Benchmark::inst().toc(id); } }
+
+#ifdef HAVE_CUDA
+#define SWIG_SYNCHRONIZE() do { CUDA_THREAD_SYNCHRONIZE(); } while (false);
+#else
+#define SWIG_SYNCHRONIZE() while (false);
+#endif
 
 // CUDA support control
 enum CudaMode {

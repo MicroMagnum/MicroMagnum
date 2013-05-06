@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 by the Micromagnum authors.
+ * Copyright 2012, 2013 by the Micromagnum authors.
  *
  * This file is part of MicroMagnum.
  * 
@@ -173,4 +173,3 @@ void Transformer_CPU::transform_inverse_x(double *inout)
 {
 	fftw_execute_dft_c2r(plan_x_c2r, (fftw_complex*)inout, (double*)inout);
 }
-

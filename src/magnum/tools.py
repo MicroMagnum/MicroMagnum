@@ -1,28 +1,92 @@
-# Copyright 2012 by the Micromagnum authors.
+# Copyright 2012, 2013 by the Micromagnum authors.
 #
 # This file is part of MicroMagnum.
-# 
+#
 # MicroMagnum is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # MicroMagnum is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
+
+import os, sys
+
+def flush():
+    import gc
+    gc.collect()
+    from .magneto import flush
+    flush()
+
+
+def cpu_count():
+    try:
+        import multiprocessing
+        return multiprocessing.cpu_count()
+    except:
+        from magnum.logger import logger
+        logger.warn("Could not find out number of processors")
+        return 1
+
+## Fancy colors #########################################
+
+# Enable colors if not windows and console is interactive (and thus hopefully supports ansi escape codes)
+# Fixme: Maybe check $TERM variable.
+if os.name != "nt" and hasattr(sys.stdout, "isatty") and sys.stdout.isatty():
+    def color(c):
+        return "\033[" + str(30+c) + "m"
+    def nocolor():
+        return "\033[0m"
+else:
+    def color(c):
+        return ""
+    def nocolor():
+        return ""
+
+## Interactive menus ####################################
+
+if sys.version_info < (3, 0):
+    getline = raw_input # Python 2.x
+else:
+    getline = input # Python 3.x
+
+def print_header(header, width):
+    pad = (width - len(header)) - 2
+    hdr = "="*pad + "[" + header + "]" + "="*pad
+    print(hdr)
+
+def interactive_menu(header, text, options):
+    print_header(header, 60)
+    print(text)
+    for idx, opt in enumerate(options):
+        print("  %i. %s" % (idx+1, opt))
+    while True:
+        print("Choice: ", end="")
+        try:
+            ans = int(getline())
+            if ans < 1 or ans > len(options)+1:
+                raise ValueError()
+        except:
+            print("Type a number between 1 and %i." % len(options))
+            continue
+        break
+    return ans
+
+## Generate a list of floats from a range ###############
 
 def frange(*args):
     """
     A float range generator. Usage:
 
     frange(start [,stop [,step]]) -> generator
- 
+
     Examples:
       list(frange(4.2))            -> [0.0, 1.0, 2.0, 3.0, 4.0]
       list(frange(2.2, 5.6))       -> [2.2, 2.3, 4.3, 5.3]
@@ -33,7 +97,7 @@ def frange(*args):
 
     l = len(args)
     if l == 1:
-        end = args[0]
+        end, = args
     elif l == 2:
         start, end = args
     elif l == 3:
@@ -49,21 +113,3 @@ def frange(*args):
             raise StopIteration
         yield v
         v += step
-
-def flush():
-  import gc
-  gc.collect()
-
-  from .magneto import flush
-  flush()
-
-  #if len(gc.garbage) > 0:
-  #  logger.warn("Uncollectable garbage!")
-
-def cpu_count():
-  try:
-    import multiprocessing
-    return multiprocessing.cpu_count()
-  except:
-    logger.warn("Could not find out number of processors")
-    return 1

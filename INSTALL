@@ -9,10 +9,16 @@ Basically, if all prerequisites are installed:
   #./run-cmake-cuda.sh     # build with 32-bit GPU support
   #./run-cmake-cuda-64.sh  #   -or- build setup with 64-bit GPU support (needs installed CUDA libraries and compiler and a GPU with device capability 2.0+)
   make                     # 3. compile everything
+
+  # With global install:
   sudo make install
+
+  # Without install: Set your $PYTHONPATH variable to the src/ directory 
+  #                  (which contains the magnum and magneto subdirectories).
+  export PYTHONPATH=xyz/src
 
 How to check if everything went fine:
 
   cd examples/sp4
-  ./sp4.py     # on CPU or use -g0 on GPU
-
+  ./sp4.py         # on CPU; or use -g0 or -G0 on GPU
+  ./sp4.py --help

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 by the Micromagnum authors.
+ * Copyright 2012, 2013 by the Micromagnum authors.
  *
  * This file is part of MicroMagnum.
  * 
@@ -140,11 +140,10 @@ Matrix GenerateDemagTensor(
 	const std::string cache_path = cacheFile(info);
 
 	LOG_INFO << "Setting up demagnetization tensor field";
-	LOG_INFO << "  Magnetiz. size : " << dim_x << "x" << dim_y << "x" << dim_z << " cells";
-	LOG_INFO << "  Zeropadded     : " << exp_x << "x" << exp_y << "x" << exp_z;
-	LOG_INFO << "  PBC dimensions : " << (periodic_x ? "x" : "") << (periodic_y ? "y" : "") << (periodic_z ? "z" : "") << (!periodic_x && !periodic_y && !periodic_z ? "none" : "");
-	LOG_INFO << "  PBC repetitions: " << periodic_repeat;
-	LOG_INFO << "  Cache file     : " << cache_path;
+	LOG_INFO << "  Magn. size      : " << dim_x << "x" << dim_y << "x" << dim_z << " cells";
+	LOG_INFO << "  FFT size        : " << exp_x << "x" << exp_y << "x" << exp_z;
+	LOG_INFO << "  PBC dimensions  : " << (periodic_x ? "x" : "") << (periodic_y ? "y" : "") << (periodic_z ? "z" : "") << (!periodic_x && !periodic_y && !periodic_z ? "none" : "") << "  (" << periodic_repeat << " repetitions)";
+	LOG_INFO << "  Cache file      : " << cache_path;
 
 	// Skip computation?
 	if (std::getenv("MAGNUM_DEMAG_GARBAGE")) {

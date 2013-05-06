@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 by the Micromagnum authors.
+ * Copyright 2012, 2013 by the Micromagnum authors.
  *
  * This file is part of MicroMagnum.
  * 
@@ -15,6 +15,10 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*
+ * This file was developed by Benjamin Krueger.
  */
 
 #include "config.h"

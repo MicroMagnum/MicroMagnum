@@ -12,8 +12,8 @@ set(SRC
   demag/demag_tensor.cpp
 
   # exchange
-  exchange/fdm_exchange.cpp
-  exchange/fdm_exchange_cpu.cpp
+  exchange/exchange.cpp
+  exchange/exchange_cpu.cpp
 
   # io
   io/OMFHeader.cpp
@@ -32,7 +32,7 @@ set(SRC
 
 set(CUSRC
   anisotropy/anisotropy_cuda.cu
-  exchange/fdm_exchange_cuda.cu
+  exchange/exchange_cuda.cu
   llge/llge_cuda.cu
   spintorque/fdm_zhangli_cuda.cu
 )

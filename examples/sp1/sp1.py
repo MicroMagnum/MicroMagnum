@@ -1,22 +1,40 @@
 #!/usr/bin/python
 from magnum import *
-from frange import frange
-from math import cos, sin, pi
+from math import sin, cos, pi
 
-mesh = RectangularMesh((500,250,1), (5e-9, 5e-9, 20e-9))
-Py = Material.Py(k_uni=5e2, axis1=(1,0,0))
-world = World(mesh, Body("square", Py, Everywhere()))
+Py = Material.Py(Ms=8e5, A=1.3e-11,k_uniaxial=5e2, axis1=(0,1,0))
 
-solver = create_solver(world, [StrayField, ExchangeField, AnisotropyField, ExternalField], log=True)
+# x: "short axis"
+# y: "long axis"
+world = World(
+  RectangularMesh((50,100,1), (20e-9, 20e-9, 20e-9)),
+  #RectangularMesh((100,200,1), (10e-9, 10e-9, 20e-9)),
+  #RectangularMesh((200,400,4), (5e-9, 5e-9, 5e-9)),
+  Body("square", Py, Everywhere())
+)
 
-# Create initial state
-solver.state.M = (8e5, 0, 0)
+def hysteresis(name, axis):
+  f = open("hysteresis-%s-axis.txt" % name, "w+")
+  f.write("# H (mT)\t<mx> <my> <mz>\n")
 
-# Perform hysteresis
-H_range = list(frange(+50e-3, -50e-3, -5e-3)) + list(frange(-50e-3, +50e-3, 5e-3))
-for tmp in H_range:
-  H = (tmp/MU0 * cos(pi/180), tmp/MU0 * sin(pi/180), 0) # in A/m
-  print(H)
+  solver = create_solver(
+    world, [StrayField, ExchangeField, AnisotropyField, ExternalField], log=True, do_precess=False
+  )
+  solver.state.M = (axis[0]*Py.Ms, axis[1]*Py.Ms, axis[2]*Py.Ms)
 
-  solver.state.H_offs = H
-  solver.relax(1.0)
+  for H in [x*1e-3/MU0 for x in range(50,-51,-1) + range(-50,51,1)]:
+    print name, H*MU0
+    Hx, Hy, Hz = H*axis[0], H*axis[1], H*axis[2]
+    solver.state.H_ext_offs = (Hx, Hy, Hz)
+    solver.relax(1.0)
+    Mx, My, Mz = solver.state.M.average()
+    f.write("%s\t%s %s %s\n" % (H*MU0, Mx/Py.Ms, My/Py.Ms, Mz/Py.Ms))
+
+    if H == 0:
+      writeOMF("M_remanence-%s-%s.omf" % (name, "up" if H > H_last else "down"), solver.state.M)
+    H_last = H
+
+  f.close()
+
+hysteresis( "long", (sin(pi/180), cos(pi/180), 0.0))
+hysteresis("short", (cos(pi/180), sin(pi/180), 0.0))

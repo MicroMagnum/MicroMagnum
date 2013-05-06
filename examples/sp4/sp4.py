@@ -44,6 +44,7 @@ def apply_field(M0, H, file_prefix):
         t_1, Mx_1 = state.t, Mx
         print ("First zero-crossing of <Mx> at", (t_0 + Mx_0*(t_1-t_0)/(Mx_1-Mx_0))*1e9, "ns!")
         writeOMF(file_prefix + "-Mx-zero.omf", state.M)
+        writeImage(file_prefix + "-Mx-zero.png", state.M, "x")
         self.crossed = True
       else:
         self.t_0, self.Mx_0 = state.t, Mx

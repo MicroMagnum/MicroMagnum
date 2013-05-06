@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 by the Micromagnum authors.
+ * Copyright 2012, 2013 by the Micromagnum authors.
  *
  * This file is part of MicroMagnum.
  * 
@@ -18,10 +18,10 @@
  */
 
 %{
-#include "mmm/exchange/fdm_exchange.h"
+#include "mmm/exchange/exchange.h"
 %}
 
-double fdm_exchange(
+double exchange(
 	int dim_x, int dim_y, int dim_z,
 	double delta_x, double delta_y, double delta_z,
 	bool periodic_x, bool periodic_y, bool periodic_z,
@@ -31,3 +31,9 @@ double fdm_exchange(
 	VectorMatrix &H
 );
 
+double exchange(
+	const Field &Ms,
+	const Field &A,
+	const VectorField &M,
+	VectorField &H
+);

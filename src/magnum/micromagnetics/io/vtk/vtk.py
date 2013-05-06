@@ -5,7 +5,7 @@
 #
 
 # ***********************************************************************************
-# * Copyright 2010 Paulo A. Herrera. All rights reserved.                           * 
+# * Copyright 2010 Paulo A. Herrera. All rights reserved.                           *
 # *                                                                                 *
 # * Redistribution and use in source and binary forms, with or without              *
 # * modification, are permitted provided that the following conditions are met:     *
@@ -133,10 +133,10 @@ def _get_byte_order():
 #        VtkGroup class
 # ================================
 class VtkGroup(object):
-    
+
     def __init__(self, rootpath = ".", filename = "group.pvd"):
         """ Creates a VtkGroup file that is stored in filepath.
-            
+
             PARAMETERS:
                 filepath: filename (should include .pvd extension)
         """
@@ -151,7 +151,7 @@ class VtkGroup(object):
         self.xml.closeElement("Collection")
         self.xml.closeElement("VTKFile")
         self.xml.close()
-    
+
     def addFile(self, filepath, **attributes):
         """ Adds file to this VTK group.
 
@@ -165,14 +165,14 @@ class VtkGroup(object):
         self.xml.openElement("DataSet")
         self.xml.addAttributes(group = "", part = "0", file = filename, **attributes)
         self.xml.closeElement()
-        
+
 
 
 # ================================
-#        VtkFile class         
+#        VtkFile class
 # ================================
 class VtkFile(object):
-    
+
     def __init__(self, filepath, ftype):
         """
             PARAMETERS:
@@ -195,9 +195,9 @@ class VtkFile(object):
 
     def openPiece(self, start = None, end = None,
                         npoints = None, ncells = None,
-                        nverts = None, nlines = None, nstrips = None, npolys = None): 
+                        nverts = None, nlines = None, nstrips = None, npolys = None):
         """ Open piece section.
-            
+
             PARAMETERS:
                 Next two parameters must be given together.
                 start: array or list with start indexes in each direction.
@@ -223,7 +223,7 @@ class VtkFile(object):
         if (start and end):
             ext = _mix_extents(start, end)
             self.xml.addAttributes( Extent = ext)
-        
+
         elif (ncells and npoints):
             self.xml.addAttributes(NumberOfPoints = npoints, NumberOfCells = ncells)
 
@@ -271,7 +271,7 @@ class VtkFile(object):
 
             PARAMETERS:
                 nodeType: Point or Cell.
- 
+
             RETURNS:
                 this VtkFile to allow chained calls.
         """
@@ -298,12 +298,12 @@ class VtkFile(object):
             self.xml.addAttributes(WholeExtent = ext,
                                    Origin = _array_to_string(origin),
                                    Spacing = _array_to_string(spacing))
-        
+
         elif (gType == VtkStructuredGrid.name or gType == VtkRectilinearGrid.name):
             if (not start or not end): assert (False)
             ext = _mix_extents(start, end)
-            self.xml.addAttributes(WholeExtent = ext) 
-                
+            self.xml.addAttributes(WholeExtent = ext)
+
         return self
 
     def closeGrid(self):
@@ -314,7 +314,7 @@ class VtkFile(object):
         """
         self.xml.closeElement(self.ftype.name)
 
-    
+
     def addData(self, name, dtype, nelem, ncomp):
         """ Adds data array description to xml header section.
 
@@ -346,7 +346,7 @@ class VtkFile(object):
 
             PARAMETERS:
                 data: the bytearray that holds the data to write. must have the correct length
-            
+
             RETURNS:
                 This VtkFile to allow chained calls
         """
@@ -387,4 +387,3 @@ class VtkFile(object):
             self.xml.closeElement("AppendedData")
         self.xml.closeElement("VTKFile")
         self.xml.close()
-    

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 by the Micromagnum authors.
+ * Copyright 2012, 2013 by the Micromagnum authors.
  *
  * This file is part of MicroMagnum.
  * 
@@ -18,7 +18,10 @@
  */
 
 #include "config.h"
+
 #include "cublas_wrap.h"
+#include "kernels_simple.h"
+#include "kernels_reduce.h"
 
 #include <stdexcept>
 #include <cassert>

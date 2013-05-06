@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 by the Micromagnum authors.
+ * Copyright 2012, 2013 by the Micromagnum authors.
  *
  * This file is part of MicroMagnum.
  * 
@@ -31,11 +31,12 @@ namespace std {
 %exception {
         try {
                 $action
+                SWIG_SYNCHRONIZE();
         } catch (std::exception &e) {
                 PyErr_SetString(PyExc_RuntimeError, const_cast<char*>(e.what()));
                 return 0;
         } catch (...) {
-                PyErr_SetString(PyExc_RuntimeError, "Some C++ exception occured!");
+                PyErr_SetString(PyExc_RuntimeError, "unknown exception in magneto");
                 return 0;
         }
 }
@@ -52,12 +53,22 @@ namespace std {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+%{
+#include "config.h"
+#include "Magneto.h"
+#include "matrix/matty.h"
+%}
+
 // Magneto parts
 %include "../matrix/matty.inc.i" // Matrix subsystem definitions
 %include "mmm.i"
 %include "math.i"
 %include "evolver.i"
 %include "benchmark.i"
+
+%include "../mesh/RectangularMesh.i"
+%include "../mesh/VectorField.i"
+%include "../mesh/Field.i"
 
 %{
 #include "Magneto.h"

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 by the Micromagnum authors.
+ * Copyright 2012, 2013 by the Micromagnum authors.
  *
  * This file is part of MicroMagnum.
  * 
@@ -17,6 +17,10 @@
  * along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * This file was developed by Benjamin Krueger.
+ */
+
 #ifndef TENSOR_INTEGRALS_H
 #define TENSOR_INTEGRALS_H
 
@@ -28,7 +32,6 @@
 #include <math.h>
 
 #include "mmm/constants.h"
-//static const long double PI = 3.141592653589793238462643383279502884197169399;
 
 namespace tensor_integrals
 {
@@ -155,19 +158,7 @@ namespace tensor_integrals
 		} else if (a == 0 && b == 0 && c == 8) {
 			return (3*((-16*Power(x,4)*Power(y,6))/Power(Power(x,2) + Power(z,2),4) - (8*(5*Power(x,4)*Power(y,4) - 2*Power(x,2)*Power(y,6)))/Power(Power(x,2) + Power(z,2),3) - (2*(15*Power(x,4)*Power(y,2) - 20*Power(x,2)*Power(y,4) + Power(y,6)))/ Power(Power(x,2) + Power(z,2),2) - (5*(Power(x,4) - 6*Power(x,2)*Power(y,2) + Power(y,4)))/ (Power(x,2) + Power(z,2)) - (16*Power(x,6)*Power(y,4))/Power(Power(y,2) + Power(z,2),4) + (8*(2*Power(x,6)*Power(y,2) - 5*Power(x,4)*Power(y,4)))/Power(Power(y,2) + Power(z,2),3) - (2*(Power(x,6) - 20*Power(x,4)*Power(y,2) + 15*Power(x,2)*Power(y,4)))/ Power(Power(y,2) + Power(z,2),2) - (5*(Power(x,4) - 6*Power(x,2)*Power(y,2) + Power(y,4)))/ (Power(y,2) + Power(z,2))))/Power(R,5);
 		} else if (a == 0 && b == 0 && c == 9) {
-			return (3*z*(8*Power(x,18)*(5*Power(y,4) - 10*Power(y,2)*Power(z,2) + Power(z,4)) + 4*Power(x,16)*(7*Power(y,2) + 17*Power(z,2))*(5*Power(y,4) - 10*Power(y,2)*Power(z,2) + Power(z,4)) + 
-       5*Power(x,14)*(5*Power(y,4) - 10*Power(y,2)*Power(z,2) + Power(z,4))*(7*Power(y,4) + 42*Power(y,2)*Power(z,2) + 51*Power(z,4)) + 
-       Power(y,4)*Power(z,4)*Power(Power(y,2) + Power(z,2),4)*(8*Power(y,6) + 36*Power(y,4)*Power(z,2) + 63*Power(y,2)*Power(z,4) + 70*Power(z,6)) + 
-       5*Power(x,12)*(21*Power(y,10) + 210*Power(y,8)*Power(z,2) + 266*Power(y,6)*Power(z,4) - 732*Power(y,4)*Power(z,6) - 951*Power(y,2)*Power(z,8) + 114*Power(z,10)) - 
-       Power(x,2)*Power(y,2)*Power(z,2)*Power(Power(y,2) + Power(z,2),3)*(80*Power(y,10) + 412*Power(y,8)*Power(z,2) + 864*Power(y,6)*Power(z,4) + 847*Power(y,4)*Power(z,6) + 
-          455*Power(y,2)*Power(z,8) + 420*Power(z,10)) + 5*Power(x,10)*(21*Power(y,12) + 196*Power(y,10)*Power(z,2) + 672*Power(y,8)*Power(z,4) + 308*Power(y,6)*Power(z,6) - 
-          1423*Power(y,4)*Power(z,8) - 1200*Power(y,2)*Power(z,10) + 162*Power(z,12)) + 
-       5*Power(x,4)*Power(Power(y,2) + Power(z,2),2)*(8*Power(y,14) - 4*Power(y,12)*Power(z,2) - 158*Power(y,10)*Power(z,4) - 412*Power(y,8)*Power(z,6) - 441*Power(y,6)*Power(z,8) - 
-          448*Power(y,4)*Power(z,10) - 371*Power(y,2)*Power(z,12) + 14*Power(z,14)) + 
-       7*Power(x,6)*(Power(y,2) + Power(z,2))*(20*Power(y,14) + 80*Power(y,12)*Power(z,2) + 110*Power(y,10)*Power(z,4) + 110*Power(y,8)*Power(z,6) - 85*Power(y,6)*Power(z,8) - 
-          675*Power(y,4)*Power(z,10) - 545*Power(y,2)*Power(z,12) + 49*Power(z,14)) + 
-       Power(x,8)*(175*Power(y,14) + 1050*Power(y,12)*Power(z,2) + 3360*Power(y,10)*Power(z,4) + 5600*Power(y,8)*Power(z,6) + 175*Power(y,6)*Power(z,8) - 8710*Power(y,4)*Power(z,10) - 
-          5190*Power(y,2)*Power(z,12) + 708*Power(z,14))))/(Power(R,7)*Power(Power(x,2) + Power(z,2),5)*Power(Power(y,2) + Power(z,2),5));
+			return (3*z*(8*Power(x,18)*(5*Power(y,4) - 10*Power(y,2)*Power(z,2) + Power(z,4)) + 4*Power(x,16)*(7*Power(y,2) + 17*Power(z,2))*(5*Power(y,4) - 10*Power(y,2)*Power(z,2) + Power(z,4)) + 5*Power(x,14)*(5*Power(y,4) - 10*Power(y,2)*Power(z,2) + Power(z,4))*(7*Power(y,4) + 42*Power(y,2)*Power(z,2) + 51*Power(z,4)) + Power(y,4)*Power(z,4)*Power(Power(y,2) + Power(z,2),4)*(8*Power(y,6) + 36*Power(y,4)*Power(z,2) + 63*Power(y,2)*Power(z,4) + 70*Power(z,6)) + 5*Power(x,12)*(21*Power(y,10) + 210*Power(y,8)*Power(z,2) + 266*Power(y,6)*Power(z,4) - 732*Power(y,4)*Power(z,6) - 951*Power(y,2)*Power(z,8) + 114*Power(z,10)) - Power(x,2)*Power(y,2)*Power(z,2)*Power(Power(y,2) + Power(z,2),3)*(80*Power(y,10) + 412*Power(y,8)*Power(z,2) + 864*Power(y,6)*Power(z,4) + 847*Power(y,4)*Power(z,6) + 455*Power(y,2)*Power(z,8) + 420*Power(z,10)) + 5*Power(x,10)*(21*Power(y,12) + 196*Power(y,10)*Power(z,2) + 672*Power(y,8)*Power(z,4) + 308*Power(y,6)*Power(z,6) - 1423*Power(y,4)*Power(z,8) - 1200*Power(y,2)*Power(z,10) + 162*Power(z,12)) + 5*Power(x,4)*Power(Power(y,2) + Power(z,2),2)*(8*Power(y,14) - 4*Power(y,12)*Power(z,2) - 158*Power(y,10)*Power(z,4) - 412*Power(y,8)*Power(z,6) - 441*Power(y,6)*Power(z,8) - 448*Power(y,4)*Power(z,10) - 371*Power(y,2)*Power(z,12) + 14*Power(z,14)) + 7*Power(x,6)*(Power(y,2) + Power(z,2))*(20*Power(y,14) + 80*Power(y,12)*Power(z,2) + 110*Power(y,10)*Power(z,4) + 110*Power(y,8)*Power(z,6) - 85*Power(y,6)*Power(z,8) - 675*Power(y,4)*Power(z,10) - 545*Power(y,2)*Power(z,12) + 49*Power(z,14)) + Power(x,8)*(175*Power(y,14) + 1050*Power(y,12)*Power(z,2) + 3360*Power(y,10)*Power(z,4) + 5600*Power(y,8)*Power(z,6) + 175*Power(y,6)*Power(z,8) - 8710*Power(y,4)*Power(z,10) - 5190*Power(y,2)*Power(z,12) + 708*Power(z,14))))/(Power(R,7)*Power(Power(x,2) + Power(z,2),5)*Power(Power(y,2) + Power(z,2),5));
 		} else if (a == 0 && b == 1 && c == 1) {
 			if (j == 0 || k == 0) return 0;
 			if (i == 0) return (-2*y*z*R - Power(z,3)*ArcTanh(y/R) - Power(y,3)*ArcTanh(z/R))/6.;
@@ -197,17 +188,9 @@ namespace tensor_integrals
 		} else if (a == 0 && b == 2 && c == 6) {
 			return (3*(Power(y,2)*(Power(y,2) - 4*Power(z,2))*Power(Power(y,2) + Power(z,2),3) + 2*Power(x,6)*(Power(y,4) - 6*Power(y,2)*Power(z,2) + Power(z,4)) + 2*Power(x,2)*Power(Power(y,2) + Power(z,2),2)*(2*Power(y,4) - 11*Power(y,2)*Power(z,2) + 2*Power(z,4)) + 5*Power(x,4)*(Power(y,6) - 5*Power(y,4)*Power(z,2) - 5*Power(y,2)*Power(z,4) + Power(z,6))))/ (Power(R,5)*Power(Power(y,2) + Power(z,2),4));
 		} else if (a == 0 && b == 2 && c == 7) {
-			return (-3*z*(5*Power(y,2)*(3*Power(y,2) - 4*Power(z,2))*Power(Power(y,2) + Power(z,2),4) + 8*Power(x,8)*(5*Power(y,4) - 10*Power(y,2)*Power(z,2) + Power(z,4)) + 
-       28*Power(x,6)*(Power(y,2) + Power(z,2))*(5*Power(y,4) - 10*Power(y,2)*Power(z,2) + Power(z,4)) + 
-       10*Power(x,2)*Power(Power(y,2) + Power(z,2),3)*(9*Power(y,4) - 17*Power(y,2)*Power(z,2) + 2*Power(z,4)) + 
-       35*Power(x,4)*(5*Power(y,8) - 14*Power(y,4)*Power(z,4) - 8*Power(y,2)*Power(z,6) + Power(z,8))))/(Power(R,7)*Power(Power(y,2) + Power(z,2),5));
+			return (-3*z*(5*Power(y,2)*(3*Power(y,2) - 4*Power(z,2))*Power(Power(y,2) + Power(z,2),4) + 8*Power(x,8)*(5*Power(y,4) - 10*Power(y,2)*Power(z,2) + Power(z,4)) + 28*Power(x,6)*(Power(y,2) + Power(z,2))*(5*Power(y,4) - 10*Power(y,2)*Power(z,2) + Power(z,4)) + 10*Power(x,2)*Power(Power(y,2) + Power(z,2),3)*(9*Power(y,4) - 17*Power(y,2)*Power(z,2) + 2*Power(z,4)) + 35*Power(x,4)*(5*Power(y,8) - 14*Power(y,4)*Power(z,4) - 8*Power(y,2)*Power(z,6) + Power(z,8))))/(Power(R,7)*Power(Power(y,2) + Power(z,2),5));
 		} else if (a == 0 && b == 2 && c == 8) {
-			return (-15*(3*Power(y,2)*Power(Power(y,2) + Power(z,2),5)*(Power(y,4) - 12*Power(y,2)*Power(z,2) + 8*Power(z,4)) + 
-       Power(x,4)*Power(Power(y,2) + Power(z,2),3)*(53*Power(y,6) - 786*Power(y,4)*Power(z,2) + 789*Power(y,2)*Power(z,4) - 52*Power(z,6)) + 
-       3*Power(x,2)*Power(Power(y,2) + Power(z,2),4)*(7*Power(y,6) - 99*Power(y,4)*Power(z,2) + 96*Power(y,2)*Power(z,4) - 8*Power(z,6)) + 
-       8*Power(x,10)*(Power(y,6) - 15*Power(y,4)*Power(z,2) + 15*Power(y,2)*Power(z,4) - Power(z,6)) + 
-       63*Power(x,6)*Power(Power(y,2) + Power(z,2),2)*(Power(y,6) - 15*Power(y,4)*Power(z,2) + 15*Power(y,2)*Power(z,4) - Power(z,6)) + 
-       36*Power(x,8)*(Power(y,8) - 14*Power(y,6)*Power(z,2) + 14*Power(y,2)*Power(z,6) - Power(z,8))))/(Power(R,9)*Power(Power(y,2) + Power(z,2),6));
+			return (-15*(3*Power(y,2)*Power(Power(y,2) + Power(z,2),5)*(Power(y,4) - 12*Power(y,2)*Power(z,2) + 8*Power(z,4)) + Power(x,4)*Power(Power(y,2) + Power(z,2),3)*(53*Power(y,6) - 786*Power(y,4)*Power(z,2) + 789*Power(y,2)*Power(z,4) - 52*Power(z,6)) + 3*Power(x,2)*Power(Power(y,2) + Power(z,2),4)*(7*Power(y,6) - 99*Power(y,4)*Power(z,2) + 96*Power(y,2)*Power(z,4) - 8*Power(z,6)) + 8*Power(x,10)*(Power(y,6) - 15*Power(y,4)*Power(z,2) + 15*Power(y,2)*Power(z,4) - Power(z,6)) + 63*Power(x,6)*Power(Power(y,2) + Power(z,2),2)*(Power(y,6) - 15*Power(y,4)*Power(z,2) + 15*Power(y,2)*Power(z,4) - Power(z,6)) + 36*Power(x,8)*(Power(y,8) - 14*Power(y,6)*Power(z,2) + 14*Power(y,2)*Power(z,6) - Power(z,8))))/(Power(R,9)*Power(Power(y,2) + Power(z,2),6));
 		} else if (a == 0 && b == 3 && c == 1) {
 			return -(x*ArcTan((x*z)/(R*y))) - y*ArcTanh(z/R);
 		} else if (a == 0 && b == 3 && c == 3) {
@@ -219,17 +202,9 @@ namespace tensor_integrals
 		} else if (a == 0 && b == 4 && c == 4) {
 			return -((6*Power(x,6)*(Power(y,4) - 6*Power(y,2)*Power(z,2) + Power(z,4)) + Power(Power(y,2) + Power(z,2),3)*(2*Power(y,4) - 11*Power(y,2)*Power(z,2) + 2*Power(z,4)) + Power(x,2)*Power(Power(y,2) + Power(z,2),2)*(11*Power(y,4) - 68*Power(y,2)*Power(z,2) + 11*Power(z,4)) + 15*Power(x,4)*(Power(y,6) - 5*Power(y,4)*Power(z,2) - 5*Power(y,2)*Power(z,4) + Power(z,6)))/ (Power(R,5)*Power(Power(y,2) + Power(z,2),4)));
 		} else if (a == 0 && b == 4 && c == 5) {
-			return (3*z*(8*Power(x,8)*(5*Power(y,4) - 10*Power(y,2)*Power(z,2) + Power(z,4)) + 28*Power(x,6)*(Power(y,2) + Power(z,2))*(5*Power(y,4) - 10*Power(y,2)*Power(z,2) + Power(z,4)) + 
-       Power(Power(y,2) + Power(z,2),4)*(12*Power(y,4) - 21*Power(y,2)*Power(z,2) + 2*Power(z,4)) + 
-       Power(x,2)*Power(Power(y,2) + Power(z,2),3)*(87*Power(y,4) - 176*Power(y,2)*Power(z,2) + 17*Power(z,4)) + 
-       35*Power(x,4)*(5*Power(y,8) - 14*Power(y,4)*Power(z,4) - 8*Power(y,2)*Power(z,6) + Power(z,8))))/(Power(R,7)*Power(Power(y,2) + Power(z,2),5));
+			return (3*z*(8*Power(x,8)*(5*Power(y,4) - 10*Power(y,2)*Power(z,2) + Power(z,4)) + 28*Power(x,6)*(Power(y,2) + Power(z,2))*(5*Power(y,4) - 10*Power(y,2)*Power(z,2) + Power(z,4)) + Power(Power(y,2) + Power(z,2),4)*(12*Power(y,4) - 21*Power(y,2)*Power(z,2) + 2*Power(z,4)) + Power(x,2)*Power(Power(y,2) + Power(z,2),3)*(87*Power(y,4) - 176*Power(y,2)*Power(z,2) + 17*Power(z,4)) + 35*Power(x,4)*(5*Power(y,8) - 14*Power(y,4)*Power(z,4) - 8*Power(y,2)*Power(z,6) + Power(z,8))))/(Power(R,7)*Power(Power(y,2) + Power(z,2),5));
 		} else if (a == 0 && b == 4 && c == 6) {
-			return (3*(Power(x,4)*Power(Power(y,2) + Power(z,2),3)*(262*Power(y,6) - 3939*Power(y,4)*Power(z,2) + 3936*Power(y,2)*Power(z,4) - 263*Power(z,6)) + 
-       3*Power(x,2)*Power(Power(y,2) + Power(z,2),4)*(33*Power(y,6) - 491*Power(y,4)*Power(z,2) + 494*Power(y,2)*Power(z,4) - 32*Power(z,6)) + 
-       Power(Power(y,2) + Power(z,2),5)*(12*Power(y,6) - 159*Power(y,4)*Power(z,2) + 136*Power(y,2)*Power(z,4) - 8*Power(z,6)) + 
-       40*Power(x,10)*(Power(y,6) - 15*Power(y,4)*Power(z,2) + 15*Power(y,2)*Power(z,4) - Power(z,6)) + 
-       315*Power(x,6)*Power(Power(y,2) + Power(z,2),2)*(Power(y,6) - 15*Power(y,4)*Power(z,2) + 15*Power(y,2)*Power(z,4) - Power(z,6)) + 
-       180*Power(x,8)*(Power(y,8) - 14*Power(y,6)*Power(z,2) + 14*Power(y,2)*Power(z,6) - Power(z,8))))/(Power(R,9)*Power(Power(y,2) + Power(z,2),6));
+			return (3*(Power(x,4)*Power(Power(y,2) + Power(z,2),3)*(262*Power(y,6) - 3939*Power(y,4)*Power(z,2) + 3936*Power(y,2)*Power(z,4) - 263*Power(z,6)) + 3*Power(x,2)*Power(Power(y,2) + Power(z,2),4)*(33*Power(y,6) - 491*Power(y,4)*Power(z,2) + 494*Power(y,2)*Power(z,4) - 32*Power(z,6)) + Power(Power(y,2) + Power(z,2),5)*(12*Power(y,6) - 159*Power(y,4)*Power(z,2) + 136*Power(y,2)*Power(z,4) - 8*Power(z,6)) + 40*Power(x,10)*(Power(y,6) - 15*Power(y,4)*Power(z,2) + 15*Power(y,2)*Power(z,4) - Power(z,6)) + 315*Power(x,6)*Power(Power(y,2) + Power(z,2),2)*(Power(y,6) - 15*Power(y,4)*Power(z,2) + 15*Power(y,2)*Power(z,4) - Power(z,6)) + 180*Power(x,8)*(Power(y,8) - 14*Power(y,6)*Power(z,2) + 14*Power(y,2)*Power(z,6) - Power(z,8))))/(Power(R,9)*Power(Power(y,2) + Power(z,2),6));
 		} else if (a == 1 && b == 1 && c == 2) {
 			return -(z*ArcTan((x*y)/(R*z))) + y*ArcTanh(x/R) + x*ArcTanh(y/R);
 		} else if (a == 1 && b == 1 && c == 3) {
@@ -237,18 +212,11 @@ namespace tensor_integrals
 		} else if (a == 1 && b == 1 && c == 4) {
 			return (x*y*(1/(Power(x,2) + Power(z,2)) + 1/(Power(y,2) + Power(z,2))))/R;
 		} else if (a == 1 && b == 1 && c == 5) {
-			return -((x*y*z*(2*Power(x,6) + 3*Power(x,4)*Power(y,2) + 3*Power(x,2)*Power(y,4) + 2*Power(y,6) + (7*Power(x,4) + 12*Power(x,2)*Power(y,2) + 7*Power(y,4))*Power(z,2) + 
-         11*(Power(x,2) + Power(y,2))*Power(z,4) + 6*Power(z,6)))/(Power(R,3)*Power(Power(x,2) + Power(z,2),2)*Power(Power(y,2) + Power(z,2),2)));
+			return -((x*y*z*(2*Power(x,6) + 3*Power(x,4)*Power(y,2) + 3*Power(x,2)*Power(y,4) + 2*Power(y,6) + (7*Power(x,4) + 12*Power(x,2)*Power(y,2) + 7*Power(y,4))*Power(z,2) + 11*(Power(x,2) + Power(y,2))*Power(z,4) + 6*Power(z,6)))/(Power(R,3)*Power(Power(x,2) + Power(z,2),2)*Power(Power(y,2) + Power(z,2),2)));
 		} else if (a == 1 && b == 1 && c == 6) {
 			return (x*y*(24 - (8*Power(x,2)*Power(y,4))/Power(Power(x,2) + Power(z,2),3) + (-20*Power(x,2)*Power(y,2) + 6*Power(y,4))/Power(Power(x,2) + Power(z,2),2) - (15*(x - y)*(x + y))/(Power(x,2) + Power(z,2)) - (8*Power(x,4)*Power(y,2))/Power(Power(y,2) + Power(z,2),3) + (6*Power(x,4) - 20*Power(x,2)*Power(y,2))/Power(Power(y,2) + Power(z,2),2) + (15*(x - y)*(x + y))/(Power(y,2) + Power(z,2))))/Power(R,5);
 		} else if (a == 1 && b == 1 && c == 7) {
-			return (3*x*y*z*(Power(x,2)*Power(y,2)*Power(Power(x,2) + Power(y,2),2)*(8*Power(x,8) + 12*Power(x,6)*Power(y,2) + 3*Power(x,4)*Power(y,4) + 12*Power(x,2)*Power(y,6) + 8*Power(y,8)) - 
-       Power(Power(x,2) + Power(y,2),3)*(8*Power(x,8) - 56*Power(x,6)*Power(y,2) - 3*Power(x,4)*Power(y,4) - 56*Power(x,2)*Power(y,6) + 8*Power(y,8))*Power(z,2) - 
-       Power(Power(x,2) + Power(y,2),2)*(60*Power(x,8) - 133*Power(x,6)*Power(y,2) - 177*Power(x,4)*Power(y,4) - 133*Power(x,2)*Power(y,6) + 60*Power(y,8))*Power(z,4) - 
-       3*(Power(x,2) + Power(y,2))*(65*Power(x,8) - 34*Power(x,6)*Power(y,2) - 150*Power(x,4)*Power(y,4) - 34*Power(x,2)*Power(y,6) + 65*Power(y,8))*Power(z,6) - 
-       (345*Power(x,8) + 247*Power(x,6)*Power(y,2) - 156*Power(x,4)*Power(y,4) + 247*Power(x,2)*Power(y,6) + 345*Power(y,8))*Power(z,8) - 
-       5*(Power(x,2) + Power(y,2))*(77*Power(x,4) + 10*Power(x,2)*Power(y,2) + 77*Power(y,4))*Power(z,10) - (303*Power(x,4) + 430*Power(x,2)*Power(y,2) + 303*Power(y,4))*Power(z,12) - 
-       160*(Power(x,2) + Power(y,2))*Power(z,14) - 40*Power(z,16)))/(Power(R,7)*Power(Power(x,2) + Power(z,2),4)*Power(Power(y,2) + Power(z,2),4));
+			return (3*x*y*z*(Power(x,2)*Power(y,2)*Power(Power(x,2) + Power(y,2),2)*(8*Power(x,8) + 12*Power(x,6)*Power(y,2) + 3*Power(x,4)*Power(y,4) + 12*Power(x,2)*Power(y,6) + 8*Power(y,8)) - Power(Power(x,2) + Power(y,2),3)*(8*Power(x,8) - 56*Power(x,6)*Power(y,2) - 3*Power(x,4)*Power(y,4) - 56*Power(x,2)*Power(y,6) + 8*Power(y,8))*Power(z,2) - Power(Power(x,2) + Power(y,2),2)*(60*Power(x,8) - 133*Power(x,6)*Power(y,2) - 177*Power(x,4)*Power(y,4) - 133*Power(x,2)*Power(y,6) + 60*Power(y,8))*Power(z,4) - 3*(Power(x,2) + Power(y,2))*(65*Power(x,8) - 34*Power(x,6)*Power(y,2) - 150*Power(x,4)*Power(y,4) - 34*Power(x,2)*Power(y,6) + 65*Power(y,8))*Power(z,6) - (345*Power(x,8) + 247*Power(x,6)*Power(y,2) - 156*Power(x,4)*Power(y,4) + 247*Power(x,2)*Power(y,6) + 345*Power(y,8))*Power(z,8) - 5*(Power(x,2) + Power(y,2))*(77*Power(x,4) + 10*Power(x,2)*Power(y,2) + 77*Power(y,4))*Power(z,10) - (303*Power(x,4) + 430*Power(x,2)*Power(y,2) + 303*Power(y,4))*Power(z,12) - 160*(Power(x,2) + Power(y,2))*Power(z,14) - 40*Power(z,16)))/(Power(R,7)*Power(Power(x,2) + Power(z,2),4)*Power(Power(y,2) + Power(z,2),4));
 		} else if (a == 1 && b == 2 && c == 2) {
 			return ArcTanh(x/R);
 		} else if (a == 1 && b == 2 && c == 3) {
@@ -258,9 +226,7 @@ namespace tensor_integrals
 		} else if (a == 1 && b == 2 && c == 5) {
 			return (x*z*(Power(x,4)*(6*Power(y,2) - 2*Power(z,2)) + 5*Power(x,2)*(3*Power(y,2) - Power(z,2))*(Power(y,2) + Power(z,2)) + 3*(3*Power(y,2) - 2*Power(z,2))*Power(Power(y,2) + Power(z,2),2)))/ (Power(R,5)*Power(Power(y,2) + Power(z,2),3));
 		} else if (a == 1 && b == 2 && c == 6) {
-			return (3*x*(2*Power(x,6)*(Power(y,4) - 6*Power(y,2)*Power(z,2) + Power(z,4)) + 2*Power(x,2)*Power(Power(y,2) + Power(z,2),2)*(4*Power(y,4) - 27*Power(y,2)*Power(z,2) + 4*Power(z,4)) + 
-       Power(Power(y,2) + Power(z,2),3)*(3*Power(y,4) - 24*Power(y,2)*Power(z,2) + 8*Power(z,4)) + 7*Power(x,4)*(Power(y,6) - 5*Power(y,4)*Power(z,2) - 5*Power(y,2)*Power(z,4) + Power(z,6))))/
-   (Power(R,7)*Power(Power(y,2) + Power(z,2),4));
+			return (3*x*(2*Power(x,6)*(Power(y,4) - 6*Power(y,2)*Power(z,2) + Power(z,4)) + 2*Power(x,2)*Power(Power(y,2) + Power(z,2),2)*(4*Power(y,4) - 27*Power(y,2)*Power(z,2) + 4*Power(z,4)) + Power(Power(y,2) + Power(z,2),3)*(3*Power(y,4) - 24*Power(y,2)*Power(z,2) + 8*Power(z,4)) + 7*Power(x,4)*(Power(y,6) - 5*Power(y,4)*Power(z,2) - 5*Power(y,2)*Power(z,4) + Power(z,6))))/ (Power(R,7)*Power(Power(y,2) + Power(z,2),4));
 		} else if (a == 1 && b == 3 && c == 4) {
 			return (x*y*(2*Power(x,4)*(Power(y,2) - 3*Power(z,2)) + 5*Power(x,2)*(Power(y,2) - 3*Power(z,2))*(Power(y,2) + Power(z,2)) + 3*(Power(y,2) - 4*Power(z,2))*Power(Power(y,2) + Power(z,2),2)))/ (Power(R,5)*Power(Power(y,2) + Power(z,2),3));
 		} else if (a == 2 && b == 2 && c == 2) {
@@ -385,20 +351,14 @@ namespace tensor_integrals
 
 		if (o == 0 && p == 0 && q == 2) {
 			sum += (Power(lx,2)*Power(ly,2)*Power(lz,2))/(Power(lx,2)*x - Power(x,3));
-			sum += (Power(lx,2)*Power(ly,2)*Power(lz,2)*(Power(lx,4) - 3*Power(lx,2)*Power(x,2) + 6*Power(x,4))*(Power(ly,2) + 3*(Power(lz,2) + 2*Power(y,2) + 6*Power(z,2))))/
-   (24.*Power(-(Power(lx,2)*x) + Power(x,3),3));
-			sum += -(Power(lx,2)*Power(ly,2)*Power(lz,2)*(Power(lx,8) - 5*Power(lx,6)*Power(x,2) + 10*Power(lx,4)*Power(x,4) - 5*Power(lx,2)*Power(x,6) + 15*Power(x,8))*
-      (2*Power(ly,4) + 5*Power(ly,2)*(Power(lz,2) + 6*(Power(y,2) + Power(z,2))) + 
-        10*(Power(lz,4) + 3*Power(lz,2)*(Power(y,2) + 5*Power(z,2)) + 3*(Power(y,2) + Power(z,2))*(Power(y,2) + 5*Power(z,2)))))/(240.*Power(-(Power(lx,2)*x) + Power(x,3),5));
+			sum += (Power(lx,2)*Power(ly,2)*Power(lz,2)*(Power(lx,4) - 3*Power(lx,2)*Power(x,2) + 6*Power(x,4))*(Power(ly,2) + 3*(Power(lz,2) + 2*Power(y,2) + 6*Power(z,2))))/ (24.*Power(-(Power(lx,2)*x) + Power(x,3),3));
+			sum += -(Power(lx,2)*Power(ly,2)*Power(lz,2)*(Power(lx,8) - 5*Power(lx,6)*Power(x,2) + 10*Power(lx,4)*Power(x,4) - 5*Power(lx,2)*Power(x,6) + 15*Power(x,8))* (2*Power(ly,4) + 5*Power(ly,2)*(Power(lz,2) + 6*(Power(y,2) + Power(z,2))) + 10*(Power(lz,4) + 3*Power(lz,2)*(Power(y,2) + 5*Power(z,2)) + 3*(Power(y,2) + Power(z,2))*(Power(y,2) + 5*Power(z,2)))))/(240.*Power(-(Power(lx,2)*x) + Power(x,3),5));
 			return sum;
 		}
 		if (o == 0 && p == 1 && q == 1) {
 			sum += (Power(lx,2)*Power(ly,2)*Power(lz,2)*(Power(lx,4) - 3*Power(lx,2)*Power(x,2) + 6*Power(x,4))*y*z)/(2.*Power(-(Power(lx,2)*x) + Power(x,3),3));
-			sum += -(Power(lx,2)*Power(ly,2)*Power(lz,2)*(Power(lx,8) - 5*Power(lx,6)*Power(x,2) + 10*Power(lx,4)*Power(x,4) - 5*Power(lx,2)*Power(x,6) + 15*Power(x,8))*y*z*
-      (Power(ly,2) + Power(lz,2) + 2*(Power(y,2) + Power(z,2))))/(4.*Power(-(Power(lx,2)*x) + Power(x,3),5));
-			sum += (5*Power(lx,2)*Power(ly,2)*Power(lz,2)*(Power(lx,12) - 7*Power(lx,10)*Power(x,2) + 21*Power(lx,8)*Power(x,4) - 35*Power(lx,6)*Power(x,6) + 42*Power(lx,4)*Power(x,8) + 
-       14*Power(lx,2)*Power(x,10) + 28*Power(x,12))*y*z*(2*Power(ly,4) + Power(ly,2)*(3*Power(lz,2) + 10*Power(y,2) + 6*Power(z,2)) + 
-       2*(Power(lz,4) + 3*Power(Power(y,2) + Power(z,2),2) + Power(lz,2)*(3*Power(y,2) + 5*Power(z,2)))))/(64.*Power(-(Power(lx,2)*x) + Power(x,3),7));
+			sum += -(Power(lx,2)*Power(ly,2)*Power(lz,2)*(Power(lx,8) - 5*Power(lx,6)*Power(x,2) + 10*Power(lx,4)*Power(x,4) - 5*Power(lx,2)*Power(x,6) + 15*Power(x,8))*y*z* (Power(ly,2) + Power(lz,2) + 2*(Power(y,2) + Power(z,2))))/(4.*Power(-(Power(lx,2)*x) + Power(x,3),5));
+			sum += (5*Power(lx,2)*Power(ly,2)*Power(lz,2)*(Power(lx,12) - 7*Power(lx,10)*Power(x,2) + 21*Power(lx,8)*Power(x,4) - 35*Power(lx,6)*Power(x,6) + 42*Power(lx,4)*Power(x,8) + 14*Power(lx,2)*Power(x,10) + 28*Power(x,12))*y*z*(2*Power(ly,4) + Power(ly,2)*(3*Power(lz,2) + 10*Power(y,2) + 6*Power(z,2)) + 2*(Power(lz,4) + 3*Power(Power(y,2) + Power(z,2),2) + Power(lz,2)*(3*Power(y,2) + 5*Power(z,2)))))/(64.*Power(-(Power(lx,2)*x) + Power(x,3),7));
 			return sum;
 		}
 
@@ -625,5 +585,3 @@ namespace tensor_integrals
 } // namespace
 
 #endif
-
-
