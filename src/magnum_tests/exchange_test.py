@@ -20,7 +20,7 @@
 from magnum import *
 import magnum.magneto as magneto
 
-from helpers import MyTestCase, right_rotate_vector_field, right_rotate_field, left_rotate_vector_field
+from .helpers import MyTestCase, right_rotate_vector_field, right_rotate_field, left_rotate_vector_field
 
 import unittest
 import random
