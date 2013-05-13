@@ -33,61 +33,61 @@
 #include "Magneto.h"
 #include "diffeq.h"
 
-#define Ith(v,i)    NV_Ith_S(v,i)       /* Ith numbers components 1..NEQ */ // TODO remove
-
+/*
+ * Cvode constructor
+ */
 Cvode::Cvode(DiffEq &diff)
   : _Ny(), _diff(diff)
 {
   _size = _diff.size();
   std::cout << "size: " << _size << "\n";
-
   _Ny = N_VNew_Serial(_size);
-
   _diff.getN_Vector(_diff.getY(), _Ny);
-  //_diff.printN_Vector(_Ny);
-
   _reltol = 1e-4;
   _abstol = 1e1;
+
+  /*
+   * CVode initialisation
+   */
+  _cvode_mem = NULL;
+
+  _cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
+  assert( _cvode_mem != NULL);
+
+  assert( CVodeSetUserData (_cvode_mem, &_diff)           == 0);
+  assert( CVodeInit        (_cvode_mem, callf, T0, _Ny)   == 0);
+  assert( CVodeSStolerances(_cvode_mem, _reltol, _abstol) == 0);
+  assert( CVDense          (_cvode_mem, _size)            == 0);
+
 }
 
 Cvode::~Cvode()
 {
+  N_VDestroy_Serial(_Ny);
+  CVodeFree(&_cvode_mem);
 }
 
-void Cvode::cvodeCalculate() 
+/*
+ * calculate next step
+ */
+void Cvode::evolve(const realtype Tmax) 
 {
   realtype t;
   N_Vector yout;
-  void *cvode_mem;
-  int flag;
 
   yout = NULL;
-  cvode_mem = NULL;
   yout = N_VNew_Serial(_size);
   assert(yout != NULL);
 
-  cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
-  assert(cvode_mem != NULL);
-  flag = CVodeSetUserData(cvode_mem, &_diff);
-  assert(flag == 0);
-  flag = CVodeInit(cvode_mem, callf, T0, _Ny);
-  assert(flag == 0);
-  flag = CVodeSStolerances(cvode_mem, _reltol, _abstol);
-  assert(flag == 0);
-  flag = CVDense(cvode_mem, _size);
-  assert(flag == 0);
+  /* call CVode */
+  assert( CVode(_cvode_mem, Tmax, yout, &t, CV_NORMAL) == 0);
 
-  _diff.printOutput(t,_Ny);
-
-  flag = CVode(cvode_mem, Tmax, yout, &t, CV_NORMAL);
-  assert(flag == 0);
-
-  _diff.printOutput(t,yout);
+  _diff.printOutput(t,yout); // TODO remove
   assert(yout != NULL);
 
-  N_VDestroy_Serial(_Ny);
-  CVodeFree(&cvode_mem);
-  std::cout << "done\n";
+  _diff.saveStateC(Tmax, yout);
+
+  N_VDestroy_Serial(yout);
 }
 
 
@@ -96,7 +96,6 @@ int Cvode::callf(realtype t, N_Vector Ny, N_Vector Nydot, void *user_data)
   DiffEq* ode = (DiffEq*) user_data;
 
   ode->diffN(Ny, Nydot, t);
-  //ode->printOutput(t,Nydot);
 
   return(0);
 }

@@ -57,6 +57,16 @@ class DiffEq {
     virtual void diffX(const VectorMatrix &My, VectorMatrix &Mydot, double t);
 
     /*
+     * Saves current result to state
+     */
+    virtual void saveState(double t, VectorMatrix yout);
+
+    /*
+     * converts N_Vector and saves State
+     */
+    void saveStateC(double t, N_Vector yout);
+
+    /*
      * Returns a reference of initial VectorMatrix.
      */
     virtual VectorMatrix getY();

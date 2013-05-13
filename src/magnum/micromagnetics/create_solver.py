@@ -54,8 +54,10 @@ def create_solver(world, module_list = [], **kwargs):
     elif evolver_id in ["euler"]:
         step_size = kwargs.pop("step_size", 5e-15)
         evo = evolver.Euler(sys.mesh, step_size)
+    elif evolver_id in ["cvode"]:
+        evo = evolver.Cvode(sys.mesh)
     else:
-        raise ValueError("Invalid evolver type specified: %s (valid choices: 'rk23','rkf45','dp54','euler'; default is 'rkf45')" % evolver_id)
+        raise ValueError("Invalid evolver type specified: %s (valid choices: 'rk23','rkf45','dp54','euler','cvode'; default is 'rkf45')" % evolver_id)
 
     ###### III. Create Solver from Evolver and module system ######
     solver = MicroMagneticsSolver(sys, evo, world)

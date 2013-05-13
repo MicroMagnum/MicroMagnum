@@ -19,20 +19,21 @@ from magnum.mesh import VectorField
 
 from .evolver import Evolver
 
-import magnum.magneto as magneto
+import magnum.magneto as m
 
 class Cvode(Evolver):
-  def __init__(self, mesh, step_size):
+  def __init__(self, mesh):
     super(Cvode, self).__init__(mesh)
-    self.step_size = float(step_size)
+    self.llg = LlgDiffEq(state)
+    self.cvode = m.Cvode(llg)
 
-#  def evolve(self, state, t_max):
-#    dydt = state.differentiate()
+  def evolve(self, state, t_max):
 #    state.y.add(dydt, self.step_size)
 #    state.t += self.step_size
 #    state.h = self.step_size
-#    state.step += 1
 #    state.substep = 0
 #    state.flush_cache()
 #    state.finish_step()
-#    return state
+    self.cvode.evolve(t_max)
+    state.step += 1
+    return state

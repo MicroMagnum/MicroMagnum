@@ -26,4 +26,4 @@ from .stepsize_controller import StepSizeController, NRStepSizeController, Fixed
 # evolver state class
 from .state import State
 
-__all__ = ["Evolver", "Euler", "RungeKutta", "RungeKutta4", "StepSizeController", "NRStepSizeController", "FixedStepSizeController", "State"]
+__all__ = ["Evolver", "Euler", "RungeKutta", "Cvode", "RungeKutta4", "StepSizeController", "NRStepSizeController", "FixedStepSizeController", "State"]

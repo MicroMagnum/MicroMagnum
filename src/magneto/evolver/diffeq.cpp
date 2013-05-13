@@ -216,6 +216,12 @@ int DiffEq::size()
 }
 
 
+void DiffEq::saveStateC(double t, N_Vector yout)
+{
+  getVectorMatrix(yout, _My);
+  saveState(t, _My);
+}
+
 
 
 
@@ -251,4 +257,13 @@ VectorMatrix DiffEq::diff(const VectorMatrix &My)
   exit(0);
 
   return My;
+}
+
+/*
+ * C++ dummy. Should not be called!
+ */
+void DiffEq::saveState(double t, VectorMatrix mat)
+{
+  fprintf(stderr,"diff: Python Director does not work!");
+  exit(0);
 }

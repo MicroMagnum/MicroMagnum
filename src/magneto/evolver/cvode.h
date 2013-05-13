@@ -25,19 +25,18 @@
 #include "diffeq.h"
 
 #define T0    RCONST(0.0)      /* initial time           */
-#define Tmax  RCONST(1e-9)
-
 
 class Cvode {
 
   public:
     Cvode(DiffEq &diff);
     virtual ~Cvode();
-    void cvodeCalculate();
+    void evolve(const realtype Tmax);
 
   private:
     static int callf(realtype t, N_Vector y, N_Vector ydot, void *user_data);
 
+    void *_cvode_mem;
     N_Vector _Ny;
     double _reltol, _abstol;
     int _size;
