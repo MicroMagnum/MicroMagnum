@@ -28,7 +28,6 @@ using namespace matty;
 DiffEq::DiffEq(VectorMatrix &My)
   : _My(My),_Mydot(My)
 {
-  std::cout << "Größe My: " << size() << "\n";
 }
 
 DiffEq::~DiffEq()
@@ -43,16 +42,12 @@ void DiffEq::diffN(const N_Vector& Ny, N_Vector& Nydot, realtype t)
    * convert Mydot->Nydot
    */
 
-  std::cout << "diffN 1\n";
   getVectorMatrix(Ny,_My);
-  std::cout << "diffN 2\n";
 
   //_Mydot = diff(_My);
   diffX(_My,_Mydot,t);
 
-  std::cout << "diffN 3\n";
   getN_Vector(_Mydot,Nydot);
-  std::cout << "diffN 4\n";
 }
 
 
@@ -105,8 +100,12 @@ void DiffEq::getVectorMatrix(const N_Vector& vec, VectorMatrix& mat)
 
 void DiffEq::printN_Vector(const N_Vector& nvec)
 {
-  getVectorMatrix(nvec, _My);
-  printVectorMatrix(_My);
+  for (int i=0; i<size()/3; i++)
+  {
+    std::cout << "(" << Ith(nvec,3*i+0) << ","
+                     << Ith(nvec,3*i+1) << ","
+                     << Ith(nvec,3*i+2) << ")\n";
+  }
 }
 
 void DiffEq::printVectorMatrix(const VectorMatrix& mat)

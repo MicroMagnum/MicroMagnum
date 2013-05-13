@@ -36,7 +36,6 @@ class Cvode {
     void cvodeCalculate();
 
   private:
-    int check_flag(void *flagvalue, char *funcname, int opt);
     static int callf(realtype t, N_Vector y, N_Vector ydot, void *user_data);
 
     N_Vector _Ny;

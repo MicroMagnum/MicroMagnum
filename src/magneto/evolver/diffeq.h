@@ -85,9 +85,13 @@ class DiffEq {
     static void matrixTest(VectorMatrix mat);
 
     /*
+     * size of initial VectorMatrix. Number of scalars.
+     */
+    int size();
+
+    /*
      * Object variables
      */
     VectorMatrix &_My, &_Mydot;
-    int size();
 };
 #endif

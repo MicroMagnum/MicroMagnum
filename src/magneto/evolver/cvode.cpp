@@ -33,6 +33,8 @@
 #include "Magneto.h"
 #include "diffeq.h"
 
+#define Ith(v,i)    NV_Ith_S(v,i)       /* Ith numbers components 1..NEQ */ // TODO remove
+
 Cvode::Cvode(DiffEq &diff)
   : _Ny(), _diff(diff)
 {
@@ -44,8 +46,8 @@ Cvode::Cvode(DiffEq &diff)
   _diff.getN_Vector(_diff.getY(), _Ny);
   //_diff.printN_Vector(_Ny);
 
-  _reltol = 1e-60;
-  _abstol = 4e8;
+  _reltol = 1e-4;
+  _abstol = 1e1;
 }
 
 Cvode::~Cvode()
@@ -57,41 +59,35 @@ void Cvode::cvodeCalculate()
   realtype t;
   N_Vector yout;
   void *cvode_mem;
-  int flag, ans;
+  int flag;
 
   yout = NULL;
   cvode_mem = NULL;
   yout = N_VNew_Serial(_size);
+  assert(yout != NULL);
 
   cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
-  assert(check_flag((void *)cvode_mem, (char *) "CVodeCreate", 0) == 0);
-
+  assert(cvode_mem != NULL);
   flag = CVodeSetUserData(cvode_mem, &_diff);
-  assert(check_flag(&flag, (char *) "CVodeSetUserData", 1) == 0);
-
+  assert(flag == 0);
   flag = CVodeInit(cvode_mem, callf, T0, _Ny);
-  assert(check_flag(&flag, (char *) "CVodeInit", 1) == 0);
-
+  assert(flag == 0);
   flag = CVodeSStolerances(cvode_mem, _reltol, _abstol);
-  assert(check_flag(&flag, (char *) "CVodeSVtolerances", 1) == 0);
+  assert(flag == 0);
+  flag = CVDense(cvode_mem, _size);
+  assert(flag == 0);
 
-  flag = CVDense(cvode_mem, 3);
-  assert(check_flag(&flag, (char *) "CVDense", 1) == 0);
-
-  std::cout << "cvode 1\n";
+  _diff.printOutput(t,_Ny);
 
   flag = CVode(cvode_mem, Tmax, yout, &t, CV_NORMAL);
-  assert(check_flag(&flag, (char *) "CVode", 1) == 0);
-  std::cout << "cvode 2\n";
+  assert(flag == 0);
 
   _diff.printOutput(t,yout);
   assert(yout != NULL);
-  std::cout << "cvode 3\n";
 
-  CVodeFree(&cvode_mem);
-  std::cout << "cvode 4\n";
   N_VDestroy_Serial(_Ny);
-  std::cout << "cvode 5\n";
+  CVodeFree(&cvode_mem);
+  std::cout << "done\n";
 }
 
 
@@ -99,40 +95,8 @@ int Cvode::callf(realtype t, N_Vector Ny, N_Vector Nydot, void *user_data)
 {
   DiffEq* ode = (DiffEq*) user_data;
 
-  std::cout << "callf 1\n";
   ode->diffN(Ny, Nydot, t);
-  std::cout << "callf 2\n";
-  ode->printOutput(t,Nydot);
-  std::cout << "callf 3\n";
+  //ode->printOutput(t,Nydot);
 
   return(0);
 }
-
-
-int Cvode::check_flag(void *flagvalue, char *funcname, int opt)
-{
-  int *errflag;
-
-  /* Check if SUNDIALS function returned NULL pointer - no memory allocated */
-  if (opt == 0 && flagvalue == NULL) {
-    fprintf(stderr, "\nSUNDIALS_ERROR: %s() failed - returned NULL pointer\n\n",
-        funcname);
-    return(1); }
-
-  /* Check if flag < 0 */
-  else if (opt == 1) {
-    errflag = (int *) flagvalue;
-    if (*errflag < 0) {
-      fprintf(stderr, "\nSUNDIALS_ERROR: %s() failed with flag = %d\n\n",
-          funcname, *errflag);
-      return(1); }}
-
-  /* Check if function returned NULL pointer - no memory allocated */
-  else if (opt == 2 && flagvalue == NULL) {
-    fprintf(stderr, "\nMEMORY_ERROR: %s() failed - returned NULL pointer\n\n",
-        funcname);
-    return(1); }
-
-  return(0);
-}
-

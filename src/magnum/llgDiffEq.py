@@ -8,16 +8,12 @@ class LlgDiffEq(m.DiffEq):
         self.State=state
 
     def diffX(self,My,Mydot,t):
-        print("DIFFX from python")
         self.State.y.assign(My)
-        print("DIFFX 1")
         self.State.t = t
-        print("DIFFX 2")
         self.State.flush_cache()
-        print("DIFFX 3")
         Mydot.assign(self.State.differentiate())
-        print("DIFFX 4")
 
+# not used
     def diff(self,My):
         #self.State.y = My
         print("DIFF from python")
@@ -26,5 +22,4 @@ class LlgDiffEq(m.DiffEq):
         return Mydot
 
     def getY(self):
-        print("getY Python")
         return self.State.y

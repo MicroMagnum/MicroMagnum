@@ -5,7 +5,7 @@ import magnum.magneto as m
 from llgDiffEq import *
 import gc
 
-world = World(RectangularMesh((4,  4, 1), (  5e-9,    5e-9, 3.0e-9)), Body("all", Material.Py(alpha=0.02)))
+world = World(RectangularMesh((5,  5, 1), (  5e-9,    5e-9, 3.0e-9)), Body("all", Material.Py(alpha=0.02)))
 
 def state0(field, pos): 
     u = abs(pi*(pos[0]/field.mesh.size[0]-0.5)) / 2.0
@@ -24,4 +24,4 @@ print("fertig")
 print(i)
 writeOMF("test2.omf",solver.state.M)
 
-gc.collect()
+#gc.collect()
