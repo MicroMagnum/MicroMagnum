@@ -68,11 +68,11 @@ def available(gpus, rank_by="mem_util", reverse=True):
     means: Compute mode is either Default (allowing more than one process
     per GPU) or the GPU is currently unused (the number of processes on
     that GPU is zero). By default, the returned list is sorted by the
-    GPU load, with the least loaded cards first.
+    GPU memory utilisation, with the least loaded cards first.
     """
     # 1. Filter out unavailable GPUs
     avail = filter(is_available, gpus)
-    # 2. Sort by memory load, if requested.
+    # 2. Sort if requested
     if rank_by:
         avail = sorted(avail, key=lambda gpu: gpu[rank_by], reverse=reverse)
     return avail
