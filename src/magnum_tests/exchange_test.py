@@ -67,7 +67,7 @@ class ExchangeTest(MyTestCase):
             #M.fill((8e5, 8e5, -8e5))
             magneto.exchange(nx, ny, nz, dx, dy, dz, bcx, bcy, bcz, Ms, A, M, H)
             for i in range(nx*ny*nz):
-                self.assertEquals(H.get(i), (0.0, 0.0, 0.0))
+                self.assertEqual(H.get(i), (0.0, 0.0, 0.0))
 
     def test_pbc_exchange_3d(self):
         self.pbc_exchange(64, 64, 64) # mod 8 == 0 (cuda thread block size)
