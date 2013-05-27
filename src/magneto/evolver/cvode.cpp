@@ -67,10 +67,9 @@ Cvode::~Cvode()
 /*
  * calculate next step
  */
-void Cvode::evolve(double t, const double step) 
+void Cvode::evolve(double t, const double Tmax) 
 {
   N_Vector yout;
-  const double Tmax = t + step;
 
   yout = NULL;
   yout = N_VNew_Serial(_size);

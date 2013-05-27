@@ -38,15 +38,20 @@ class Cvode(Evolver):
     if not hasattr(Cvode, 'cvode'):
       self.initialize(state)
 
-    #state.y.add(dydt, self.step_size)
+    # But: Don't overshoot past t_max!
+    if state.t + state.h > t_max:
+      state.h = t_max - state.t   # make h_try smaller.
+
+    if t_max == 1e100:
+      t_max = state.t + state.h
 
     # call cvode
-    self.cvode.evolve(state.t, state.h)
+    self.cvode.evolve(state.t, t_max)
 
-    #state.y.add(dydt, self.step_size)
-    state.t += state.h
+    #state.t += state.h
     state.step += 1
     state.substep = 0
     state.flush_cache()
     state.finish_step()
+    
     return state
