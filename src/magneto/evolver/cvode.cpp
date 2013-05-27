@@ -36,15 +36,12 @@
 /*
  * Cvode constructor
  */
-Cvode::Cvode(DiffEq &diff)
-  : _Ny(), _diff(diff)
+Cvode::Cvode(DiffEq &diff, double abstol, double reltol)
+  : _Ny(), _diff(diff), _abstol(abstol), _reltol(reltol)
 {
   _size = _diff.size();
-  std::cout << "size: " << _size << "\n";
   _Ny = N_VNew_Serial(_size);
   _diff.getN_Vector(_diff.getY(), _Ny);
-  _reltol = 1e-4;
-  _abstol = 1e1;
 
   /*
    * CVode initialisation
@@ -70,19 +67,19 @@ Cvode::~Cvode()
 /*
  * calculate next step
  */
-void Cvode::evolve(const realtype Tmax) 
+void Cvode::evolve(double t, const double step) 
 {
-  realtype t;
   N_Vector yout;
+  const double Tmax = t + step;
 
   yout = NULL;
   yout = N_VNew_Serial(_size);
   assert(yout != NULL);
 
+
   /* call CVode */
   assert( CVode(_cvode_mem, Tmax, yout, &t, CV_NORMAL) == 0);
 
-  _diff.printOutput(t,yout); // TODO remove
   assert(yout != NULL);
 
   _diff.saveStateC(Tmax, yout);

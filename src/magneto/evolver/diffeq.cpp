@@ -219,6 +219,7 @@ int DiffEq::size()
 void DiffEq::saveStateC(double t, N_Vector yout)
 {
   getVectorMatrix(yout, _My);
+  getY();
   saveState(t, _My);
 }
 
@@ -231,7 +232,7 @@ void DiffEq::saveStateC(double t, N_Vector yout)
  */
 void DiffEq::diffX(const VectorMatrix &My, VectorMatrix &Mydot, double t)
 {
-  fprintf(stderr,"diffX: Python Director does not work!");
+  fprintf(stderr,"diffX: Python Director does not work!\n");
   exit(0);
 }
 
@@ -242,7 +243,7 @@ VectorMatrix DiffEq::getY()
 {
   VectorMatrix y;
 
-  fprintf(stderr,"getY: Python Director does not work!");
+  fprintf(stderr,"getY: Python Director does not work!\n");
   exit(0);
 
   return y;
@@ -253,7 +254,7 @@ VectorMatrix DiffEq::getY()
  */
 VectorMatrix DiffEq::diff(const VectorMatrix &My)
 {
-  fprintf(stderr,"diff: Python Director does not work!");
+  fprintf(stderr,"diff: Python Director does not work!\n");
   exit(0);
 
   return My;
@@ -264,6 +265,6 @@ VectorMatrix DiffEq::diff(const VectorMatrix &My)
  */
 void DiffEq::saveState(double t, VectorMatrix mat)
 {
-  fprintf(stderr,"diff: Python Director does not work!");
+  fprintf(stderr,"diff: Python Director does not work\n!");
   exit(0);
 }

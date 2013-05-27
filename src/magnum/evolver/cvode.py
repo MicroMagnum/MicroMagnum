@@ -18,22 +18,35 @@
 from magnum.mesh import VectorField
 
 from .evolver import Evolver
+from magnum.llgDiffEq import *
 
 import magnum.magneto as m
 
 class Cvode(Evolver):
-  def __init__(self, mesh):
+  def __init__(self, mesh, eps_abs, eps_rel, step_size):
     super(Cvode, self).__init__(mesh)
+    self.eps_abs = eps_abs
+    self.eps_rel = eps_rel
+    self.step_size = step_size
+
+  def initialize(self, state):
     self.llg = LlgDiffEq(state)
-    self.cvode = m.Cvode(llg)
+    self.cvode = m.Cvode(self.llg, self.eps_abs, self.eps_rel)
+    state.h = self.step_size
 
   def evolve(self, state, t_max):
-#    state.y.add(dydt, self.step_size)
-#    state.t += self.step_size
-#    state.h = self.step_size
-#    state.substep = 0
-#    state.flush_cache()
-#    state.finish_step()
-    self.cvode.evolve(t_max)
+    if not hasattr(Cvode, 'cvode'):
+      self.initialize(state)
+
+    #state.y.add(dydt, self.step_size)
+
+    # call cvode
+    self.cvode.evolve(state.t, state.h)
+
+    #state.y.add(dydt, self.step_size)
+    state.t += state.h
     state.step += 1
+    state.substep = 0
+    state.flush_cache()
+    state.finish_step()
     return state

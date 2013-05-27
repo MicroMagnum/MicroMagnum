@@ -29,9 +29,9 @@
 class Cvode {
 
   public:
-    Cvode(DiffEq &diff);
+    Cvode(DiffEq &diff, double abstol, double reltol);
     virtual ~Cvode();
-    void evolve(const realtype Tmax);
+    void evolve(double t, const double step);
 
   private:
     static int callf(realtype t, N_Vector y, N_Vector ydot, void *user_data);

@@ -55,7 +55,10 @@ def create_solver(world, module_list = [], **kwargs):
         step_size = kwargs.pop("step_size", 5e-15)
         evo = evolver.Euler(sys.mesh, step_size)
     elif evolver_id in ["cvode"]:
-        evo = evolver.Cvode(sys.mesh)
+        eps_rel = kwargs.pop("eps_rel", 1e-4)
+        eps_abs = kwargs.pop("eps_abs", 1e-3)
+        step_size = kwargs.pop("step_size", 1e-12)
+        evo = evolver.Cvode(sys.mesh, eps_abs, eps_rel, step_size)
     else:
         raise ValueError("Invalid evolver type specified: %s (valid choices: 'rk23','rkf45','dp54','euler','cvode'; default is 'rkf45')" % evolver_id)
 

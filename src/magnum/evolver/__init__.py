@@ -20,7 +20,7 @@ from .evolver import Evolver # base class
 from .euler import Euler
 from .runge_kutta import RungeKutta
 from .runge_kutta_4 import RungeKutta4
-#from .cvode import Cvode
+from .cvode import Cvode
 from .stepsize_controller import StepSizeController, NRStepSizeController, FixedStepSizeController
 
 # evolver state class
