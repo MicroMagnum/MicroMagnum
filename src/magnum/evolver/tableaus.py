@@ -101,7 +101,7 @@ def cc45(): # Cash'n'Karp
     return tab
 
 def dp54(): # Dormand-Prince
-    # Values taken from Wikipedia (en)
+    # Values taken from http://en.wikipedia.org/wiki/Dormand%E2%80%93Prince_method
     tab_a = [0.0, 1.0/5.0, 3.0/10.0, 4.0/5.0, 8.0/9.0, 1.0, 1.0]
     tab_b = [[],
              [1.0/5.0],
