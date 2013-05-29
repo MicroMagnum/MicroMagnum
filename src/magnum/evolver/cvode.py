@@ -44,12 +44,15 @@ class Cvode(Evolver):
 
     if t_max == 1e100:
       t_max = state.t + state.h
+    
+    t = state.t
 
     # call cvode
     self.cvode.evolve(state.t, t_max)
 
-    #state.t += state.h
+    state.t = t_max
     state.step += 1
+    #print(state.substep)
     state.substep = 0
     state.flush_cache()
     state.finish_step()

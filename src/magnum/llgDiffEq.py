@@ -44,7 +44,12 @@ class LlgDiffEq(m.DiffEq):
     def getState(self):
         return self.state
 
-    def saveState(self, t, yout):
-        self.state.t = t
+    def saveState(self, yout):
         self.state.y.assign(yout)
         self.state.flush_cache()
+
+    def saveTime(self, t):
+        self.state.t = t
+
+    def substep(self):
+        self.state.substep += 1

@@ -59,17 +59,27 @@ class DiffEq {
     /*
      * Saves current result to state
      */
-    virtual void saveState(double t, VectorMatrix yout);
+    virtual void saveState(VectorMatrix yout);
 
     /*
      * converts N_Vector and saves State
      */
-    void saveStateC(double t, N_Vector yout);
+    void saveStateC(N_Vector yout);
 
     /*
      * Returns a reference of initial VectorMatrix.
      */
     virtual VectorMatrix getY();
+
+    /*
+     * Saves Time to step in state
+     */
+    virtual void saveTime(double t);
+
+    /*
+     * increases substep in state
+     */
+    virtual void substep();
 
     /*
      * converts N_Vector to VectorMatrix

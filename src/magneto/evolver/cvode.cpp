@@ -51,10 +51,11 @@ Cvode::Cvode(DiffEq &diff, double abstol, double reltol)
   _cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
   assert( _cvode_mem != NULL);
 
-  assert( CVodeSetUserData (_cvode_mem, &_diff)           == 0);
-  assert( CVodeInit        (_cvode_mem, callf, T0, _Ny)   == 0);
-  assert( CVodeSStolerances(_cvode_mem, _reltol, _abstol) == 0);
-  assert( CVDense          (_cvode_mem, _size)            == 0);
+  assert( CVodeSetUserData   (_cvode_mem, &_diff)           == 0);
+  assert( CVodeInit          (_cvode_mem, callf, T0, _Ny)   == 0);
+  assert( CVodeSStolerances  (_cvode_mem, _reltol, _abstol) == 0);
+  assert( CVDense            (_cvode_mem, _size)            == 0);
+  assert( CVodeSetMaxNumSteps(_cvode_mem, 10000)            == 0);
 
 }
 
@@ -81,7 +82,7 @@ void Cvode::evolve(double t, const double Tmax)
 
   assert(yout != NULL);
 
-  _diff.saveStateC(Tmax, yout);
+  _diff.saveStateC(yout);
 
   N_VDestroy_Serial(yout);
 }
@@ -92,6 +93,8 @@ int Cvode::callf(realtype t, N_Vector Ny, N_Vector Nydot, void *user_data)
   DiffEq* ode = (DiffEq*) user_data;
 
   ode->diffN(Ny, Nydot, t);
+  ode->substep();
+  ode->saveTime(t);
 
   return(0);
 }
