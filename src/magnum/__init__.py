@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
+__author__ = "The MicroMagnum team"
 __version__ = "0.2rc4"
 __license__ = 'GPL3'
 

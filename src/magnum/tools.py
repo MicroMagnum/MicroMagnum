@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import absolute_import, print_function
+from __future__ import print_function
 
 import sys
 import os
@@ -129,6 +129,10 @@ def frange(*args):
             raise StopIteration
         yield v
         v += step
+
+
+def range_2d(nx, ny):
+    return itertools.product(range(nx), range(ny))
 
 
 def range_3d(nx, ny, nz):
