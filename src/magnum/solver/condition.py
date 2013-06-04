@@ -169,11 +169,11 @@ class TimeBetween(Condition):
         return super(TimeBetween, self).__init__(lambda state: state.t >= t0 and state.t < t1)
 
 class Relaxed(Condition):
-    def __init__(self, max_degree_per_ns = 1, check_every_nth_step = 100):
+    def __init__(self, max_deg_per_ns = 1, check_every_nth_step = 100):
         """
         Returns condition that is true when the time deriviative of the magnetization is small, i.e.
         when the magnetic state is relaxed.
-        :param max_degree_per_ns: Maximum allowed magnetization change in degrees per nanosecond to consider the state relaxed.
+        :param max_deg_per_ns: Maximum allowed magnetization change in degrees per nanosecond to consider the state relaxed.
         :param check_every_nth_step: Check only every nth step (to save computation time)
         """
         def test(state):
@@ -194,9 +194,9 @@ class Relaxed(Condition):
             if last_deg_per_ns is None: return False  # Not enough data? Bail out.
 
             # Now we have valid values in 'deg_per_ns' and 'last_deg_per_ns'.
-            # The state is considered relaxed if degrees per ns is small enough (< max_degree_per_ns)
+            # The state is considered relaxed if degrees per ns is small enough (< max_deg_per_ns)
             # and became smaller during the last time step (< last_deg_per_ns).
-            is_relaxed = deg_per_ns < last_deg_per_ns and deg_per_ns <= max_degree_per_ns
+            is_relaxed = deg_per_ns < last_deg_per_ns and deg_per_ns <= max_deg_per_ns
             return is_relaxed
 
         super(Relaxed, self).__init__(test)
