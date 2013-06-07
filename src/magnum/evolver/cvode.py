@@ -28,14 +28,16 @@ class Cvode(Evolver):
     self.eps_abs = eps_abs
     self.eps_rel = eps_rel
     self.step_size = step_size
+    self.initialized = False
 
   def initialize(self, state):
     self.llg = LlgDiffEq(state)
     self.cvode = m.Cvode(self.llg, self.eps_abs, self.eps_rel)
     state.h = self.step_size
+    self.initialized = True
 
   def evolve(self, state, t_max):
-    if not hasattr(Cvode, 'cvode'):
+    if not self.initialized:
       self.initialize(state)
 
     # But: Don't overshoot past t_max!
