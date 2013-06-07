@@ -173,6 +173,7 @@ include_directories(
   ${PROJECT_SOURCE_DIR}/magneto
   ${PROJECT_SOURCE_DIR}/magneto/matrix
   ${PROJECT_BINARY_DIR}
+  ${SUNDIALS_CVODE_INCLUDE_DIRS}
 )
 
 # Compile Cuda kernels into library
