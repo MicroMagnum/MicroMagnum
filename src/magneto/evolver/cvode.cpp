@@ -25,6 +25,7 @@
 // CVode includes
 #include "cvode.h"
 #include <cvode/cvode.h>
+#include <cvode/cvode_spgmr.h>
 #include <cvode/cvode_dense.h>       /* prototype for CVDense */
 #include <nvector/nvector_serial.h>
 
@@ -48,12 +49,14 @@ Cvode::Cvode(DiffEq &diff, double abstol, double reltol)
    */
   _cvode_mem = NULL;
 
-  _cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
+  _cvode_mem = CVodeCreate(CV_BDF, CV_FUNCTIONAL);
   assert( _cvode_mem != NULL);
 
   assert( CVodeSetUserData   (_cvode_mem, &_diff)           == 0);
   assert( CVodeInit          (_cvode_mem, callf, T0, _Ny)   == 0);
   assert( CVodeSStolerances  (_cvode_mem, _reltol, _abstol) == 0);
+  assert( CVSpgmr            (_cvode_mem, PREC_BOTH, 5)     == 0);
+  assert( CVodeSetMaxOrd     (_cvode_mem, 2)                == 0); //Order of BDF
   assert( CVDense            (_cvode_mem, _size)            == 0);
   assert( CVodeSetMaxNumSteps(_cvode_mem, 10000)            == 0);
 
