@@ -37,7 +37,7 @@
 /*
  * Cvode constructor
  */
-Cvode::Cvode(DiffEq &diff, double abstol, double reltol)
+Cvode::Cvode(DiffEq &diff, double abstol, double reltol, bool newton_method = false)
   : _Ny(), _diff(diff), _abstol(abstol), _reltol(reltol)
 {
   _size = _diff.size();
@@ -49,7 +49,12 @@ Cvode::Cvode(DiffEq &diff, double abstol, double reltol)
    */
   _cvode_mem = NULL;
 
-  _cvode_mem = CVodeCreate(CV_BDF, CV_FUNCTIONAL);
+  // Choose iteration method
+  if(newton_method)
+    _cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
+  else
+    _cvode_mem = CVodeCreate(CV_BDF, CV_FUNCTIONAL);
+
   assert( _cvode_mem != NULL);
 
   assert( CVodeSetUserData   (_cvode_mem, &_diff)           == 0);

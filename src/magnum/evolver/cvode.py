@@ -23,16 +23,17 @@ from magnum.llgDiffEq import *
 import magnum.magneto as m
 
 class Cvode(Evolver):
-  def __init__(self, mesh, eps_abs, eps_rel, step_size):
+  def __init__(self, mesh, eps_abs, eps_rel, step_size, newton_method):
     super(Cvode, self).__init__(mesh)
     self.eps_abs = eps_abs
     self.eps_rel = eps_rel
     self.step_size = step_size
     self.initialized = False
+    self.newton_method = newton_method
 
   def initialize(self, state):
     self.llg = LlgDiffEq(state)
-    self.cvode = m.Cvode(self.llg, self.eps_abs, self.eps_rel)
+    self.cvode = m.Cvode(self.llg, self.eps_abs, self.eps_rel, self.newton_method)
     state.h = self.step_size
     self.initialized = True
 

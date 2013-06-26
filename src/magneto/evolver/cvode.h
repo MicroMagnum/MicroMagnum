@@ -29,7 +29,11 @@
 class Cvode {
 
   public:
-    Cvode(DiffEq &diff, double abstol, double reltol);
+    /*
+     * @param newton_method   Use Newton iteration or default: functional.
+     *                        Functional is faster and Newton more stable.
+     */
+    Cvode(DiffEq &diff, double abstol, double reltol, bool newton_method = false);
     virtual ~Cvode();
     void evolve(double t, const double Tmax);
 
