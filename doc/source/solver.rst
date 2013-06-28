@@ -16,27 +16,38 @@ TODO methods
 Evolvers
 ^^^^^^^^
 
-Currenty, two types of evolvers for the time integration of the LLG
+Currenty, three types of evolvers for the time integration of the LLG
 equation are available.  They are selected using the 'evolver' argument
 at the time of creation of the Solver object:
 
-- Euler evolver with constant time steps ("euler")
+- Euler evolver with constant time steps ("``euler``")
 
   .. code-block:: python
   
     # Create solver with Euler evolver
     s = create_solver(evolver="euler", time_step=1e-14)
 
-  The time_step parameter is optional, default is 1e-14.
+  The ``time_step`` parameter is optional, default is 1e-14.
 
-- Runge-Kutta-Fehlberg evolver (RKF45) with variable time steps ("rkf45")
+- Runge-Kutta-Fehlberg evolver (RKF45) with variable time steps ("``rkf45``")
 
   .. code-block:: python
   
     # Create solver with RKF45 evolver
     s = create_solver(evolver="rkf45", eps_abs=1e-3, eps_rel=1e-4)
 
-  The eps_abs and eps_rel parameters are optional with the defaults
+  The ``eps_abs`` and ``eps_rel`` parameters are optional with the defaults
+  being as shown in the example.
+
+- CVode implicit evolver with variable timesteps ("``cvode``")
+
+  .. code-block:: python
+  
+    # Create solver with cvode evolver
+    s = create_solver(evolver="cvode", eps_abs=1e-3, eps_rel=1e-4, 
+                      step_size=1e-12, newton_method=False)
+
+  The ``eps_abs``, ``eps_rel``, ``step_size`` and ``newton_method`` parameters are optional with the defaults
   being as shown in the example.
 
 The RK45 evolver is the default evolver when the 'evolver' option is ommited.
@@ -49,6 +60,21 @@ The RK45 evolver is the default evolver when the 'evolver' option is ommited.
 | Runge-Kutta-Fehlberg 45      | ``rkf45``      | ``eps_abs`` (:math:`1\cdot 10^{-3}`),    |
 |                              |                | ``eps_rel`` (:math:`1\cdot 10^{-4}`)     |
 +------------------------------+----------------+------------------------------------------+
+| CVode implicit evolver       | ``cvode``      | ``eps_abs`` (:math:`1\cdot 10^{-3}`),    |
+|                              |                | ``eps_rel`` (:math:`1\cdot 10^{-4}`),    |
+|                              |                | ``step_size`` (:math:`1\cdot 10^{-12}`), |
+|                              |                | ``newton_method`` (``False``)            |
++------------------------------+----------------+------------------------------------------+
+
+
+CVode evolver
+"""""""""""""
+
+CVode uses two iteration methods, fuctional and Newton.
+The functional method is very fast and more stable than Runge-Kutta.
+The Newton method is very slow and very stable.
+Information about the evolver are available on:
+http://computation.llnl.gov/casc/sundials/documentation/documentation.html
 
 Conditions
 ----------
