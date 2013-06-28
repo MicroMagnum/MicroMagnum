@@ -75,6 +75,7 @@ The functional method is very fast and more stable than Runge-Kutta.
 The Newton method is very slow and very stable.
 Information about the evolver are available on:
 http://computation.llnl.gov/casc/sundials/documentation/documentation.html
+The relax condition does not work with CVode, Runge-Kutta should be used.
 
 Conditions
 ----------
