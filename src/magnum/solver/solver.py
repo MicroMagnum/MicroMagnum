@@ -48,6 +48,9 @@ class Solver(object):
     def state(self): return self.__state
 
     @property
+    def evolver(self): return self.__evolver
+
+    @property
     def step_handlers(self): return self.__step_handlers[:]
 
     @property

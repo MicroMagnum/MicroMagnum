@@ -20,7 +20,7 @@
 // System
 #include <stdlib.h>
 #include <iostream>
-#include <assert.h>
+#include <stdexcept>
 
 // CVode includes
 #include "cvode.h"
@@ -37,7 +37,7 @@
 /*
  * Cvode constructor
  */
-Cvode::Cvode(DiffEq &diff, double abstol, double reltol, bool newton_method = false)
+Cvode::Cvode(DiffEq &diff, double abstol, double reltol, bool newton_method)
   : _Ny(), _diff(diff), _abstol(abstol), _reltol(reltol)
 {
   _size = _diff.size();
@@ -55,15 +55,15 @@ Cvode::Cvode(DiffEq &diff, double abstol, double reltol, bool newton_method = fa
   else
     _cvode_mem = CVodeCreate(CV_BDF, CV_FUNCTIONAL);
 
-  assert( _cvode_mem != NULL);
+  if ( _cvode_mem == NULL)  throw std::runtime_error("CVode Init failed!");
 
-  assert( CVodeSetUserData   (_cvode_mem, &_diff)           == 0);
-  assert( CVodeInit          (_cvode_mem, callf, T0, _Ny)   == 0);
-  assert( CVodeSStolerances  (_cvode_mem, _reltol, _abstol) == 0);
-  assert( CVSpgmr            (_cvode_mem, PREC_BOTH, 5)     == 0);
-  assert( CVodeSetMaxOrd     (_cvode_mem, 2)                == 0); //Order of BDF
-  assert( CVDense            (_cvode_mem, _size)            == 0);
-  assert( CVodeSetMaxNumSteps(_cvode_mem, 10000)            == 0);
+  if ( CVodeSetUserData   (_cvode_mem, &_diff)           != 0)  throw std::runtime_error("CVode Init failed!");
+  if ( CVodeInit          (_cvode_mem, callf, T0, _Ny)   != 0)  throw std::runtime_error("CVode Init failed!");
+  if ( CVodeSStolerances  (_cvode_mem, _reltol, _abstol) != 0)  throw std::runtime_error("CVode Init failed!");
+  if ( CVSpgmr            (_cvode_mem, PREC_BOTH, 5)     != 0)  throw std::runtime_error("CVode Init failed!");
+  if ( CVodeSetMaxOrd     (_cvode_mem, 2)                != 0)  throw std::runtime_error("CVode Init failed!"); //Order of BDF
+  if ( CVDense            (_cvode_mem, _size)            != 0)  throw std::runtime_error("CVode Init failed!");
+  if ( CVodeSetMaxNumSteps(_cvode_mem, 10000)            != 0)  throw std::runtime_error("CVode Init failed!");
 
 }
 
@@ -82,13 +82,13 @@ void Cvode::evolve(double t, const double Tmax)
 
   yout = NULL;
   yout = N_VNew_Serial(_size);
-  assert(yout != NULL);
+  if (yout != NULL);
 
 
   /* call CVode */
-  assert( CVode(_cvode_mem, Tmax, yout, &t, CV_NORMAL) == 0);
+  if ( CVode(_cvode_mem, Tmax, yout, &t, CV_NORMAL) != 0) throw std::runtime_error("CVode Init failed!");
 
-  assert(yout != NULL);
+  if (yout == NULL) throw std::runtime_error("CVode Init failed!");
 
   _diff.saveStateC(yout);
 

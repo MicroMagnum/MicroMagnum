@@ -35,6 +35,10 @@ class MicroMagneticsSolver(solver.Solver):
     world = property(lambda self: self.__world)
 
     def relax(self, *args, **kwargs):
+        # catch CVode, when using relax condition
+        if self.evolver.__class__.__name__ == "Cvode":
+          raise Exception("CVode is not usable to relax a system, yet. Please use rkf45.")
+
         return self.solve(solver.condition.Relaxed(*args, **kwargs))
 
     def handle_interrupt(self):
