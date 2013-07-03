@@ -20,10 +20,11 @@ from .evolver import Evolver # base class
 from .euler import Euler
 from .runge_kutta import RungeKutta
 from .runge_kutta_4 import RungeKutta4
-from .cvode import Cvode
+from .cvode import Cvode # TODO s.u.
 from .stepsize_controller import StepSizeController, NRStepSizeController, FixedStepSizeController
 
 # evolver state class
 from .state import State
 
+#TODO include Cvode only if activated
 __all__ = ["Evolver", "Euler", "RungeKutta", "Cvode", "RungeKutta4", "StepSizeController", "NRStepSizeController", "FixedStepSizeController", "State"]
