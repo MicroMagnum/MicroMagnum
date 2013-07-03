@@ -1,13 +1,18 @@
 set(SRC
   runge_kutta.cpp
   runge_kutta_cpu.cpp
+)
+
+if(HAVE_CVODE)
+  set(SRC ${SRC}
   cvode.cpp
   diffeq.cpp
-)
+  )
+endif(HAVE_CVODE)
 
 if(ENABLE_CUDA)
   set(SRC ${SRC}
-  )
+    )
 endif(ENABLE_CUDA)
 
 # Add Cuda specific sources

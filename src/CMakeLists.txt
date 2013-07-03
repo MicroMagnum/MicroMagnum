@@ -61,7 +61,7 @@ include(${SWIG_USE_FILE})
 if(USE_PYTHON2)
   SET(Python_ADDITIONAL_VERSIONS 2.8 2.7 2.6)
 elseif(USE_PYTHON3)
-  SET(Python_ADDITIONAL_VERSIONS 3.3 3.2 3.1 3.0)
+  SET(Python_ADDITIONAL_VERSIONS 3.4 3.3 3.2 3.1 3.0)
 endif(USE_PYTHON2)
 # CMake versions 2.8.7 and lower will always choose Python 2.x.
 
@@ -94,7 +94,7 @@ find_path(SUNDIALS_CVODE_INCLUDE_DIR cvode/cvode.h
   PATH_SUFFIXES sundials_cvode )
 
 find_library(SUNDIALS_CVODE_LIBRARY NAMES cvode sundials_cvode
-  HINTS ${PC_SUNDIALS_CVODE_LIBDIR} ${PC_SUNDIALS_CVODE_LIBRARY_DIRS} )
+  HINTS ${PC_SUNDIALS_CVODE_LIBDIR} ${PC_SUNDIALS_CVODE_LIBRARY_DIRS} OPTIONAL)
 
 set(SUNDIALS_CVODE_LIBRARIES ${SUNDIALS_CVODE_LIBRARY} )
 set(SUNDIALS_CVODE_INCLUDE_DIRS ${SUNDIALS_CVODE_INCLUDE_DIR} )
@@ -106,7 +106,7 @@ find_path(SUNDIALS_NVECSERIAL_INCLUDE_DIR nvector/nvector_serial.h
   PATH_SUFFIXES sundials_nvecserial )
 
 find_library(SUNDIALS_NVECSERIAL_LIBRARY NAMES nvector_serial sundials_nvecserial
-  HINTS ${PC_SUNDIALS_NVECSERIAL_LIBDIR} ${PC_SUNDIALS_NVECSERIAL_LIBRARY_DIRS} )
+  HINTS ${PC_SUNDIALS_NVECSERIAL_LIBDIR} ${PC_SUNDIALS_NVECSERIAL_LIBRARY_DIRS} OPTIONAL)
 
 set(SUNDIALS_NVECSERIAL_LIBRARIES ${SUNDIALS_NVECSERIAL_LIBRARY} )
 set(SUNDIALS_NVECSERIAL_INCLUDE_DIRS ${SUNDIALS_NVECSERIAL_INCLUDE_DIR} )
@@ -168,16 +168,27 @@ endif()
 ###    Compile                                             ###
 ##############################################################
 
-include_directories(
-  ${PYTHON_INCLUDE_PATH}
-  ${PROJECT_SOURCE_DIR}/magneto
-  ${PROJECT_SOURCE_DIR}/magneto/matrix
-  ${PROJECT_BINARY_DIR}
-  ${SUNDIALS_CVODE_INCLUDE_DIRS}
-)
-
 # enable CVode
-set(HAVE_CVODE ON) # TODO enable with a flag
+if(SUNDIALS_CVODE_FOUND)
+  set(HAVE_CVODE ON) 
+endif(SUNDIALS_CVODE_FOUND)
+
+if(HAVE_CVODE)
+  include_directories(
+    ${PYTHON_INCLUDE_PATH}
+    ${PROJECT_SOURCE_DIR}/magneto
+    ${PROJECT_SOURCE_DIR}/magneto/matrix
+    ${PROJECT_BINARY_DIR}
+    ${SUNDIALS_CVODE_INCLUDE_DIRS}
+    )
+else(HAVE_CVODE)
+  include_directories(
+    ${PYTHON_INCLUDE_PATH}
+    ${PROJECT_SOURCE_DIR}/magneto
+    ${PROJECT_SOURCE_DIR}/magneto/matrix
+    ${PROJECT_BINARY_DIR}
+    )
+endif(HAVE_CVODE)
 
 # Compile Cuda kernels into library
 if(ENABLE_CUDA)
@@ -206,7 +217,6 @@ endif(ENABLE_CUDA)
 
 # Compile Swig module
 set(BINDINGS_SOURCE ${PROJECT_SOURCE_DIR}/magneto/bindings/magneto.i)
-#set(BINDINGS_SOURCE ${PROJECT_SOURCE_DIR}/magneto/bindings/magneto.i ${PROJECT_SOURCE_DIR}/magneto/bindings/cvode.i)
 set_source_files_properties (${BINDINGS_SOURCE} PROPERTIES CPLUSPLUS ON )
 if(ENABLE_CUDA)
   set(SWIG_MODULE_NAME "magneto_cuda")
@@ -214,9 +224,12 @@ else()
   set(SWIG_MODULE_NAME "magneto_cpu")
 endif(ENABLE_CUDA)
 set_source_files_properties (${BINDINGS_SOURCE} PROPERTIES SWIG_FLAGS "-O;-module;${SWIG_MODULE_NAME}")
-#swig_add_module(${SWIG_MODULE_NAME} python ${PROJECT_SOURCE_DIR}/magneto/bindings/magneto.i ${PROJECT_SOURCE_DIR}/magneto/bindings/cvode.i ${MAGNETO_SRC})
 swig_add_module(${SWIG_MODULE_NAME} python ${PROJECT_SOURCE_DIR}/magneto/bindings/magneto.i ${MAGNETO_SRC})
-swig_link_libraries(${SWIG_MODULE_NAME} ${FFTW_LIBRARIES} ${SUNDIALS_CVODE_LIBRARIES} ${SUNDIALS_NVECSERIAL_LIBRARIES})
+if(HAVE_CVODE)
+  swig_link_libraries(${SWIG_MODULE_NAME} ${FFTW_LIBRARIES} ${SUNDIALS_CVODE_LIBRARIES} ${SUNDIALS_NVECSERIAL_LIBRARIES})
+else(HAVE_CVODE)
+  swig_link_libraries(${SWIG_MODULE_NAME} ${FFTW_LIBRARIES})
+endif(HAVE_CVODE)
 #swig_link_libraries(${SWIG_MODULE_NAME} ${FFTW_LIBRARIES} ${SUNDIALS_CVODE_LIBRARIES} ${SUNDIALS_NVECSERIAL_LIBRARIES} ${Boost_LIBRARIES})
 
 # Link Cuda Kernels to Swig module
