@@ -171,9 +171,6 @@ endif()
 # enable CVode
 if(SUNDIALS_CVODE_FOUND)
   set(HAVE_CVODE ON) 
-endif(SUNDIALS_CVODE_FOUND)
-
-if(HAVE_CVODE)
   include_directories(
     ${PYTHON_INCLUDE_PATH}
     ${PROJECT_SOURCE_DIR}/magneto
@@ -181,14 +178,14 @@ if(HAVE_CVODE)
     ${PROJECT_BINARY_DIR}
     ${SUNDIALS_CVODE_INCLUDE_DIRS}
     )
-else(HAVE_CVODE)
+else(SUNDIALS_CVODE_FOUND)
   include_directories(
     ${PYTHON_INCLUDE_PATH}
     ${PROJECT_SOURCE_DIR}/magneto
     ${PROJECT_SOURCE_DIR}/magneto/matrix
     ${PROJECT_BINARY_DIR}
     )
-endif(HAVE_CVODE)
+endif(SUNDIALS_CVODE_FOUND)
 
 # Compile Cuda kernels into library
 if(ENABLE_CUDA)
