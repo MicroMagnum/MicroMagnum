@@ -30,6 +30,9 @@ Required runtime libraries:
 | Python Imaging Library    |   any recent  | any recent  | Needed for the ImageShapeCreator  | http://www.pythonware.com/products/pil/           | python-imaging        |
 | (optional)                |               |             | class (optional)                  |                                                   |                       |
 +---------------------------+---------------+-------------+-----------------------------------+---------------------------------------------------+-----------------------+
+| Sundials CVode            | sundials-2.5.0| cvode-2.7.0 | Needed for using implicit CVode   | http://computation.llnl.gov/casc/sundials         | (n/a)                 |
+| (optional)                | cvode-2.7.0   |             | evolver (optional)                |                                                   |                       |
++---------------------------+---------------+-------------+-----------------------------------+---------------------------------------------------+-----------------------+
 
 Ubuntu/Debian apt-get command:
 
