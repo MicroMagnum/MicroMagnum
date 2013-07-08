@@ -23,7 +23,6 @@ from .runge_kutta_4 import RungeKutta4
 from .stepsize_controller import StepSizeController, NRStepSizeController, FixedStepSizeController
 
 try:
-  print("try import Cvode")
   from .cvode import Cvode
   have_cvode = True
 except ImportError:
