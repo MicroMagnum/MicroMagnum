@@ -119,6 +119,25 @@ find_package_handle_standard_args(sundials_cvode  DEFAULT_MSG
 
 mark_as_advanced(SUNDIALS_CVODE_INCLUDE_DIR SUNDIALS_CVODE_LIBRARY )
 
+# enable CVode
+if(SUNDIALS_CVODE_FOUND)
+  set(HAVE_CVODE ON) 
+  include_directories(
+    ${PYTHON_INCLUDE_PATH}
+    ${PROJECT_SOURCE_DIR}/magneto
+    ${PROJECT_SOURCE_DIR}/magneto/matrix
+    ${PROJECT_BINARY_DIR}
+    ${SUNDIALS_CVODE_INCLUDE_DIRS}
+    )
+else(SUNDIALS_CVODE_FOUND)
+  include_directories(
+    ${PYTHON_INCLUDE_PATH}
+    ${PROJECT_SOURCE_DIR}/magneto
+    ${PROJECT_SOURCE_DIR}/magneto/matrix
+    ${PROJECT_BINARY_DIR}
+    )
+endif(SUNDIALS_CVODE_FOUND)
+
 ##############################################################
 ###    Boost.python                                        ###
 ##############################################################
@@ -167,25 +186,6 @@ endif()
 ##############################################################
 ###    Compile                                             ###
 ##############################################################
-
-# enable CVode
-if(SUNDIALS_CVODE_FOUND)
-  set(HAVE_CVODE ON) 
-  include_directories(
-    ${PYTHON_INCLUDE_PATH}
-    ${PROJECT_SOURCE_DIR}/magneto
-    ${PROJECT_SOURCE_DIR}/magneto/matrix
-    ${PROJECT_BINARY_DIR}
-    ${SUNDIALS_CVODE_INCLUDE_DIRS}
-    )
-else(SUNDIALS_CVODE_FOUND)
-  include_directories(
-    ${PYTHON_INCLUDE_PATH}
-    ${PROJECT_SOURCE_DIR}/magneto
-    ${PROJECT_SOURCE_DIR}/magneto/matrix
-    ${PROJECT_BINARY_DIR}
-    )
-endif(SUNDIALS_CVODE_FOUND)
 
 # Compile Cuda kernels into library
 if(ENABLE_CUDA)

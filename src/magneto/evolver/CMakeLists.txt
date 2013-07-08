@@ -5,9 +5,9 @@ set(SRC
 
 if(HAVE_CVODE)
   set(SRC ${SRC}
-  cvode.cpp
-  diffeq.cpp
-  )
+    cvode.cpp
+    diffeq.cpp
+    )
 endif(HAVE_CVODE)
 
 if(ENABLE_CUDA)
