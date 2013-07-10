@@ -2,7 +2,7 @@ Source: micromagnum
 Section: science
 Priority: extra
 Maintainer: Christian Darsow-Fromm <cdarsowf@physnet.uni-hamburg.de>
-Build-Depends: debhelper (>= 8.0.0), fftw3, swig
+Build-Depends: debhelper (>= 8.0.0), fftw3, swig, cmake
 Standards-Version: 3.9.3
 #Homepage: <insert the upstream URL, if relevant>
 #Vcs-Git: git://git.debian.org/collab-maint/micromagnum.git
@@ -10,7 +10,7 @@ Standards-Version: 3.9.3
 
 Package: micromagnum
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, python
+Depends: ${shlibs:Depends}, ${misc:Depends}, python, fftw3
 Description: micromagnetic simulation
 	MicroMagnum is a fast easy-to-use simulator that runs on CPUs as well as on GPUs using the CUDA platform. It combines the speed and flexibility of C++ together with the usability of Python.
 	MicroMagnum has a robust and highly modular architecture. This enables its easy extension by further physical modules.
