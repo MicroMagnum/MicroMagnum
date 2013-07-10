@@ -74,8 +74,6 @@ endif()
 
 find_package(PythonLibs REQUIRED)
 
-message(${PYTHON_LIBRARIES}) #TODO remove
-
 execute_process(COMMAND "${PYTHON_EXEC}" "-c"
     "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
     OUTPUT_VARIABLE PYTHON_SITE_MODULES_

@@ -11,6 +11,7 @@ option(ENABLE_CUDA_64 "Enable CUDA (both 32 and 64 bit support, needs CUDA devic
 
 option(USE_PYTHON2 "Use Python2" OFF)
 option(USE_PYTHON3 "Use Python3" OFF)
+option(USE_CVODE "Use CVode" OFF)
 
 if(ENABLE_CUDA_32 OR ENABLE_CUDA_64)
   set(ENABLE_CUDA ON)
@@ -71,7 +72,6 @@ elseif(USE_PYTHON3)
 endif(USE_PYTHON2)
 
 find_package(Python ${USE_PYTHON} REQUIRED)
-message("${PYTHON_VERSION}") # TODO remove
 
 # OpenMP support (optional)
 #include(FindOpenMP)
@@ -91,39 +91,43 @@ message("${PYTHON_VERSION}") # TODO remove
 #  SUNDIALS_CVODE_LIBRARIES - The libraries needed to use sundials_cvode
 #  SUNDIALS_CVODE_DEFINITIONS - Compiler switches required for using sundials_cvode
 
-find_package(PkgConfig)
-pkg_check_modules(PC_SUNDIALS_CVODE QUIET sundials_cvode)
-set(SUNDIALS_CVODE_DEFINITIONS ${PC_SUNDIALS_CVODE_CFLAGS_OTHER})
+if(USE_CVODE)
 
-find_path(SUNDIALS_CVODE_INCLUDE_DIR cvode/cvode.h
-  HINTS ${PC_SUNDIALS_CVODE_INCLUDEDIR} ${PC_SUNDIALS_CVODE_INCLUDE_DIRS}
-  PATH_SUFFIXES sundials_cvode )
+  find_package(PkgConfig)
+  pkg_check_modules(PC_SUNDIALS_CVODE QUIET sundials_cvode)
+  set(SUNDIALS_CVODE_DEFINITIONS ${PC_SUNDIALS_CVODE_CFLAGS_OTHER})
 
-find_library(SUNDIALS_CVODE_LIBRARY NAMES cvode sundials_cvode
-  HINTS ${PC_SUNDIALS_CVODE_LIBDIR} ${PC_SUNDIALS_CVODE_LIBRARY_DIRS} OPTIONAL)
+  find_path(SUNDIALS_CVODE_INCLUDE_DIR cvode/cvode.h
+    HINTS ${PC_SUNDIALS_CVODE_INCLUDEDIR} ${PC_SUNDIALS_CVODE_INCLUDE_DIRS}
+    PATH_SUFFIXES sundials_cvode )
 
-set(SUNDIALS_CVODE_LIBRARIES ${SUNDIALS_CVODE_LIBRARY} )
-set(SUNDIALS_CVODE_INCLUDE_DIRS ${SUNDIALS_CVODE_INCLUDE_DIR} )
+  find_library(SUNDIALS_CVODE_LIBRARY NAMES cvode sundials_cvode
+    HINTS ${PC_SUNDIALS_CVODE_LIBDIR} ${PC_SUNDIALS_CVODE_LIBRARY_DIRS} OPTIONAL)
 
-set(SUNDIALS_NVECSERIAL ${PC_SUNDIALS_NVECSERIAL_CFLAGS_OTHER})
+  set(SUNDIALS_CVODE_LIBRARIES ${SUNDIALS_CVODE_LIBRARY} )
+  set(SUNDIALS_CVODE_INCLUDE_DIRS ${SUNDIALS_CVODE_INCLUDE_DIR} )
 
-find_path(SUNDIALS_NVECSERIAL_INCLUDE_DIR nvector/nvector_serial.h
-  HINTS ${PC_SUNDIALS_NVECSERIAL_INCLUDEDIR} ${PC_SUNDIALS_NVECSERIAL_INCLUDE_DIRS}
-  PATH_SUFFIXES sundials_nvecserial )
+  set(SUNDIALS_NVECSERIAL ${PC_SUNDIALS_NVECSERIAL_CFLAGS_OTHER})
 
-find_library(SUNDIALS_NVECSERIAL_LIBRARY NAMES nvector_serial sundials_nvecserial
-  HINTS ${PC_SUNDIALS_NVECSERIAL_LIBDIR} ${PC_SUNDIALS_NVECSERIAL_LIBRARY_DIRS} OPTIONAL)
+  find_path(SUNDIALS_NVECSERIAL_INCLUDE_DIR nvector/nvector_serial.h
+    HINTS ${PC_SUNDIALS_NVECSERIAL_INCLUDEDIR} ${PC_SUNDIALS_NVECSERIAL_INCLUDE_DIRS}
+    PATH_SUFFIXES sundials_nvecserial )
 
-set(SUNDIALS_NVECSERIAL_LIBRARIES ${SUNDIALS_NVECSERIAL_LIBRARY} )
-set(SUNDIALS_NVECSERIAL_INCLUDE_DIRS ${SUNDIALS_NVECSERIAL_INCLUDE_DIR} )
+  find_library(SUNDIALS_NVECSERIAL_LIBRARY NAMES nvector_serial sundials_nvecserial
+    HINTS ${PC_SUNDIALS_NVECSERIAL_LIBDIR} ${PC_SUNDIALS_NVECSERIAL_LIBRARY_DIRS} OPTIONAL)
 
-include(FindPackageHandleStandardArgs)
-# handle the QUIETLY and REQUIRED arguments and set SUNDIALS_CVODE_FOUND to TRUE
-# if all listed variables are TRUE
-find_package_handle_standard_args(sundials_cvode  DEFAULT_MSG
-  SUNDIALS_CVODE_LIBRARY SUNDIALS_CVODE_INCLUDE_DIR)
+  set(SUNDIALS_NVECSERIAL_LIBRARIES ${SUNDIALS_NVECSERIAL_LIBRARY} )
+  set(SUNDIALS_NVECSERIAL_INCLUDE_DIRS ${SUNDIALS_NVECSERIAL_INCLUDE_DIR} )
 
-mark_as_advanced(SUNDIALS_CVODE_INCLUDE_DIR SUNDIALS_CVODE_LIBRARY )
+  include(FindPackageHandleStandardArgs)
+  # handle the QUIETLY and REQUIRED arguments and set SUNDIALS_CVODE_FOUND to TRUE
+  # if all listed variables are TRUE
+  find_package_handle_standard_args(sundials_cvode  DEFAULT_MSG
+    SUNDIALS_CVODE_LIBRARY SUNDIALS_CVODE_INCLUDE_DIR)
+
+  mark_as_advanced(SUNDIALS_CVODE_INCLUDE_DIR SUNDIALS_CVODE_LIBRARY )
+
+endif()
 
 # enable CVode
 if(SUNDIALS_CVODE_FOUND)
@@ -256,7 +260,7 @@ configure_file(
 ##############################################################
 
 ENABLE_TESTING() # TODO WORKING_DIRECTORY
-#add_test(NAME allTests WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/.. COMMAND python${PYTHON_VERSION} run-all-tests.py)
+add_test(NAME allTests WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/.. COMMAND python${PYTHON_VERSION} run-all-tests.py)
 
 ##############################################################
 ###    Install rule                                        ###
