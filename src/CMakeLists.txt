@@ -59,28 +59,22 @@ set(FFTW_LIBRARIES "${FFTW};${FFTWF};${FFTWT};${FFTWFT}")
 find_package(SWIG REQUIRED)
 include(${SWIG_USE_FILE})
 
-# CMake version 2.8.8+ will select the highest Python library version including Python 3.x.
-if(USE_PYTHON2)
-  set (USE_PYTHON 2)
-  #SET(Python_ADDITIONAL_VERSIONS 2.8 2.7 2.6)
-elseif(USE_PYTHON3)
-  set (USE_PYTHON 3)
-  #SET(Python_ADDITIONAL_VERSIONS 3.4 3.3 3.2 3.1 3.0)
-endif(USE_PYTHON2)
-
-# CMake versions 2.8.7 and lower will always choose Python 2.x.
-#TODO old cmake!
-
 
 ##############################################################
 ###    Find Python                                         ###
 ##############################################################
 
+if(USE_PYTHON2)
+  set (USE_PYTHON 2)
+elseif(USE_PYTHON3)
+  set (USE_PYTHON 3)
+endif(USE_PYTHON2)
+
 find_package(Python ${USE_PYTHON} REQUIRED)
 message("${PYTHON_VERSION}") # TODO remove
 
 # OpenMP support (optional)
-include(FindOpenMP)
+#include(FindOpenMP)
 
 ##############################################################
 ###    CVode                                               ###

@@ -1,4 +1,5 @@
 # This code sets the following variables:
+# PYTHONLIBS_FOUND    - have the Python libs been found
 # PYTHON_EXEC         - path to python executable
 # PYTHON_LIBRARIES    - path to the python library
 # PYTHON_INCLUDE_DIRS - path to where Python.h is found
@@ -65,20 +66,15 @@ execute_process(COMMAND "${PYTHON_EXEC}" "-c"
     OUTPUT_STRIP_TRAILING_WHITESPACE)
 string(REPLACE "." "" PYTHON_VERSION_NO_DOTS ${PYTHON_VERSION})
 
-find_library(PYTHON_LIBRARIES 
-    NAMES "python${PYTHON_VERSION_NO_DOTS}" "python${PYTHON_VERSION}"
-    PATHS
-        "${PYTHON_PREFIX}/lib"
-        [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${PYTHON_VERSION}\\InstallPath]/libs
-    PATH_SUFFIXES "" "python${PYTHON_VERSION}/config"
-    DOC "Python libraries" NO_DEFAULT_PATH)
+if(${PYTHON_VERSION} LESS 3.0)
+  SET(Python_ADDITIONAL_VERSIONS 2.8 2.7 2.6)
+elseif()
+  SET(Python_ADDITIONAL_VERSIONS 3.4 3.3 3.2 3.1 3.0)
+endif()
 
-find_path(PYTHON_INCLUDE_DIRS "Python.h"
-    PATHS
-        "${PYTHON_PREFIX}/include"
-        [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${PYTHON_VERSION}\\InstallPath]/include
-    PATH_SUFFIXES python${PYTHON_VERSION} python${PYTHON_VERSION}m
-    DOC "Python include directories" NO_DEFAULT_PATH)
+find_package(PythonLibs REQUIRED)
+
+message(${PYTHON_LIBRARIES}) #TODO remove
 
 execute_process(COMMAND "${PYTHON_EXEC}" "-c"
     "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
