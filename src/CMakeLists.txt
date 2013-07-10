@@ -3,7 +3,7 @@
 ##############################################################
 
 # general settings
-cmake_minimum_required (VERSION 2.8.8)
+cmake_minimum_required (VERSION 2.8.0)
 project (Magneto)
 
 option(ENABLE_CUDA_32 "Enable CUDA (only 32 bit support)" OFF)
@@ -16,6 +16,8 @@ if(ENABLE_CUDA_32 OR ENABLE_CUDA_64)
   set(ENABLE_CUDA ON)
 endif(ENABLE_CUDA_32 OR ENABLE_CUDA_64)
 
+# set cmake module path
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 ##############################################################
 ###    Macros                                              ###
 ##############################################################
@@ -59,13 +61,23 @@ include(${SWIG_USE_FILE})
 
 # CMake version 2.8.8+ will select the highest Python library version including Python 3.x.
 if(USE_PYTHON2)
-  SET(Python_ADDITIONAL_VERSIONS 2.8 2.7 2.6)
+  set (USE_PYTHON 2)
+  #SET(Python_ADDITIONAL_VERSIONS 2.8 2.7 2.6)
 elseif(USE_PYTHON3)
-  SET(Python_ADDITIONAL_VERSIONS 3.4 3.3 3.2 3.1 3.0)
+  set (USE_PYTHON 3)
+  #SET(Python_ADDITIONAL_VERSIONS 3.4 3.3 3.2 3.1 3.0)
 endif(USE_PYTHON2)
-# CMake versions 2.8.7 and lower will always choose Python 2.x.
 
-find_package(PythonLibs REQUIRED)
+# CMake versions 2.8.7 and lower will always choose Python 2.x.
+#TODO old cmake!
+
+
+##############################################################
+###    Find Python                                         ###
+##############################################################
+
+find_package(Python ${USE_PYTHON} REQUIRED)
+message("${PYTHON_VERSION}") # TODO remove
 
 # OpenMP support (optional)
 include(FindOpenMP)
@@ -234,6 +246,7 @@ if(ENABLE_CUDA)
   swig_link_libraries(${SWIG_MODULE_NAME} magneto_cu_parts)
 endif(ENABLE_CUDA)
 
+
 ##############################################################
 ###    Don't forget to create config.h                     ###
 ##############################################################
@@ -248,27 +261,24 @@ configure_file(
 ###    Tests                                               ###
 ##############################################################
 
-ENABLE_TESTING()
-add_test(NAME allTests WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/.. COMMAND python${PYTHON_MAJOR} run-all-tests.py)
+ENABLE_TESTING() # TODO WORKING_DIRECTORY
+#add_test(NAME allTests WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/.. COMMAND python${PYTHON_VERSION} run-all-tests.py)
 
 ##############################################################
 ###    Install rule                                        ###
 ##############################################################
 
-#message("${PYTHONLIBS_VERSION_STRING}")
-STRING(SUBSTRING "${PYTHONLIBS_VERSION_STRING}" 0 3 PYTHON_MAJOR)
-
-# set PYTHON_SITE_PACKAGES path
-execute_process ( COMMAND python${PYTHON_MAJOR} -c "import sys; from distutils.sysconfig import get_python_lib; d0 = get_python_lib(0,0,'/usr/local'); d1 = get_python_lib(); print(d0 if d0 in sys.path else d1)" OUTPUT_VARIABLE PYTHON_SITE_PACKAGES OUTPUT_STRIP_TRAILING_WHITESPACE)
-message ("-- Found Python ${PYTHONLIBS_VERSION_STRING}, will install at ${PYTHON_SITE_PACKAGES}")
+# set PYTHON_SITE_MODULES path
+#execute_process ( COMMAND python${PYTHON_VERSION} -c "import sys; from distutils.sysconfig import get_python_lib; d0 = get_python_lib(0,0,'/usr/local'); d1 = get_python_lib(); print(d0 if d0 in sys.path else d1)" OUTPUT_VARIABLE PYTHON_SITE_MODULES OUTPUT_STRIP_TRAILING_WHITESPACE)
+message ("-- Found Python ${PYTHON_VERSION}, will install at ${PYTHON_SITE_MODULES}")
 
 # install directory magnum, exclude the symlinks
-install(DIRECTORY magnum DESTINATION "${PYTHON_SITE_PACKAGES}" PATTERN "magnum/magneto_cuda.py magnum/_magneto_cuda.so magnum/magneto_cpu.py magnum/_magneto_cpu.so CMakeLists.txt" EXCLUDE)
+install(DIRECTORY magnum DESTINATION "${PYTHON_SITE_MODULES}" PATTERN "magnum/magneto_cuda.py magnum/_magneto_cuda.so magnum/magneto_cpu.py magnum/_magneto_cpu.so CMakeLists.txt" EXCLUDE)
 
 # copy cuda files, if used
 if(ENABLE_CUDA)
-  install(FILES build/magneto_cuda.py build/_magneto_cuda.so DESTINATION "${PYTHON_SITE_PACKAGES}/magnum")
+  install(FILES build/magneto_cuda.py build/_magneto_cuda.so DESTINATION "${PYTHON_SITE_MODULES}/magnum")
 else(ENABLE_CUDA)
   # copy builded destinations of cpu symlinks
-  install(FILES build/magneto_cpu.py build/_magneto_cpu.so DESTINATION "${PYTHON_SITE_PACKAGES}/magnum")
+  install(FILES build/magneto_cpu.py build/_magneto_cpu.so DESTINATION "${PYTHON_SITE_MODULES}/magnum")
 endif(ENABLE_CUDA)
