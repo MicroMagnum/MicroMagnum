@@ -96,6 +96,7 @@ You can use the following parameters to customize your installation:
    -DENABLE_CUDA_64=on  # to compile for cuda 64 bit
    -DUSE_PYTHON2=on     # force compile for python2
    -DUSE_PYTHON3=on     # force compile for python3
+   -DUSE_CVODE=on       # compile with CVode
 
 If you don't want to install MicroMagnum, then set PYTHONPATH to <micromagnum-basedir>/src
 
@@ -143,12 +144,17 @@ To build and install you can use:
   make                    # build
   sudo make install       # and install cvode
 
-Now you can build MicroMagnum and CVode will be included automatically.
+Now you can build MicroMagnum and activate CVode with the toggle:
+
+.. code-block:: bash
+
+  cmake .. -DUSE_CVODE=on   # to enable CVode
+
 If you do not have the permission to install globally, use these Cmake parameters:
 
 .. code-block:: bash
 
-  cmake .. -DCMAKE_INCLUDE_PATH=/INSTALLPATH/include -DCMAKE_LIBRARY_PATH=/INSTALLPATH/lib
+  cmake .. -DUSE_CVODE=on -DCMAKE_INCLUDE_PATH=/INSTALLPATH/include -DCMAKE_LIBRARY_PATH=/INSTALLPATH/lib
 
 
 FFTW download and building
