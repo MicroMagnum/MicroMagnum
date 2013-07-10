@@ -135,7 +135,7 @@ mark_as_advanced(SUNDIALS_CVODE_INCLUDE_DIR SUNDIALS_CVODE_LIBRARY )
 if(SUNDIALS_CVODE_FOUND)
   set(HAVE_CVODE ON) 
   include_directories(
-    ${PYTHON_INCLUDE_PATH}
+    ${PYTHON_INCLUDE_DIRS}
     ${PROJECT_SOURCE_DIR}/magneto
     ${PROJECT_SOURCE_DIR}/magneto/matrix
     ${PROJECT_BINARY_DIR}
@@ -143,7 +143,7 @@ if(SUNDIALS_CVODE_FOUND)
     )
 else(SUNDIALS_CVODE_FOUND)
   include_directories(
-    ${PYTHON_INCLUDE_PATH}
+    ${PYTHON_INCLUDE_DIRS}
     ${PROJECT_SOURCE_DIR}/magneto
     ${PROJECT_SOURCE_DIR}/magneto/matrix
     ${PROJECT_BINARY_DIR}
