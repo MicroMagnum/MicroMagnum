@@ -10,7 +10,7 @@ from math import pi, cos, sin
 #world = World(RectangularMesh((512, 512, 1), (500.0/256*1e-9, 125.0/256*1e-9, 3e-9)), Body("all", Material.Py(alpha=0.02)))
 #world = World(RectangularMesh((200, 100, 1), (2.5e-9, 1.25e-9, 3.0e-9)), Body("all", Material.Py(alpha=0.02)))
 #world = World(RectangularMesh((200,  50, 1), (2.5e-9, 2.50e-9, 3.0e-9)), Body("all", Material.Py(alpha=0.02)))
-world = World(RectangularMesh((15, 10, 1), (  5e-9,    5e-9, 3.0e-9)), Body("all", Material.Py(alpha=0.02)))
+world = World(RectangularMesh((100,  25, 1), (  5e-9,    5e-9, 3.0e-9)), Body("all", Material.Py(alpha=0.02)))
 
 ############################################################
 # Relax an s-state as the initial magnetization of the SP4 #
@@ -51,7 +51,7 @@ def apply_field(M0, H, file_prefix):
 
   #solver = create_solver(world, [StrayField, ExchangeField, ExternalField], log=True, evolver="rk23", eps_abs=1e-2, eps_rel=1e-2)
   #solver = create_solver(world, [StrayField, ExchangeField, ExternalField], log=True, eps_abs=1e-2, eps_rel=1e-2)
-  solver = create_solver(world, [StrayField, ExchangeField, ExternalField], log=True, evolver="cvode", eps_abs=1e-4, eps_rel=1e-2, step_size=3.0e-12)
+  solver = create_solver(world, [StrayField, ExchangeField, ExternalField], log=True, evolver="rkf45", eps_abs=1e-4, eps_rel=1e-4)
   solver.state.M = M0
   solver.state.H_ext_offs = H
   solver.addStepHandler(ZeroCrossChecker(), condition.Always())
@@ -60,7 +60,7 @@ def apply_field(M0, H, file_prefix):
   dtsh.addEnergyColumn("E_exch")
   dtsh.addEnergyColumn("E_ext")
   dtsh.addEnergyColumn("E_tot")
-  solver.addStepHandler(dtsh, condition.EveryNthStep(1))
+  solver.addStepHandler(dtsh, condition.EveryNthStep(10))
   solver.solve(condition.Time(1.0e-9))
 
 ############################################################
@@ -68,14 +68,7 @@ def apply_field(M0, H, file_prefix):
 ############################################################
 
 M0 = make_initial_sp4_state()
-#writeVTK("sp4_M0_cvode.vtr", M0)
-writeImage("sp4_M0_y_cvode.png", M0, 'y')
-writeImage("sp4_M0_x_cvode.png", M0, 'x')
-
+writeOMF("sp4_M0.omf", M0)
 #M0 = readOMF("sp4_M0.omf")
-apply_field(M0, (-24.6e-3/MU0, +4.3e-3/MU0, 0.0), "sp4-1_cvode")
-writeImage("sp4_M1_y_cvode.png", M0, 'y')
-writeImage("sp4_M1_x_cvode.png", M0, 'x')
-apply_field(M0, (-35.5e-3/MU0, -6.3e-3/MU0, 0.0), "sp4-2_cvode")
-writeImage("sp4_M2_y_cvode.png", M0, 'y')
-writeImage("sp4_M2_x_cvode.png", M0, 'x')
+apply_field(M0, (-24.6e-3/MU0, +4.3e-3/MU0, 0.0), "sp4-1")
+apply_field(M0, (-35.5e-3/MU0, -6.3e-3/MU0, 0.0), "sp4-2")

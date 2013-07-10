@@ -51,7 +51,7 @@ def apply_field(M0, H, file_prefix):
 
   #solver = create_solver(world, [StrayField, ExchangeField, ExternalField], log=True, evolver="rk23", eps_abs=1e-2, eps_rel=1e-2)
   #solver = create_solver(world, [StrayField, ExchangeField, ExternalField], log=True, eps_abs=1e-2, eps_rel=1e-2)
-  solver = create_solver(world, [StrayField, ExchangeField, ExternalField], log=True, evolver="rkf45", eps_abs=1e-7, eps_rel=1e0)
+  solver = create_solver(world, [StrayField, ExchangeField, ExternalField], log=True, evolver="cvode", eps_abs=1e-4, eps_rel=1e-2, step_size=3.0e-12)
   solver.state.M = M0
   solver.state.H_ext_offs = H
   solver.addStepHandler(ZeroCrossChecker(), condition.Always())
@@ -68,13 +68,8 @@ def apply_field(M0, H, file_prefix):
 ############################################################
 
 M0 = make_initial_sp4_state()
-writeImage("sp4_M0_y_rk.png", M0, 'y')
-writeImage("sp4_M0_x_rk.png", M0, 'x')
-#writeVTK("sp4_M0_rk.vtk", M0)
+#writeVTK("sp4_M0_cvode.vtr", M0)
+
 #M0 = readOMF("sp4_M0.omf")
-apply_field(M0, (-24.6e-3/MU0, +4.3e-3/MU0, 0.0), "sp4-1_rk")
-writeImage("sp4_M1_y_rk.png", M0, 'y')
-writeImage("sp4_M1_x_rk.png", M0, 'x')
-apply_field(M0, (-35.5e-3/MU0, -6.3e-3/MU0, 0.0), "sp4-2_rk")
-writeImage("sp4_M2_y_rk.png", M0, 'y')
-writeImage("sp4_M2_x_rk.png", M0, 'x')
+apply_field(M0, (-24.6e-3/MU0, +4.3e-3/MU0, 0.0), "sp4-1_cvode")
+apply_field(M0, (-35.5e-3/MU0, -6.3e-3/MU0, 0.0), "sp4-2_cvode")
