@@ -130,6 +130,7 @@ if(USE_CVODE)
 endif()
 
 # enable CVode
+##################### include directories ##################
 if(SUNDIALS_CVODE_FOUND)
   set(HAVE_CVODE ON) 
   include_directories(
@@ -259,8 +260,8 @@ configure_file(
 ###    Tests                                               ###
 ##############################################################
 
-ENABLE_TESTING() # TODO WORKING_DIRECTORY
-add_test(NAME allTests WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/.. COMMAND python${PYTHON_VERSION} run-all-tests.py)
+#ENABLE_TESTING() # TODO WORKING_DIRECTORY only works with new cmake. Disabled to support the old.
+#add_test(NAME allTests WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/.. COMMAND python${PYTHON_VERSION} run-all-tests.py)
 
 ##############################################################
 ###    Install rule                                        ###
