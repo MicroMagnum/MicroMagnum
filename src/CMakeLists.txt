@@ -139,6 +139,9 @@ set_source_files_properties (${BINDINGS_SOURCE} PROPERTIES SWIG_FLAGS "-O;-threa
 swig_add_module(${SWIG_MODULE_NAME} python ${PROJECT_SOURCE_DIR}/magneto/bindings/magneto.i ${MAGNETO_SRC})
 swig_link_libraries(${SWIG_MODULE_NAME} ${FFTW_LIBRARIES})
 
+# Enable this for MacOS X (???)
+#swig_link_libraries(${SWIG_MODULE_NAME} ${PYTHON_LIBRARIES})
+
 # Link Cuda Kernels to Swig module
 if(ENABLE_CUDA)
   swig_link_libraries(${SWIG_MODULE_NAME} magneto_cu_parts)
