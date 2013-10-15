@@ -20,8 +20,8 @@ override_dh_auto_configure:
 
 override_dh_auto_build:
 	cd src/build; make -j
-	cd doc; make html; make latex
-	cd doc/build/latex; pdflatex Magneto.tex; pdflatex Magneto.tex; pdflatex Magneto.tex
+	# cd doc; make html; make latex
+	# cd doc/build/latex; pdflatex Magneto.tex; pdflatex Magneto.tex; pdflatex Magneto.tex
 
 override_dh_auto_test:
 	 cd src; #./run-all-tests.py #TODO integrate tests again
