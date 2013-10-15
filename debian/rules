@@ -30,4 +30,6 @@ override_dh_auto_install:
 	cd src/build; make install DESTDIR=../../debian/micromagnum 
 	#dh_installdocs
 
+override_dh_installdocs:
+
 override_dh_compress:
