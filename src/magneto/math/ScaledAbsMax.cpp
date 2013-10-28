@@ -60,6 +60,7 @@ double scaled_abs_max(VectorMatrix &M, Matrix &scale)
 			return scaled_abs_max_cuda(M, scale, isCuda64Enabled());
 #else
 			assert(0);
+			return 0; // supress compiler warning
 #endif
 		} else {
 			return scaled_abs_max_cpu(M, scale);

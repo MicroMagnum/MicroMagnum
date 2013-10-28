@@ -41,7 +41,7 @@ Matrix calculateDemagTensor(long double lx, long double ly, long double lz, int 
 	{
 		Matrix::rw_accessor N_acc(N_matrix);
 
-		const bool no_infinity_correction = std::getenv("MAGNUM_DEMAG_NO_INFINITY_CORRECTION");
+		const bool no_infinity_correction = (std::getenv("MAGNUM_DEMAG_NO_INFINITY_CORRECTION") != 0);
 
 		int percent = 0;
 

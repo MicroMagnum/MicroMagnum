@@ -49,5 +49,6 @@ VectorMatrix CalculateStrayfieldForCuboid(
 	H_acc.set(0,0,0, Vector3d(1,2,3));
 
 	assert(0);
+	return H;
 }
 

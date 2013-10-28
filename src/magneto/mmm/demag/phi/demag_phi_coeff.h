@@ -65,6 +65,7 @@ namespace demag_phi_coeff
 			case 2: return g(x, y, z, dx, dy, dz);
 		}
 		assert(0);
+		return 0; // supress compiler warning
 	}
 
 } // namespace PotentialCoeff
