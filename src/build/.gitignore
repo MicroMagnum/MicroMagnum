@@ -3,7 +3,7 @@ CMakeFiles/
 Makefile
 cmake_install.cmake
 CTestTestfile.cmake
-config.h
+config.cmake-generated.h
 magneto_cuda.py
 _magneto_cuda.so
 magneto_cpu.py

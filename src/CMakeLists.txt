@@ -155,8 +155,8 @@ endif()
 
 # Add configuration file config.h
 configure_file(
-  "${PROJECT_SOURCE_DIR}/magneto/config.h.in"
-  "${PROJECT_BINARY_DIR}/config.h"
+  "${PROJECT_SOURCE_DIR}/magneto/config.cmake-generated.h.in"
+  "${PROJECT_BINARY_DIR}/config.cmake-generated.h"
 )
 
 ##############################################################
