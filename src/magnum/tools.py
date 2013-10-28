@@ -84,6 +84,7 @@ def interactive_menu(header, text, options):
         print("  %i. %s" % (idx + 1, opt))
     while True:
         print("Choice: ", end="")
+        sys.stdout.flush()
         try:
             ans = int(getline())
             if ans < 1 or ans > len(options) + 1:
