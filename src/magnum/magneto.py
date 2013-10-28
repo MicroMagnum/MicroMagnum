@@ -17,5 +17,8 @@
 
 try:
     from magnum.magneto_cuda import *
-except ImportError:
-    from magnum.magneto_cpu import *
+except Exception as e:
+    if isinstance(e, (SyntaxError, ImportError)):
+        from magnum.magneto_cpu import *
+    else:
+        raise e
