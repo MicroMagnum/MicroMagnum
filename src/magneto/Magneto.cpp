@@ -188,7 +188,8 @@ void deinitialize(const std::string &config_path)
 	fftw_cleanup_threads();
 #endif
 
-	setDebugCallback(PythonCallable());
+	PythonCallable empty_callback;
+	setDebugCallback(empty_callback);
 }
 
 void flush()
