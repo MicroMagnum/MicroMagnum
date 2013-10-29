@@ -22,17 +22,21 @@ set(SRC
   ext/FFT.cpp
 )
 
-set(SRC_FOR_CUDA
+# Add Cuda specific sources
+if(ENABLE_CUDA)
+  set(SRC ${SRC}
     device/cuda/CUDADevice.cpp
     device/cuda/CUDAArray.cpp
     device/cuda_tools.cpp
     matrix/scalar/Matrix_cuda_accessor.cpp
     matrix/vector/VectorMatrix_cuda_accessor.cpp
-)
+  )
+endif(ENABLE_CUDA)
 
 set(CUSRC
   device/cuda/kernels_reduce.cu
   device/cuda/kernels_simple.cu
 )
 
-append_sources(${CMAKE_CURRENT_SOURCE_DIR} "${SRC}" "${SRC_FOR_CUDA}" "${CUSRC}")
+append_magneto_src(${CMAKE_CURRENT_SOURCE_DIR} "${SRC}")
+append_magneto_cusrc(${CMAKE_CURRENT_SOURCE_DIR} "${CUSRC}")

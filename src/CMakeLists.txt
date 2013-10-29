@@ -16,6 +16,28 @@ if(ENABLE_CUDA_32 OR ENABLE_CUDA_64)
 endif()
 
 ##############################################################
+###    Macros                                              ###
+##############################################################
+
+# Macro for adding src files from within subdirectories
+macro(append_magneto_src DIR FILES)
+  set(LIST)
+  foreach(FILE ${FILES})
+    list(APPEND LIST ${DIR}/${FILE})
+  endforeach()
+  set(MAGNETO_SRC ${MAGNETO_SRC};${LIST} PARENT_SCOPE)
+endmacro()
+
+# Macro for adding Cuda kernel src files from within subdirectories
+macro(append_magneto_cusrc DIR FILES)
+  set(LIST)
+  foreach(FILE ${FILES})
+    list(APPEND LIST ${DIR}/${FILE})
+  endforeach()
+  set(MAGNETO_CUSRC ${MAGNETO_CUSRC};${LIST} PARENT_SCOPE)
+endmacro()
+
+##############################################################
 ###    Libraries                                           ###
 ##############################################################
 
@@ -31,9 +53,9 @@ include(${SWIG_USE_FILE})
 # CMake version 2.8.8+ will select the highest Python version including Python 3.
 # CMake version 2.8.7- will always choose Python 2.x.
 if(USE_PYTHON2)
-  set(Python_ADDITIONAL_VERSIONS 2.8 2.7 2.6)
+  SET(Python_ADDITIONAL_VERSIONS 2.8 2.7 2.6)
 elseif(USE_PYTHON3)
-  set(Python_ADDITIONAL_VERSIONS 3.3 3.2 3.1 3.0)
+  SET(Python_ADDITIONAL_VERSIONS 3.3 3.2 3.1 3.0)
 endif()
 
 find_package(PythonLibs REQUIRED)
@@ -41,43 +63,9 @@ find_package(PythonLibs REQUIRED)
 # OpenMP support (optional)
 include(FindOpenMP)
 
-# CUDA (if enabled)
-if(ENABLE_CUDA)
-  include(FindCUDA)
-  #find_package(CUDA)
-
-  # Set HAVE_CUDA and HAVE_CUDA_64 (for config.h)
-  set(HAVE_CUDA ON)
-  if(ENABLE_CUDA_64)
-    set(HAVE_CUDA_64 ON)
-  endif()
-endif()
-
 ##############################################################
 ###    Subdirectories                                      ###
 ##############################################################
-
-# Macro for adding src files from within subdirectories
-macro(append_sources DIR CPP_FILES CPP_FILES_FOR_CUDA CU_FILES)
-  set(LIST)
-  foreach(FILE ${CPP_FILES})
-    list(APPEND LIST ${DIR}/${FILE})
-  endforeach()
-  set(MAGNETO_CPU_SRC ${MAGNETO_CPU_SRC};${LIST} PARENT_SCOPE)
-  set(MAGNETO_CUDA_SRC ${MAGNETO_CUDA_SRC};${LIST} PARENT_SCOPE)
-
-  set(LIST)
-  foreach(FILE ${CPP_FILES_FOR_CUDA})
-    list(APPEND LIST ${DIR}/${FILE})
-  endforeach()
-  set(MAGNETO_CUDA_SRC ${MAGNETO_CUDA_SRC};${LIST} PARENT_SCOPE)
-
-  set(LIST)
-  foreach(FILE ${CU_FILES})
-    list(APPEND LIST ${DIR}/${FILE})
-  endforeach()
-  set(MAGNETO_CUDA_CUSRC ${MAGNETO_CUDA_CUSRC};${LIST} PARENT_SCOPE)
-endmacro()
 
 add_subdirectory(magneto)
 add_subdirectory(magneto/bindings)
@@ -103,15 +91,9 @@ if(OPENMP_FOUND)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif()
 
-if(ENABLE_CUDA)
-  set(CUDA_PROPAGATE_HOST_FLAGS OFF)
-
-  if(ENABLE_CUDA_64)
-    set(CUDA_NVCC_FLAGS --gpu-architecture=compute_20;-Xcompiler;-fpic;-O6;--use_fast_math)
-  else(ENABLE_CUDA_64)
-    set(CUDA_NVCC_FLAGS -Xcompiler;-fpic;-O6;--use_fast_math)
-  endif()
-endif()
+##############################################################
+###    Compile                                             ###
+##############################################################
 
 include_directories(
   ${PYTHON_INCLUDE_PATH}
@@ -120,27 +102,51 @@ include_directories(
   ${PROJECT_BINARY_DIR}
 )
 
-##############################################################
-###    Compile                                             ###
-##############################################################
-
-set(BINDINGS_CPU_SOURCE ${PROJECT_SOURCE_DIR}/magneto/bindings/magneto_cpu.i)
-set(BINDINGS_CUDA_SOURCE ${PROJECT_SOURCE_DIR}/magneto/bindings/magneto_cuda.i)
-set_source_files_properties(${BINDINGS_CPU_SOURCE} ${BINDINGS_CUDA_SOURCE} PROPERTIES CPLUSPLUS ON)
-set_source_files_properties(${BINDINGS_CPU_SOURCE} ${BINDINGS_CUDA_SOURCE} PROPERTIES SWIG_FLAGS "-O;-threads")
-
-# magneto_cpu module
-swig_add_module(magneto_cpu python ${BINDINGS_CPU_SOURCE} ${MAGNETO_CPU_SRC})
-swig_link_libraries(magneto_cpu ${FFTW_LIBRARIES})
-
-# magneto_cuda module (if enabled)
+# Compile Cuda kernels into library
 if(ENABLE_CUDA)
-  cuda_add_library(magneto_cu_parts ${MAGNETO_CUDA_CUSRC})
+  include(FindCUDA)
+  #find_package(CUDA)
+
+  # Set HAVE_CUDA and HAVE_CUDA_64 (for config.h)
+  set(HAVE_CUDA ON)
+  if(ENABLE_CUDA_64)
+    set(HAVE_CUDA_64 ON)
+  endif()
+
+  # Setup nvcc command line args
+  set(CUDA_PROPAGATE_HOST_FLAGS OFF)
+
+  if(ENABLE_CUDA_64)
+    set(CUDA_NVCC_FLAGS --gpu-architecture=compute_20;-Xcompiler;-fpic;-O6;--use_fast_math)
+  else(ENABLE_CUDA_64)
+    set(CUDA_NVCC_FLAGS -Xcompiler;-fpic;-O6;--use_fast_math)
+  endif()
+
+  cuda_add_library(magneto_cu_parts ${MAGNETO_CUSRC})
   cuda_add_cufft_to_target(magneto_cu_parts)
   cuda_add_cublas_to_target(magneto_cu_parts)
+endif()
 
-  swig_add_module(magneto_cuda python ${PBINDINGS_CUDA_SOURCE} ${MAGNETO_CUDA_SRC})
-  swig_link_libraries(magneto_cuda ${FFTW_LIBRARIES} magneto_cu_parts)
+# Compile Swig module
+set(BINDINGS_SOURCE ${PROJECT_SOURCE_DIR}/magneto/bindings/magneto.i)
+set_source_files_properties (${BINDINGS_SOURCE} PROPERTIES CPLUSPLUS ON )
+if(ENABLE_CUDA)
+  set(SWIG_MODULE_NAME "magneto_cuda")
+else()
+  set(SWIG_MODULE_NAME "magneto_cpu")
+endif()
+set_source_files_properties (${BINDINGS_SOURCE} PROPERTIES SWIG_FLAGS "-O;-threads;-module;${SWIG_MODULE_NAME}")
+swig_add_module(${SWIG_MODULE_NAME} python ${PROJECT_SOURCE_DIR}/magneto/bindings/magneto.i ${MAGNETO_SRC})
+swig_link_libraries(${SWIG_MODULE_NAME} ${FFTW_LIBRARIES})
+
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  # Mac OS X: Need to link Python libs explicitely (?)
+  swig_link_libraries(${SWIG_MODULE_NAME} ${PYTHON_LIBRARIES})
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+
+# Link Cuda Kernels to Swig module
+if(ENABLE_CUDA)
+  swig_link_libraries(${SWIG_MODULE_NAME} magneto_cu_parts)
 endif()
 
 ##############################################################

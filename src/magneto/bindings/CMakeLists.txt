@@ -3,4 +3,4 @@ set(SRC
   PythonByteArray.cpp
 )
 
-append_sources(${CMAKE_CURRENT_SOURCE_DIR} "${SRC}" "" "")
+append_magneto_src(${CMAKE_CURRENT_SOURCE_DIR} "${SRC}")
