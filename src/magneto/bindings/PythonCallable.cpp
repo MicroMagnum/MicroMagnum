@@ -49,7 +49,7 @@ PythonCallable &PythonCallable::operator=(PythonCallable other)
 
 PythonCallable::~PythonCallable()
 {
-	Py_XDECREF(func);
+	if (func) Py_XDECREF(func);
 }
 
 #if DO_LOCK_GIL

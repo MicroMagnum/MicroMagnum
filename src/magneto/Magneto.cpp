@@ -187,6 +187,8 @@ void deinitialize(const std::string &config_path)
 #ifdef HAVE_FFTW_THREADS
 	fftw_cleanup_threads();
 #endif
+
+	setDebugCallback(PythonCallable());
 }
 
 void flush()
