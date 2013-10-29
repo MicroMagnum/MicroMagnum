@@ -37,5 +37,4 @@ set(CUSRC
   spintorque/fdm_zhangli_cuda.cu
 )
 
-append_magneto_src(${CMAKE_CURRENT_SOURCE_DIR} "${SRC}")
-append_magneto_cusrc(${CMAKE_CURRENT_SOURCE_DIR} "${CUSRC}")
+append_sources(${CMAKE_CURRENT_SOURCE_DIR} "${SRC}" "" "${CUSRC}")
