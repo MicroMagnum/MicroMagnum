@@ -26,12 +26,10 @@ class MaterialTest(unittest.TestCase):
 
     def test_getter(self):
         mat = Material({'Ms': 8e3})
-        self.assertEqual(8e3, mat.get('Ms'))
         self.assertEqual(8e3, mat.Ms)
 
     def test_permalloy(self):
         py = Material.Py()
-        self.assertEqual(8e5, py.get('Ms'))
         self.assertEqual(8e5, py.Ms)
 
     def test_modified_permallow(self):
