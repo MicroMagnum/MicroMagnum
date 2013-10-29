@@ -9,17 +9,14 @@ set(SRC
   Transformer_CPU.cpp
 )
 
-if(ENABLE_CUDA)
-  set(SRC ${SRC}
-    cuda_transpose_unpad.cpp
-    cuda_transpose_zeropad.cpp
+set(SRC_FOR_CUDA
+  cuda_transpose_unpad.cpp
+  cuda_transpose_zeropad.cpp
 
-    Transformer_CUDA.cpp
-    Transposer_CUDA.cpp
-  )
-endif(ENABLE_CUDA)
+  Transformer_CUDA.cpp
+  Transposer_CUDA.cpp
+)
 
-# Add Cuda specific sources
 set(CUSRC
   cuda_copy_pad.cu
   cuda_copy_unpad.cu
@@ -30,5 +27,4 @@ set(CUSRC
   cuda_transpose_zeropad_3d.cu
 )
 
-append_magneto_src(${CMAKE_CURRENT_SOURCE_DIR} "${SRC}")
-append_magneto_cusrc(${CMAKE_CURRENT_SOURCE_DIR} "${CUSRC}")
+append_sources(${CMAKE_CURRENT_SOURCE_DIR} "${SRC}" "${SRC_FOR_CUDA}" "${CUSRC}")

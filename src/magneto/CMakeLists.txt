@@ -10,4 +10,4 @@ elseif(WINDOWS)
   set(SRC ${SRC} "os_windows.cpp")
 endif()
 
-append_magneto_src(${CMAKE_CURRENT_SOURCE_DIR} "${SRC}")
+append_sources(${CMAKE_CURRENT_SOURCE_DIR} "${SRC}" "" "")
