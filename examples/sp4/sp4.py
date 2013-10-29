@@ -23,7 +23,7 @@ def make_initial_sp4_state():
     return 8e5 * cos(u), 8e5 * sin(u), 0
   # Relax to get initial state for SP4
   solver = create_solver(world, [StrayField, ExchangeField], log=True, do_precess=False, evolver="rkf45", eps_abs=1e-4, eps_rel=1e-2)
-  solver.addStepHandler(WebStepHandler(open_browser=True), Always())
+  #solver.addStepHandler(WebStepHandler(open_browser=True), Always())
   solver.state.M = state0
   solver.state.alpha = 0.5
   solver.relax(1.0)
