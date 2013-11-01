@@ -69,7 +69,7 @@ Matrix calculateDemagTensor(long double lx, long double ly, long double lz, int 
 
 					if (repeat_x > 1)
 					{
-						const double scale = -lx*ly*lz/(4.0*PI);
+						const double scale = -lx*ly*lz/(4.0*MY_PI);
 						for (int ry = 0; ry < repeat_y; ++ry)
 						for (int rz = 0; rz < repeat_z; ++rz) {
 							int mcs = 1;
@@ -86,7 +86,7 @@ Matrix calculateDemagTensor(long double lx, long double ly, long double lz, int 
 
 					if (repeat_y > 1)
 					{
-						const double scale = -lx*ly*lz/(4.0*PI);
+						const double scale = -lx*ly*lz/(4.0*MY_PI);
 						for (int rx = 0; rx < repeat_x; ++rx)
 						for (int rz = 0; rz < repeat_z; ++rz) {
 							int mcs = 1;
@@ -103,7 +103,7 @@ Matrix calculateDemagTensor(long double lx, long double ly, long double lz, int 
 
 					if (repeat_z > 1)
 					{
-						const double scale = -lx*ly*lz/(4.0*PI);
+						const double scale = -lx*ly*lz/(4.0*MY_PI);
 						for (int rx = 0; rx < repeat_x; ++rx)
 						for (int ry = 0; ry < repeat_y; ++ry) {
 							int mcs = 1;
@@ -120,7 +120,7 @@ Matrix calculateDemagTensor(long double lx, long double ly, long double lz, int 
 
 					if (repeat_x > 1 && repeat_y > 1)
 					{
-						const double scale = -lx*ly*lz/(4.0*PI);
+						const double scale = -lx*ly*lz/(4.0*MY_PI);
 						for (int rz = 0; rz < repeat_z; ++rz) {
 							int mcs = 1;
 							if (k+rz*nz == 0) mcs *= 2;
@@ -135,7 +135,7 @@ Matrix calculateDemagTensor(long double lx, long double ly, long double lz, int 
 
 					if (repeat_x > 1 && repeat_z > 1)
 					{
-						const double scale = -lx*ly*lz/(4.0*PI);
+						const double scale = -lx*ly*lz/(4.0*MY_PI);
 						for (int ry = 0; ry < repeat_y; ++ry) {
 							int mcs = 1;
 							if (j+ry*ny == 0) mcs *= 2;
@@ -150,7 +150,7 @@ Matrix calculateDemagTensor(long double lx, long double ly, long double lz, int 
 
 					if (repeat_y > 1 && repeat_z > 1)
 					{
-						const double scale = -lx*ly*lz/(4.0*PI);
+						const double scale = -lx*ly*lz/(4.0*MY_PI);
 						for (int rx = 0; rx < repeat_x; ++rx) {
 							int mcs = 1;
 							if (i+rx*nx == 0) mcs *= 2;

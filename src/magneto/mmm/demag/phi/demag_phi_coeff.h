@@ -53,7 +53,7 @@ namespace demag_phi_coeff
         	                    - f(x + dx/2, y + dy/2, z - dz/2)
         	                    + f(x - dx/2, y + dy/2, z - dz/2)
         	                    + f(x + dx/2, y - dy/2, z - dz/2);
-		return - result / (4.0 * PI);
+		return - result / (4.0 * MY_PI);
 	}
 
 	template <class real>
