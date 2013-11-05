@@ -32,13 +32,19 @@ PythonCallable::PythonCallable()
 PythonCallable::PythonCallable(PyObject *func)
 	: func(func)
 {
-	Py_XINCREF(func);
+	if (func == Py_None) {
+		func = 0;
+	} else {
+		Py_XINCREF(func);
+	}
 }
 
 PythonCallable::PythonCallable(const PythonCallable &other)
 	: func(other.func)
 {
-	Py_XINCREF(func);
+	if (func) {
+		Py_XINCREF(func);
+	}
 }
 
 PythonCallable &PythonCallable::operator=(PythonCallable other)
@@ -49,7 +55,9 @@ PythonCallable &PythonCallable::operator=(PythonCallable other)
 
 PythonCallable::~PythonCallable()
 {
-	if (func) Py_XDECREF(func);
+	if (func) {
+		Py_XDECREF(func);
+	}
 }
 
 #if DO_LOCK_GIL
@@ -68,6 +76,8 @@ static void unlock_gil()
 
 void PythonCallable::call()
 {
+	if (!func) return;
+
 #if DO_LOCK_GIL
 	lock_gil();
 #endif
@@ -85,6 +95,8 @@ void PythonCallable::call()
 
 void PythonCallable::call(int i, const std::string &str)
 {
+	if (!func) return;
+
 #if DO_LOCK_GIL
 	lock_gil();
 #endif

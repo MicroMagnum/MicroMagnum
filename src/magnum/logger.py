@@ -16,6 +16,7 @@
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
+import atexit
 
 import magnum.magneto as magneto
 import magnum.tools as tools
@@ -84,7 +85,9 @@ def callback(level, msg):
         logger.error(msg)
     elif level == 4:
         logger.critical(msg)
+
 magneto.setDebugCallback(callback)
+atexit.register(lambda: magneto.setDebugCallback(None))
 
 # cleanup
 del ch
