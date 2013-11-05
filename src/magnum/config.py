@@ -141,7 +141,7 @@ class Configuration(object):
 
         if cuda_mode != magneto.CUDA_DISABLED and not self.haveCudaSupport():
             logger.error("Can't enable GPU computation (-g or -G flags): CUDA libraries could not be loaded.")
-            raise Exception("exit")
+            logger.error("-> Falling back to CPU.")
 
         self.enableCuda(cuda_mode, cuda_dev)
 
