@@ -70,9 +70,9 @@ class LandauLifshitzGilbert(module.Module):
     def calculate(self, state, id):
         if id == "M":
             return state.y
-        elif id == "H_tot" or id == "H_eff":
+        elif id == "H_tot":
             return self.calculate_H_tot(state)
-        elif id == "E_tot" or id == "E_eff":
+        elif id == "E_tot":
             return self.calculate_E_tot(state)
         elif id == "dMdt":
             return self.calculate_dMdt(state)
