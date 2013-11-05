@@ -82,7 +82,7 @@ class AnisotropyField(module.Module):
 
         elif id == "E_aniso":
             if not hasattr(cache, "E_aniso_sum"):
-                self.calculate("H_aniso")
+                self.calculate(state, "H_aniso")
             return cache.E_aniso_sum * self.system.mesh.cell_volume
 
         else:
