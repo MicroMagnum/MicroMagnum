@@ -62,10 +62,10 @@ void fdm_slonchewski(
 		// add both terms to dm/dt in LLGE
 		const double gamma_pr = GYROMAGNETIC_RATIO / (1.0 + alpha*alpha);
 
-		Vector3d dM_n = dM_acc.get(n);
-		dM_n.x += gamma_pr * a_j * (-MxMxp.x/Ms + Mxp.x*alpha);
-		dM_n.y += gamma_pr * a_j * (-MxMxp.y/Ms + Mxp.y*alpha);
-		dM_n.z += gamma_pr * a_j * (-MxMxp.z/Ms + Mxp.z*alpha);
+		Vector3d dM_n;
+		dM_n.x = gamma_pr * a_j * (-MxMxp.x/Ms + Mxp.x*alpha);
+		dM_n.y = gamma_pr * a_j * (-MxMxp.y/Ms + Mxp.y*alpha);
+		dM_n.z = gamma_pr * a_j * (-MxMxp.z/Ms + Mxp.z*alpha);
 		dM_acc.set(n, dM_n);
 	}
 }
