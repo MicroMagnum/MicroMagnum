@@ -64,7 +64,7 @@ class MacroSpinTorque(module.Module):
             dx, dy, dz = self.system.mesh.delta
             magneto.fdm_slonchewski(
               nx, ny, nz, dx, dy, dz, #self.do_precess,
-              self.a_j, self.p, self.system.Ms, self.system.alpha,
+              self.a_j, self.p, self.system.get_param("Ms"), self.system.get_param("alpha"),
               state.M, dMdt_ST
             )
             return dMdt_ST
