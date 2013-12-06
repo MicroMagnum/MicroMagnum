@@ -18,7 +18,7 @@
 import magnum.module as module
 import magnum.magneto as magneto
 
-from magnum.mesh import VectorField, Field
+from magnum.mesh import VectorField
 
 # void fdm_slonchewski(
 #       int dim_x, int dim_y, int dim_z,
@@ -33,9 +33,10 @@ from magnum.mesh import VectorField, Field
 
 class MacroSpinTorque(module.Module):
     def __init__(self, do_precess = True):
-        super(SpinTorque, self).__init__()
+        super(MacroSpinTorque, self).__init__()
         self.do_precess = do_precess
-        raise NotImplementedError("The MacroSpinTorque module does not work yet.")
+        if not do_precess:
+          raise NotImplementedError("The MacroSpinTorque module does not support do_precess=False.")
 
     def calculates(self):
         return ["dMdt_ST"]
@@ -48,8 +49,8 @@ class MacroSpinTorque(module.Module):
 
     def initialize(self, system):
         self.system = system
-        self.a_j = Field(self.system.mesh); self.a_j.fill(0.0)
-        self.p = Field(self.system.mesh); self.p.fill(0.0)
+        self.a_j = 0.0
+        self.p = VectorField(self.system.mesh); self.p.fill((0.0, 0.0, 0.0))
 
     def calculate(self, state, id):
         cache = state.cache
@@ -63,7 +64,7 @@ class MacroSpinTorque(module.Module):
             dx, dy, dz = self.system.mesh.delta
             magneto.fdm_slonchewski(
               nx, ny, nz, dx, dy, dz, #self.do_precess,
-              a_j, p, state.Ms, state.alpha,
+              self.a_j, self.p, self.system.Ms, self.system.alpha,
               state.M, dMdt_ST
             )
             return dMdt_ST

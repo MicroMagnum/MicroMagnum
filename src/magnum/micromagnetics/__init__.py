@@ -28,6 +28,7 @@ from magnum.micromagnetics.stray_field import StrayField, StrayFieldCalculator
 from magnum.micromagnetics.anisotropy_field import AnisotropyField
 from magnum.micromagnetics.external_field import AlternatingExternalField, StaticExternalField, ExternalField
 from magnum.micromagnetics.spin_torque import SpinTorque
+from magnum.micromagnetics.macro_spin_torque import MacroSpinTorque
 from magnum.micromagnetics.current import AlternatingCurrent, StaticCurrent
 from magnum.micromagnetics.alternating_field import AlternatingField
 from magnum.micromagnetics.static_field import StaticField
@@ -41,7 +42,7 @@ __all__ = [
     "StrayField", "StrayFieldCalculator",
     "AnisotropyField",
     "AlternatingExternalField", "StaticExternalField", "ExternalField",
-    "SpinTorque",
+    "SpinTorque", "MacroSpinTorque",
     "AlternatingCurrent", "StaticCurrent",
     "AlternatingField",
     "StaticField"
