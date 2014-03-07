@@ -8,11 +8,11 @@ l_ex = math.sqrt(Py.A/K_m)
 
 def sim(N, ratio):
   def get_info(state):
-    E_str = state.E_str / K_m / L**3
-    E_ex  = state.E_ex  / K_m / L**3
-    E_ani = state.E_ani / K_m / L**3
+    E_str = state.E_stray / K_m / L**3
+    E_ex  = state.E_exch  / K_m / L**3
+    E_ani = state.E_aniso / K_m / L**3
     E_tot = E_str + E_ex + E_ani
-    return E_tot, E_st, E_ex, E_ani, [x/Py.Ms for x in state.M.average()]
+    return E_tot, E_str, E_ex, E_ani, [x/Py.Ms for x in state.M.average()]
   
   def my_vortex(field, pos): 
     x, y, z = pos
