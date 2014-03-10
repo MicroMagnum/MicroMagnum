@@ -44,40 +44,42 @@ class MicroMagneticsSolver(solver.Solver):
 
         return self.solve(solver.condition.Relaxed(*args, **kwargs))
 
-    def minimize(self):
-        h = 1e-12            # TODO better initial step size?
-        deg_per_ns = 9999999 # TODO not really...
+    def minimize(self, max_degree_per_ns = 1.0):
+        h          = self.state.h
+        deg_per_ns = float("inf")
 
         i = 0
-        while abs(deg_per_ns) > 1.0:
-            M2 = self.state.M_min_step(h)
+        while deg_per_ns > max_degree_per_ns:
+            # Calculate next M and dM for minimization step
+            M_next = self.state.minimizer_M(h)
+            dM = self.state.minimizer_dM
 
-            # TODO make sure precession is turned off
-            dM = self.state.dMdt
-
+            # Get s^n-1 for step-size calculation
             M_diff = VectorField(self.mesh)
-            M_diff.assign(M2)
+            M_diff.assign(M_next)
             M_diff.add(self.state.M, -1.0)
 
-            self.state.y = M2
+            # Set next M
+            self.state.y = M_next
             self.state.flush_cache()
 
-            # calculate deg_per_ns
-            deg_per_timestep = (180.0 / math.pi) * math.atan2(M_diff.absMax(), self.state.M.absMax()) # we assume a<b at atan(a/b).
-            deg_per_ns = 1e-9 * deg_per_timestep / h
-            print(deg_per_ns)
+            # Calculate deg_per_ns
+            # TODO M.absMax might be wrong choice if different materials are in use
+            deg_per_timestep = (180.0 / math.pi) * math.atan2(M_diff.absMax(), self.state.M.absMax())
+            deg_per_ns = abs(1e-9 * deg_per_timestep / h)
             
+            # Get y^n-1 for step-size calculation
             dM_diff = VectorField(self.mesh)
-            dM_diff.assign(self.state.dMdt)
+            dM_diff.assign(self.state.minimizer_dM)
             dM_diff.add(dM, -1.0)
 
+            # Next stepsize (Alternate h1 and h2)
             if (i % 2 == 0):
-              # h1
               h = M_diff.dotSum(M_diff) / M_diff.dotSum(dM_diff)
             else:
-              # h2
               h = M_diff.dotSum(dM_diff) / dM_diff.dotSum(dM_diff)
 
+            # Keep track of iterations
             i += 1
 
     def handle_interrupt(self):
