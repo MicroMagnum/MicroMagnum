@@ -45,15 +45,17 @@ __global__ static void kernel_minimize(
 	const int threadN = __mul24(blockDim.x, gridDim.x);
 
 	for (int i=tid; i<num_nodes; i+=threadN) {
-    // shorthand for M
+
+    // shorthand for M and H
     real Mx, My, Mz; Mx = M_x[i]; My = M_y[i]; Mz = M_z[i];
+    real Hx, Hy, Hz; Hx = H_x[i]; Hy = H_y[i]; Hz = H_z[i];
 
     // MxH
     real MxH_x, MxH_y, MxH_z;
-    cross3<real>(MxH_x, MxH_y, MxH_z, Mx, My, Mz, H_x[i], H_y[i], H_z[i]);
+    cross3<real>(MxH_x, MxH_y, MxH_z, Mx, My, Mz, Hx, Hy, Hz);
 
     const real tau = h * f[i];
-    const real N   = 4 + tau*tau * (H_x[i]*H_x[i]
+    const real N   = 4 + tau*tau * (MxH_x*MxH_x + MxH_y*MxH_y + MxH_z*MxH_z);
 
     M2_x[i] = (4*Mx + 4*tau * (MxH_y*Mz - MxH_z*My) + tau*tau*Mx * (+ MxH_x*MxH_x - MxH_y*MxH_y - MxH_z*MxH_z) + 2*tau*tau*MxH_x * (MxH_y*My + MxH_z*Mz)) / N;
     M2_y[i] = (4*My + 4*tau * (MxH_z*Mx - MxH_x*Mz) + tau*tau*My * (- MxH_x*MxH_x + MxH_y*MxH_y - MxH_z*MxH_z) + 2*tau*tau*MxH_y * (MxH_z*Mz + MxH_x*Mx)) / N;

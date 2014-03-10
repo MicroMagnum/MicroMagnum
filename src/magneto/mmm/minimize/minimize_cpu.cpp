@@ -39,7 +39,7 @@ void minimize_cpu(
 		const Vector3d MxH = cross(M, H_acc.get(i));
 
     const double tau = h * f_acc.at(i);
-    const double N = 4 + tau*tau * MxH.abs()*MxH.abs();
+    const double N   = 4 + tau*tau * MxH.abs()*MxH.abs();
 
     const Vector3d result(
       4*M.x + 4*tau * (MxH.y*M.z - MxH.z*M.y) + tau*tau*M.x * (+ MxH.x*MxH.x - MxH.y*MxH.y - MxH.z*MxH.z) + 2*tau*tau*MxH.x * (MxH.y*M.y + MxH.z*M.z),

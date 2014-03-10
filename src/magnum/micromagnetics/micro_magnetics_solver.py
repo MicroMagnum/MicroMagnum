@@ -47,7 +47,7 @@ class MicroMagneticsSolver(solver.Solver):
         # TODO better initial step size?
         h = 1e-12
 
-        for i in range(0, 1000):
+        for i in range(0, 200):
             M2 = self.state.M_min_step(h)
 
             # TODO make sure precession is turned off
