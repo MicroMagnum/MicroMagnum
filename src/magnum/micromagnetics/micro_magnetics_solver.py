@@ -22,6 +22,7 @@ import magnum.solver as solver
 import magnum.evolver as evolver
 
 from magnum.mesh import VectorField
+import math
 
 from .micro_magnetics import MicroMagnetics
 from .io import writeOMF
@@ -44,10 +45,11 @@ class MicroMagneticsSolver(solver.Solver):
         return self.solve(solver.condition.Relaxed(*args, **kwargs))
 
     def minimize(self):
-        # TODO better initial step size?
-        h = 1e-12
+        h = 1e-12            # TODO better initial step size?
+        deg_per_ns = 9999999 # TODO not really...
 
-        for i in range(0, 200):
+        i = 0
+        while abs(deg_per_ns) > 1.0:
             M2 = self.state.M_min_step(h)
 
             # TODO make sure precession is turned off
@@ -60,7 +62,10 @@ class MicroMagneticsSolver(solver.Solver):
             self.state.y = M2
             self.state.flush_cache()
 
-            print(M_diff.absMax() / h) # TODO use as stop condition?
+            # calculate deg_per_ns
+            deg_per_timestep = (180.0 / math.pi) * math.atan2(M_diff.absMax(), self.state.M.absMax()) # we assume a<b at atan(a/b).
+            deg_per_ns = 1e-9 * deg_per_timestep / h
+            print(deg_per_ns)
             
             dM_diff = VectorField(self.mesh)
             dM_diff.assign(self.state.dMdt)
@@ -72,6 +77,8 @@ class MicroMagneticsSolver(solver.Solver):
             else:
               # h2
               h = M_diff.dotSum(dM_diff) / dM_diff.dotSum(dM_diff)
+
+            i += 1
 
     def handle_interrupt(self):
         print()
