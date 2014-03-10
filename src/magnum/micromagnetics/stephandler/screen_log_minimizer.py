@@ -15,22 +15,19 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-# StepHandler [abstract]
-#  |- LogStepHandler [abstract]
-#  |   |- ScreenLog
-#  |   |- DataTableLog
-#  |- StorageStepHandler [abstract]
-#  |   |- VTKStorage
-#  |   |- OOMMFStorage
-#  |   |- ImageStorage
-#  |- FancyScreenLog
+from .screen_log import ScreenLog
+#import magnum.tools as tools
 
-from .oommf_storage        import OOMMFStorage
-from .image_storage        import ImageStorage
-from .vtk_storage          import VTKStorage
-from .screen_log           import ScreenLog
-from .screen_log_minimizer import ScreenLogMinimizer
-from .data_table_log       import DataTableLog
-from .fancy_screen_log     import FancyScreenLog
+import sys
 
-__all__ = ["OOMMFStorage", "ImageStorage", "VTKStorage", "ScreenLog", "ScreenLogMinimizer", "DataTableLog", "FancyScreenLog"]
+class ScreenLogMinimizer(ScreenLog):
+    """
+    This step handler produces a log of the minimization on the screen.
+    """
+
+    def __init__(self):
+        super(ScreenLog, self).__init__(sys.stdout)
+        self.addColumn(("step", "step", "", "%d"), lambda state: state.step)
+        self.addEnergyColumn("E_tot")
+        self.addWallTimeColumn()
+        self.addColumn(("deg_per_ns", "deg_per_ns", "deg/ns", "%r"), lambda state: state.deg_per_ns)

@@ -17,14 +17,15 @@
 
 from __future__ import print_function
 
+import math
+
 import magnum.tools as tools
 import magnum.solver as solver
 import magnum.evolver as evolver
 
 from magnum.mesh import VectorField
-import math
-
 from .micro_magnetics import MicroMagnetics
+from .stephandler import ScreenLogMinimizer
 from .io import writeOMF
 
 class MicroMagneticsSolver(solver.Solver):
@@ -45,10 +46,13 @@ class MicroMagneticsSolver(solver.Solver):
         return self.solve(solver.condition.Relaxed(*args, **kwargs))
 
     def minimize(self, max_degree_per_ns = 1.0):
+        # TODO make use of stephandlers for logging
         h          = self.state.h
         deg_per_ns = float("inf")
+        log        = ScreenLogMinimizer()
 
-        i = 0
+        # Reset step
+        self.state.step = 0
         while deg_per_ns > max_degree_per_ns:
             # Calculate next M and dM for minimization step
             M_next = self.state.minimizer_M(h)
@@ -74,13 +78,16 @@ class MicroMagneticsSolver(solver.Solver):
             dM_diff.add(dM, -1.0)
 
             # Next stepsize (Alternate h1 and h2)
-            if (i % 2 == 0):
+            if (self.state.step % 2 == 0):
               h = M_diff.dotSum(M_diff) / M_diff.dotSum(dM_diff)
             else:
               h = M_diff.dotSum(dM_diff) / dM_diff.dotSum(dM_diff)
 
-            # Keep track of iterations
-            i += 1
+            if (self.state.step % 100 == 0):
+              log.handle(self.state)
+
+            # Update step
+            self.state.step += 1
 
     def handle_interrupt(self):
         print()
