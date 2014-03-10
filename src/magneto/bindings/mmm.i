@@ -19,6 +19,7 @@
 
 %include "mmm/exchange.i"
 %include "mmm/llge.i"
+%include "mmm/minimize.i"
 %include "mmm/demag.i"
 %include "mmm/anisotropy.i"
 %include "mmm/zhangli.i"

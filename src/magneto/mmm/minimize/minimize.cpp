@@ -17,23 +17,43 @@
  * along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SYMMETRIC_MATRIX_VECTOR_CONVOLUTION_SIMPLE_H
-#define SYMMETRIC_MATRIX_VECTOR_CONVOLUTION_SIMPLE_H
-
-#include "matrix/matty.h"
-
-class SymmetricMatrixVectorConvolution_Simple
-{
-public:
-	SymmetricMatrixVectorConvolution_Simple(const Matrix &lhs, int dim_x, int dim_y, int dim_z);
-	virtual ~SymmetricMatrixVectorConvolution_Simple();
-
-	virtual void execute(const VectorMatrix &rhs, VectorMatrix &res);
-
-private:
-	Matrix lhs;
-	int dim_x, dim_y, dim_z;
-	int exp_x, exp_y, exp_z;
-};
-
+#include "config.h"
+#include "minimize.h"
+#include "minimize_cpu.h"
+#ifdef HAVE_CUDA
+#include "minimize_cuda.h"
+#include <cuda_runtime.h>
 #endif
+
+#include "Magneto.h"
+#include "Benchmark.h"
+
+#include <cassert>
+
+void minimize(
+	const Matrix &f, const double h,
+	const VectorMatrix &M,
+	const VectorMatrix &H,
+	VectorMatrix &M2)
+{
+	const bool use_cuda = isCudaEnabled();
+
+	if (use_cuda) {
+#ifdef HAVE_CUDA
+		CUTIC("minimize");
+#ifdef HAVE_CUDA_64
+		if (isCuda64Enabled())
+			minimize_cu64(f, h, M, H, M2);
+		else
+#endif
+			minimize_cu32(f, h, M, H, M2);
+		CUTOC("minimize");
+#else
+		assert(0);
+#endif
+	} else {
+		TIC("minimize");
+		minimize_cpu(f, h, M, H, M2);
+		TOC("minimize");
+	}
+}

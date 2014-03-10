@@ -17,23 +17,27 @@
  * along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SYMMETRIC_MATRIX_VECTOR_CONVOLUTION_SIMPLE_H
-#define SYMMETRIC_MATRIX_VECTOR_CONVOLUTION_SIMPLE_H
+#ifndef MINIMIZE_CUDA_H
+#define MINIMIZE_CUDA_H
 
+#include "config.h"
 #include "matrix/matty.h"
 
-class SymmetricMatrixVectorConvolution_Simple
-{
-public:
-	SymmetricMatrixVectorConvolution_Simple(const Matrix &lhs, int dim_x, int dim_y, int dim_z);
-	virtual ~SymmetricMatrixVectorConvolution_Simple();
+// calculate: M2
+double minimize_cu32(
+	const Matrix &f, const float h,
+	const VectorMatrix &M,
+	const VectorMatrix &H,
+	VectorMatrix &M2
+);
 
-	virtual void execute(const VectorMatrix &rhs, VectorMatrix &res);
-
-private:
-	Matrix lhs;
-	int dim_x, dim_y, dim_z;
-	int exp_x, exp_y, exp_z;
-};
+#ifdef HAVE_CUDA_64
+double minimize_cu64(
+	const Matrix &f, const double h,
+	const VectorMatrix &M,
+	const VectorMatrix &H,
+	VectorMatrix &M2
+);
+#endif
 
 #endif

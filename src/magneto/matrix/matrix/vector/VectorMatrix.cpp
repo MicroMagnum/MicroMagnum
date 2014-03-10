@@ -258,6 +258,7 @@ double VectorMatrix::absMax() const
 double VectorMatrix::dotSum(const VectorMatrix &other) const
 {
 	if (isUniform() && other.isUniform()) {
+    // TODO: is this right?
 		const double x = uval[0], y = uval[1], z = uval[2];
 		const double dot = x*x + y*y + z*z;
 		return size() * dot;

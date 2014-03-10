@@ -24,6 +24,10 @@ set(SRC
   llge/llge.cpp
   llge/llge_cpu.cpp
 
+  # minimize
+  minimize/minimize.cpp
+  minimize/minimize_cpu.cpp
+
   # spintorque
   spintorque/fdm_zhangli.cpp
   spintorque/fdm_zhangli_cpu.cpp
@@ -34,6 +38,7 @@ set(CUSRC
   anisotropy/anisotropy_cuda.cu
   exchange/exchange_cuda.cu
   llge/llge_cuda.cu
+  minimize/minimize_cuda.cu
   spintorque/fdm_zhangli_cuda.cu
 )
 

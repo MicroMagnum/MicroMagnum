@@ -21,6 +21,8 @@ import magnum.tools as tools
 import magnum.solver as solver
 import magnum.evolver as evolver
 
+from magnum.mesh import VectorField
+
 from .micro_magnetics import MicroMagnetics
 from .io import writeOMF
 
@@ -40,6 +42,36 @@ class MicroMagneticsSolver(solver.Solver):
           raise Exception("CVode is not usable to relax a system, yet. Please use rkf45.")
 
         return self.solve(solver.condition.Relaxed(*args, **kwargs))
+
+    def minimize(self):
+        # TODO better initial step size?
+        h = 1e-12
+
+        for i in range(0, 1000):
+            M2 = self.state.M_min_step(h)
+
+            # TODO make sure precession is turned off
+            dM = self.state.dMdt
+
+            M_diff = VectorField(self.mesh)
+            M_diff.assign(M2)
+            M_diff.add(self.state.M, -1.0)
+
+            self.state.y = M2
+            self.state.flush_cache()
+
+            print(M_diff.absMax() / h) # TODO use as stop condition?
+            
+            dM_diff = VectorField(self.mesh)
+            dM_diff.assign(self.state.dMdt)
+            dM_diff.add(dM, -1.0)
+
+            if (i % 2 == 0):
+              # h1
+              h = M_diff.dotSum(M_diff) / M_diff.dotSum(dM_diff)
+            else:
+              # h2
+              h = M_diff.dotSum(dM_diff) / dM_diff.dotSum(dM_diff)
 
     def handle_interrupt(self):
         print()

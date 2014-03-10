@@ -32,7 +32,7 @@ class LandauLifshitzGilbert(module.Module):
         self.__valid_factors = False
 
     def calculates(self):
-        return ["dMdt", "M", "H_tot", "E_tot", "deg_per_ns"]
+        return ["dMdt", "M", "H_tot", "E_tot", "deg_per_ns", "M_min_step"]
 
     def updates(self):
         return ["M"]
@@ -77,6 +77,8 @@ class LandauLifshitzGilbert(module.Module):
             return self.calculate_dMdt(state)
         elif id == "deg_per_ns":
             return self.calculate_deg_per_ns(state)
+        elif id == "M_min_step":
+            return lambda h: self.calculate_min_step(state, h)
         else:
             raise KeyError(id)
 
@@ -123,6 +125,19 @@ class LandauLifshitzGilbert(module.Module):
             dMdt.add(dMdt_i)
 
         return dMdt
+
+    def calculate_min_step(self, state, h):
+        if not self.__valid_factors: self.__initFactors()
+
+        # TODO add caching?
+        M2 = VectorField(self.system.mesh)
+
+        # Get effective field
+        H_tot = self.calculate_H_tot(state)
+
+        magneto.minimize(self.__f2, h, state.M, H_tot, M2)
+
+        return M2
 
     def calculate_deg_per_ns(self, state):
         if hasattr(state.cache, "deg_per_ns"): return state.cache.deg_per_ns
