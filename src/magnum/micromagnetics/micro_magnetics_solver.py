@@ -74,8 +74,8 @@ class MicroMagneticsSolver(solver.Solver):
             dp_timestep = (180.0 / math.pi) * math.atan2(M_diff.absMax(), self.state.M.absMax())
             dpns = abs(1e-9 * dp_timestep / h)
 
-            # TODO is 10 a good choice?
-            if dpns > 10 * max_dpns_stop: max_dpns = max_dpns_stop
+            # TODO is 1000 a good choice?
+            if dpns > 1000.0 * max_dpns_stop: max_dpns = max_dpns_stop
             
             # Get y^n-1 for step-size calculation
             dM_diff = VectorField(self.mesh)
