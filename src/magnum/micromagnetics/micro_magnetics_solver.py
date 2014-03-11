@@ -45,15 +45,17 @@ class MicroMagneticsSolver(solver.Solver):
 
         return self.solve(solver.condition.Relaxed(*args, **kwargs))
 
-    def minimize(self, max_degree_per_ns = 1.0):
+    def minimize(self, max_dpns = 1.0, max_dpns_stop = None):
+        if max_dpns_stop == None: max_dpns_stop = max_dpns
+
         # TODO make use of stephandlers for logging
-        h          = self.state.h
-        deg_per_ns = float("inf")
-        log        = ScreenLogMinimizer()
+        h    = self.state.h
+        dpns = float("inf")
+        log  = ScreenLogMinimizer()
 
         # Reset step
         self.state.step = 0
-        while deg_per_ns > max_degree_per_ns:
+        while dpns > max_dpns:
             # Calculate next M and dM for minimization step
             M_next = self.state.minimizer_M(h)
             dM = self.state.minimizer_dM
@@ -67,10 +69,13 @@ class MicroMagneticsSolver(solver.Solver):
             self.state.y = M_next
             self.state.flush_cache()
 
-            # Calculate deg_per_ns
-            # TODO M.absMax might be wrong choice if different materials are in use
-            deg_per_timestep = (180.0 / math.pi) * math.atan2(M_diff.absMax(), self.state.M.absMax())
-            deg_per_ns = abs(1e-9 * deg_per_timestep / h)
+            # Calculate deg per ns
+            # TODO M.absMax might be the wrong choice if different materials are in use
+            dp_timestep = (180.0 / math.pi) * math.atan2(M_diff.absMax(), self.state.M.absMax())
+            dpns = abs(1e-9 * dp_timestep / h)
+
+            # TODO is 10 a good choice?
+            if dpns > 10 * max_dpns_stop: max_dpns = max_dpns_stop
             
             # Get y^n-1 for step-size calculation
             dM_diff = VectorField(self.mesh)
