@@ -23,6 +23,8 @@ import magnum.tools as tools
 import magnum.solver as solver
 import magnum.evolver as evolver
 
+import numpy as np
+
 from magnum.mesh import VectorField
 from .micro_magnetics import MicroMagnetics
 from .stephandler import ScreenLogMinimizer
@@ -58,7 +60,7 @@ class MicroMagneticsSolver(solver.Solver):
         overshoots      = 0 
         energies        = []
 
-        while dpns > max_dpns and len(energies) >= 100 and np.mean(energies[0:50]) < np.mean(energies[50:100])
+        while dpns > max_dpns and len(energies) >= 100 and np.mean(energies[0:50]) < np.mean(energies[50:100]):
             # Calculate next M and dM for minimization step
             M_next = self.state.minimizer_M(h)
             dM = self.state.minimizer_dM
