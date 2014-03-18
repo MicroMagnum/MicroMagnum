@@ -26,4 +26,4 @@ class ScreenLogMinimizer(ScreenLog):
         self.addColumn(("step", "step", "", "%d"), lambda state: state.step)
         self.addEnergyColumn("E_tot")
         self.addWallTimeColumn()
-        self.addColumn(("deg_per_ns", "deg_per_ns", "deg/ns", "%r"), lambda state: state.dpns)
+        self.addColumn(("deg_per_ns", "deg_per_ns", "deg/ns", "%r"), lambda state: state.deg_per_ns_minimizer)
