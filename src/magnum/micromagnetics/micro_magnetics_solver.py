@@ -74,6 +74,7 @@ class MicroMagneticsSolver(solver.Solver):
             # TODO M.absMax might be the wrong choice if different materials are in use
             dp_timestep = (180.0 / math.pi) * math.atan2(M_diff.absMax(), self.state.M.absMax())
             dpns = abs(1e-9 * dp_timestep / h)
+            self.state.dpns = dpns
 
             # TODO is 1000 a good choice?
             if dpns > max_dpns_stop:
@@ -81,7 +82,7 @@ class MicroMagneticsSolver(solver.Solver):
             else:
               overshoots  = 0
 
-            if overshoots > 1000:
+            if overshoots > 10:
               print("SWITCH TO HIGH TOLERANCE")
               max_dpns = max_dpns_stop
 

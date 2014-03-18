@@ -1,10 +1,6 @@
 # Copyright 2012, 2013 by the Micromagnum authors.
 #
 # This file is part of MicroMagnum.
-#
-# MicroMagnum is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
 # MicroMagnum is distributed in the hope that it will be useful,
@@ -30,4 +26,4 @@ class ScreenLogMinimizer(ScreenLog):
         self.addColumn(("step", "step", "", "%d"), lambda state: state.step)
         self.addEnergyColumn("E_tot")
         self.addWallTimeColumn()
-        self.addColumn(("deg_per_ns", "deg_per_ns", "deg/ns", "%r"), lambda state: state.deg_per_ns)
+        self.addColumn(("deg_per_ns", "deg_per_ns", "deg/ns", "%r"), lambda state: state.dpns)
