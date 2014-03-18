@@ -27,7 +27,7 @@ import numpy as np
 
 from magnum.mesh import VectorField
 from .micro_magnetics import MicroMagnetics
-from .stephandler import ScreenLogMinimizer
+from .stephandler import ScreenLogMinimizer, DataTableLog
 from .io import writeOMF
 
 class MicroMagneticsSolver(solver.Solver):
@@ -54,13 +54,16 @@ class MicroMagneticsSolver(solver.Solver):
         h    = self.state.h
         dpns = float("inf")
         log  = ScreenLogMinimizer()
+        file_log = DataTableLog("blabla.odt")
+        file_log.addEnergyColumn("E_tot")
+        file_log.addColumn(("deg_per_ns", "deg_per_ns", "deg/ns", "%r"), lambda state: state.dpns)
 
         # Reset step
         self.state.step = 0
         overshoots      = 0 
         energies        = []
 
-        while dpns > max_dpns and not (len(energies) >= 100 and np.mean(energies[0:50]) < np.mean(energies[50:100])):
+        while dpns > max_dpns: # and not (len(energies) >= 100 and np.mean(energies[0:50]) < np.mean(energies[50:100]) and dpns < max_dpns_stop):
             # Calculate next M and dM for minimization step
             M_next = self.state.minimizer_M(h)
             dM = self.state.minimizer_dM
@@ -81,21 +84,21 @@ class MicroMagneticsSolver(solver.Solver):
             self.state.dpns = dpns
 
             # Stop condition handling
-            if dpns > max_dpns_stop:
-              overshoots += 1
-            else:
-              overshoots  = 0
+            #if dpns > max_dpns_stop:
+            #  overshoots += 1
+            #else:
+            #  overshoots  = 0
 
-            if overshoots == 10: # make configurable
-              print("SWITCH TO HIGH TOLERANCE")
-              max_dpns = max_dpns_stop
+            #if overshoots == 10: # make configurable
+            #  print("SWITCH TO HIGH TOLERANCE")
+            #  max_dpns = max_dpns_stop
 
             # Save energy
             energies.append(self.state.E_tot)
             if len(energies) > 100: energies.pop(0)
 
-            if len(energies) >= 100 and np.mean(energies[0:50]) < np.mean(energies[50:100]):
-              print("NO ENERGY DECREASE, ABORT")
+            #if len(energies) >= 100 and np.mean(energies[0:50]) < np.mean(energies[50:100]):
+            #  print("NO ENERGY DECREASE, ABORT")
             
             # Get y^n-1 for step-size calculation
             dM_diff = VectorField(self.mesh)
@@ -110,6 +113,7 @@ class MicroMagneticsSolver(solver.Solver):
 
             if (self.state.step % 100 == 0):
               log.handle(self.state)
+            file_log.handle(self.state)
 
             # Update step
             self.state.step += 1
