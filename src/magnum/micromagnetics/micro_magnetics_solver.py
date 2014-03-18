@@ -68,6 +68,7 @@ class MicroMagneticsSolver(solver.Solver):
 
             # Set next M
             self.state.y = M_next
+            self.state.finish_step() # normalize, TODO really need to do this every step?
             self.state.flush_cache()
 
             # Calculate deg per ns
