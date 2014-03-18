@@ -56,7 +56,9 @@ class MicroMagneticsSolver(solver.Solver):
         # Reset step
         self.state.step = 0
         overshoots      = 0 
-        while dpns > max_dpns:
+        energies        = []
+
+        while dpns > max_dpns and len(energies) >= 100 and np.mean(energies[0:50]) < np.mean(energies[50:100])
             # Calculate next M and dM for minimization step
             M_next = self.state.minimizer_M(h)
             dM = self.state.minimizer_dM
@@ -76,17 +78,22 @@ class MicroMagneticsSolver(solver.Solver):
             dpns = abs(1e-9 * dp_timestep / h)
             self.state.dpns = dpns
 
-            # TODO is 1000 a good choice?
+            # Stop condition handling
             if dpns > max_dpns_stop:
               overshoots += 1
             else:
               overshoots  = 0
 
-            if overshoots > 10:
+            if overshoots == 10: # make configurable
               print("SWITCH TO HIGH TOLERANCE")
               max_dpns = max_dpns_stop
 
-            #if dpns > 1000.0 * max_dpns_stop: max_dpns = max_dpns_stop
+            # Save energy
+            energies.append(self.state.E_tot)
+            if len(energies) > 100: energies.pop(0)
+
+            if len(energies) >= 100 and np.mean(energies[0:50]) < np.mean(energies[50:100]):
+              print("NO ENERGY DECREASE, ABORT")
             
             # Get y^n-1 for step-size calculation
             dM_diff = VectorField(self.mesh)
