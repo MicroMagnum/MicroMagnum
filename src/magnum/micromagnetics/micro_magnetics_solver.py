@@ -55,6 +55,7 @@ class MicroMagneticsSolver(solver.Solver):
 
         # Reset step
         self.state.step = 0
+        overshoots      = 0 
         while dpns > max_dpns:
             # Calculate next M and dM for minimization step
             M_next = self.state.minimizer_M(h)
@@ -75,7 +76,15 @@ class MicroMagneticsSolver(solver.Solver):
             dpns = abs(1e-9 * dp_timestep / h)
 
             # TODO is 1000 a good choice?
-            if dpns > 1000.0 * max_dpns_stop: max_dpns = max_dpns_stop
+            if dpns > max_dpns_stop:
+              overshoots += 1
+            else:
+              overshoots  = 0
+
+            if overshoots > 1000:
+              max_dpns = max_dpns_stop
+
+            #if dpns > 1000.0 * max_dpns_stop: max_dpns = max_dpns_stop
             
             # Get y^n-1 for step-size calculation
             dM_diff = VectorField(self.mesh)
