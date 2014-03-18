@@ -82,6 +82,7 @@ class MicroMagneticsSolver(solver.Solver):
               overshoots  = 0
 
             if overshoots > 1000:
+              print "SWITCH TO HIGH TOLERANCE"
               max_dpns = max_dpns_stop
 
             #if dpns > 1000.0 * max_dpns_stop: max_dpns = max_dpns_stop
