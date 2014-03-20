@@ -93,7 +93,7 @@ class MicroMagneticsSolver(solver.Solver):
             except ZeroDivisionError, ex:
               h = h_max
 
-            h = max(h, h_max)
+            h = min(h, h_max)
 
             if (self.state.step % 100 == 0):
               log.handle(self.state)
