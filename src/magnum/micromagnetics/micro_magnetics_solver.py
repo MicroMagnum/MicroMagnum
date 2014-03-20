@@ -47,7 +47,7 @@ class MicroMagneticsSolver(solver.Solver):
 
         return self.solve(solver.condition.Relaxed(*args, **kwargs))
 
-    def minimize(self, max_dpns = 0.01, samples = 10, h_max = 1e-6):
+    def minimize(self, max_dpns = 0.01, samples = 10, h_max = 1e-6, h_min = 1e-14):
         # TODO make use of stephandlers for logging
         h        = self.state.h
         dpnslist = []
@@ -93,7 +93,7 @@ class MicroMagneticsSolver(solver.Solver):
             except ZeroDivisionError, ex:
               h = h_max
 
-            h = min(h, h_max)
+            h = max(min(h, h_max), h_min)
 
             if (self.state.step % 100 == 0):
               log.handle(self.state)
