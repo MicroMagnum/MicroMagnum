@@ -1,6 +1,7 @@
 #!/usr/bin/python 
 from magnum import *
 import math
+import time
 
 K_m = 0.5*MU0*Material.Py().Ms*Material.Py().Ms
 Py = Material.Py(k_uniaxial=0.1*K_m,axis1=(0,0,1),alpha=0.5)
@@ -27,12 +28,14 @@ def sim(N, ratio):
   solver = create_solver(world, [StrayField, ExchangeField, AnisotropyField], log=True, do_precess=False)
 
   solver.state.M = my_vortex
-  solver.relax(2)
+  #solver.relax(2)
+  solver.minimize()
   writeOMF("omf/state-vortex-%s-%s.omf" % (N, ratio), solver.state.M)
   vo = get_info(solver.state)
   
   solver.state.M = (0, 0, Py.Ms)
-  solver.relax(2)
+  #solver.relax(2)
+  solver.minimize()
   writeOMF("omf/state-flower-%s-%s.omf" % (N, ratio), solver.state.M)
   fl = get_info(solver.state)
   
@@ -51,4 +54,6 @@ def full_sp3():
       f.write(" * vortex: %s\n" % ((vo_E_tot, vo_E_str, vo_E_ex, vo_E_ani, (vo_mx,vo_my,vo_mz)),))
       f.close()
 
+start_time = time.time()
 full_sp3()
+print "TIME: %s" % (time.time() - start_time)
