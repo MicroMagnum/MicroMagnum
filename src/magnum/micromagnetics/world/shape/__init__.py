@@ -22,8 +22,9 @@ from .sphere      import Sphere
 from .cylinder    import Cylinder
 from .prism       import Prism
 from .image_shape import ImageShape, ImageShapeCreator
+from .gmsh_shape  import GmshShape
 
 __all__ = [
         "Shape", "Everywhere", "Cuboid", "Sphere", "Cylinder", "Prism",
-        "ImageShape", "ImageShapeCreator"
+        "ImageShape", "ImageShapeCreator", "GmshShape"
 ]
