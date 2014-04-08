@@ -71,11 +71,12 @@ class GmshShape(Shape):
         p2 = (bounds.max().x(), bounds.max().y(), bounds.max().z())
 
         # Estimate cell size h and refine mesh accordingly
-        bb_volume = reduce(lambda x,y: x*y, ((b-a) for a,b in zip(p1, p2)))
-        h_target  = min(cell_size) / scale
-        h_est     = pow(bb_volume / model.getNumMeshElements(), 1.0/3.0)
         if refinements < 0:
+          bb_volume   = reduce(lambda x,y: x*y, ((b-a) for a,b in zip(p1, p2)))
+          h_target    = min(cell_size) / scale
+          h_est       = pow(bb_volume / model.getNumMeshElements(), 1.0/3.0)
           refinements = int(ceil(log(h_est / h_target, 2)))
+
         for i in range(0, refinements): model.refineMesh(0)
 
         # Create Rectangular Mesh
