@@ -50,7 +50,7 @@ class GmshShape(Shape):
         return self.__model.getMeshElementByCoord(spt)
 
     @staticmethod
-    def with_mesh_from_file(filename, cell_size, scale = 1.0, refinements = -1):
+    def with_mesh_from_file(filename, cell_size, scale = 1.0, lc = None, order = 3):
         if not _found_gmsh_lib: raise NotImplementedError("GmshShape class can not be used because the Python wrappers for GMSH could not be loaded ('import gmshpy')")
 
         # Create GMSH model
@@ -60,30 +60,18 @@ class GmshShape(Shape):
 
         # mesh if not already meshed
         if model.getMeshStatus() < 3:
-          order = 3
-          lc = min(cell_size) / scale * 2**order
+          if lc == None:
+            lc = min(cell_size) / scale * 2**order
           vertices = model.bindingsGetVertices()
           for v in vertices:
             v.setPrescribedMeshSizeAtVertex(lc)
           model.mesh(3)
           model.setOrderN(order, 0, 0)
-        #else:
-        #  # do not refine if file is mesh file
-        #  refinements = 0
 
         # get bounds
         bounds = model.bounds()
         p1 = (bounds.min().x(), bounds.min().y(), bounds.min().z())
         p2 = (bounds.max().x(), bounds.max().y(), bounds.max().z())
-
-        # Estimate cell size h and refine mesh accordingly
-        #if refinements < 0:
-        #  bb_volume   = reduce(lambda x,y: x*y, ((b-a) for a,b in zip(p1, p2)))
-        #  h_target    = min(cell_size) / scale
-        #  h_est       = pow(bb_volume / model.getNumMeshElements(), 1.0/3.0)
-        #  refinements = int(ceil(log(h_est / h_target, 2)))
-
-        #for i in range(0, refinements): model.refineMesh(0)
 
         # Create Rectangular Mesh
         num_nodes = [int(ceil((b-a)/c*scale)) for a,b,c in zip(p1, p2, cell_size)]
