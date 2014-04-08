@@ -60,11 +60,13 @@ class GmshShape(Shape):
 
         # mesh if not already meshed
         if model.getMeshStatus() < 3:
-          lc = min(cell_size) / scale
+          order = 3
+          lc = min(cell_size) / scale * 2**order
           vertices = model.bindingsGetVertices()
           for v in vertices:
             v.setPrescribedMeshSizeAtVertex(lc)
           model.mesh(3)
+          model.setOrderN(order, 0, 0)
         #else:
         #  # do not refine if file is mesh file
         #  refinements = 0
