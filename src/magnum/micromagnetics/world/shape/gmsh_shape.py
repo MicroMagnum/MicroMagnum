@@ -19,7 +19,7 @@ from .shape import Shape
 
 from magnum.logger import logger
 from magnum.mesh import RectangularMesh
-from math import log, floor, ceil
+from math import log, floor
 
 try:
     import gmshpy
@@ -61,7 +61,7 @@ class GmshShape(Shape):
         # mesh if not already meshed
         if model.getMeshStatus() < 3:
           if lc == None:
-            lc = min(cell_size) / scale * 2**order
+            lc = min(cell_size) / scale * order * 2
           vertices = model.bindingsGetVertices()
           for v in vertices:
             v.setPrescribedMeshSizeAtVertex(lc)
@@ -74,7 +74,7 @@ class GmshShape(Shape):
         p2 = (bounds.max().x(), bounds.max().y(), bounds.max().z())
 
         # Create Rectangular Mesh
-        num_nodes = [int(ceil((b-a)/c*scale)) for a,b,c in zip(p1, p2, cell_size)]
+        num_nodes = [int(round((b-a)/c*scale)) for a,b,c in zip(p1, p2, cell_size)]
         mesh = RectangularMesh(num_nodes, cell_size)
 
         return mesh, GmshShape(model, p1, scale)
