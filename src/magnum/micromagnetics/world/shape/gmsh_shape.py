@@ -60,10 +60,14 @@ class GmshShape(Shape):
 
         # mesh if not already meshed
         if model.getMeshStatus() < 3:
+          lc = min(cell_size) / scale
+          vertices = model.bindingsGetVertices()
+          for v in vertices:
+            v.setPrescribedMeshSizeAtVertex(lc)
           model.mesh(3)
-        else:
-          # do not refine if file is mesh file
-          refinements = 0
+        #else:
+        #  # do not refine if file is mesh file
+        #  refinements = 0
 
         # get bounds
         bounds = model.bounds()
@@ -71,13 +75,13 @@ class GmshShape(Shape):
         p2 = (bounds.max().x(), bounds.max().y(), bounds.max().z())
 
         # Estimate cell size h and refine mesh accordingly
-        if refinements < 0:
-          bb_volume   = reduce(lambda x,y: x*y, ((b-a) for a,b in zip(p1, p2)))
-          h_target    = min(cell_size) / scale
-          h_est       = pow(bb_volume / model.getNumMeshElements(), 1.0/3.0)
-          refinements = int(ceil(log(h_est / h_target, 2)))
+        #if refinements < 0:
+        #  bb_volume   = reduce(lambda x,y: x*y, ((b-a) for a,b in zip(p1, p2)))
+        #  h_target    = min(cell_size) / scale
+        #  h_est       = pow(bb_volume / model.getNumMeshElements(), 1.0/3.0)
+        #  refinements = int(ceil(log(h_est / h_target, 2)))
 
-        for i in range(0, refinements): model.refineMesh(0)
+        #for i in range(0, refinements): model.refineMesh(0)
 
         # Create Rectangular Mesh
         num_nodes = [int(ceil((b-a)/c*scale)) for a,b,c in zip(p1, p2, cell_size)]
