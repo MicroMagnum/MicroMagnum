@@ -11,3 +11,4 @@ _magneto_cpu.so
 magneto/
 libmagneto_cu_parts.a
 install_manifest.txt
+config.cmake-generated.h
