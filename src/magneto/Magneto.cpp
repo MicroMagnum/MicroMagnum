@@ -168,10 +168,10 @@ void initialize(const std::string &config_path)
 		if (fftw_import_wisdom_from_string(ss.str().c_str())) {
 			LOG_DEBUG << "Imported FFTW wisdom from file";
 		} else {
-			LOG_ERROR << "FFTW wisdom file seems to be invalid.";
+			LOG_WARN << "FFTW wisdom file seems to be invalid.";
 		}
 	} else {
-		LOG_INFO << "Failed to import FFTW wisdom from file " << fftw_wisdom_path;
+		LOG_WARN << "Failed to import FFTW wisdom from file " << fftw_wisdom_path;
 	}
 }
 
