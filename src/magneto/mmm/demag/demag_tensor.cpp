@@ -147,7 +147,7 @@ Matrix GenerateDemagTensor(
 
 	// Skip computation?
 	if (std::getenv("MAGNUM_DEMAG_GARBAGE")) {
-		LOG_INFO << "Skipping demag tensor generation ('MAGNUM_GARBAGE' environment variable is set)";
+		LOG_INFO << "Skipping demag tensor generation ('MAGNUM_DEMAG_GARBAGE' environment variable is set)";
 		return Matrix(Shape(6, exp_x, exp_y, exp_z));
 	}
 
