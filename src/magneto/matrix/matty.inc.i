@@ -182,8 +182,19 @@ public:
                         {
                                 *arr_ptr++ = acc.at(i);
                         }
-                
                         return arr;
+                }
+
+                void fromByteArray(PythonByteArray arr)
+                {
+                        double *arr_ptr = (double*)arr.get();
+                
+                        Matrix::rw_accessor acc(*$self);
+                        /* FloB: Matrix is assumed to be of correct dimension! TODO: resize otherwise! */
+                        for (int i=0; i<$self->size(); ++i) 
+                        {
+                                acc.at(i) = *arr_ptr++;
+                        }
                 }
         } /* %extend */
 };
@@ -283,8 +294,24 @@ public:
                         {
                                 *arr_ptr++ = acc.get(i)[component];
                         }
-                
+
                         return arr;
+                }
+
+                void fromByteArray(PythonByteArray arr)
+                {
+                        double *arr_ptr = (double*)arr.get();
+
+                        VectorMatrix::accessor acc(*$self);
+                        /* FloB: Matrix is assumed to be of correct dimension! TODO: resize otherwise! */
+                        for (int i=0; i<$self->size(); ++i) 
+                        {
+                                Vector3d vec;
+                                vec.x = *arr_ptr++;
+                                vec.y = *arr_ptr++;
+                                vec.z = *arr_ptr++;
+                                acc.set(i, vec);
+                        }
                 }
         } /* %extend */
 };
@@ -354,7 +381,10 @@ def extend():
     return N
 
   def vector_matrix_from_numpy(self, N):
-    raise NotImplementedError("fixme: VectorMatrix.from_numpy not implemented")
+    Ntmp = N.reshape((self.dimX(), self.dimY(), self.dimZ(), 3)) # reshape array in case it is specified as 1D array
+    Ntmp = Ntmp.transpose(2,1,0,3) # convert numpy order (x,y,z,comp) to internal order (z,y,x,comp)
+    data = bytearray(Ntmp.tostring('C'))
+    self.fromByteArray(data)
 
   VectorMatrix.to_numpy   = vector_matrix_to_numpy
   VectorMatrix.from_numpy = vector_matrix_from_numpy
@@ -374,7 +404,10 @@ def extend():
     return N
 
   def matrix_from_numpy(self, N):
-    raise NotImplementedError("fixme: VectorMatrix.from_numpy not implemented")
+    Ntmp = N.reshape((self.dimX(), self.dimY(), self.dimZ())) # reshape array in case it is specified as 1D array
+    Ntmp = Ntmp.transpose(2,1,0) # convert numpy order (x,y,z) to internal order (z,y,x)
+    data = bytearray(Ntmp.tostring())
+    self.fromByteArray(data)
 
   Matrix.to_numpy   = matrix_to_numpy
   Matrix.from_numpy = matrix_from_numpy

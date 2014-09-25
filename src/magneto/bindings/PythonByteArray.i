@@ -17,8 +17,21 @@
  * along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* Convert from C -> Python */
 %typemap(out) (PythonByteArray) 
 {
         // Note: PyByteArray_FromStringAndSize does an internal copy of the data.
         $result = PyByteArray_FromStringAndSize($1.get(), $1.getSize());
+        /*printf("Out: ByteArray: (%lu) (%p) (%s)\n", $1.getSize(), $1.get(), $1.get()); */
+} 
+
+/* Convert from Python -> C */
+%typemap(in) (PythonByteArray) 
+{
+        /* printf("In: ByteArray: (%d) (%d) (%lu)\n", PyByteArray_Check($input), PyByteArray_CheckExact($input), PyByteArray_Size($input)); */
+        char *str = PyByteArray_AsString($input);
+        const size_t len = PyByteArray_Size($input);
+        $1 = PythonByteArray(len); /* FloB: new object is created with length 'len', although original
+                                            object existed, but with unknown length. */
+        memcpy($1.get(), str, len);
 } 
