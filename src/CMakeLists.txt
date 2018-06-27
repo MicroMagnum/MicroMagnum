@@ -71,6 +71,9 @@ set(MAGNETO_SRC
   magneto/evolver/runge_kutta.cpp
   magneto/evolver/runge_kutta_cpu.cpp
 
+  magneto/mesh/Field.cpp
+  magneto/mesh/VectorField.cpp
+
   magneto/matrix/Shape.cpp
   magneto/matrix/matty.cpp
   magneto/matrix/device/Array.cpp
@@ -133,9 +136,6 @@ if(ENABLE_CUDA)
     magneto/matrix/device/cuda_tools.cpp
     magneto/matrix/matrix/scalar/Matrix_cuda_accessor.cpp
     magneto/matrix/matrix/vector/VectorMatrix_cuda_accessor.cpp
-
-    magneto/mesh/Field.cpp
-    magneto/mesh/VectorField.cpp
 
     magneto/math/gradient_cuda.cu
     magneto/math/ScaledAbsMax_cuda.cu
