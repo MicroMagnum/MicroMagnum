@@ -18,19 +18,19 @@
 ## solver for micromagnetics
 from magnum.micromagnetics.create_solver import create_solver
 
-## constants
-from magnum.micromagnetics.constants import MU0, H_BAR, ELECTRON_CHARGE, MU_BOHR, GYROMAGNETIC_RATIO, BOLTZMANN_CONSTANT
-
-## modules
-from magnum.micromagnetics.landau_lifshitz_gilbert import LandauLifshitzGilbert
-from magnum.micromagnetics.exchange_field import ExchangeField
-from magnum.micromagnetics.stray_field import StrayField, StrayFieldCalculator
-from magnum.micromagnetics.anisotropy_field import AnisotropyField
-from magnum.micromagnetics.external_field import AlternatingExternalField, StaticExternalField, ExternalField
-from magnum.micromagnetics.spin_torque import SpinTorque
-from magnum.micromagnetics.current import AlternatingCurrent, StaticCurrent
-from magnum.micromagnetics.alternating_field import AlternatingField
-from magnum.micromagnetics.static_field import StaticField
+## constants and modules
+from .constants import MU0, H_BAR, ELECTRON_CHARGE, MU_BOHR, GYROMAGNETIC_RATIO, BOLTZMANN_CONSTANT
+from .landau_lifshitz_gilbert import LandauLifshitzGilbert
+from .exchange_field import ExchangeField
+from .stray_field import StrayField, StrayFieldCalculator
+from .external_field import ExternalField
+from .anisotropy_field import AnisotropyField
+from .homogeneous_field import HomogeneousField, HomogeneousCurrent
+from .spin_torque import SpinTorque
+from .alternating_field import AlternatingField
+from .alternating_current import AlternatingCurrent
+from .simple_field import SimpleExternalField, SimpleVectorField
+from .current_path import CurrentPath
 
 __all__ = [
     "create_solver",
@@ -44,5 +44,6 @@ __all__ = [
     "SpinTorque",
     "AlternatingCurrent", "StaticCurrent",
     "AlternatingField",
-    "StaticField"
+    "StaticField",
+    "CurrentPath"
 ]
