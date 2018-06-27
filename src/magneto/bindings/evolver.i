@@ -18,17 +18,8 @@
  */
 %include "config.h"
 
-#ifdef HAVE_CVODE
-  %module(directors="1") cvode_director
-#endif
-
 %{
 #include "evolver/runge_kutta.h"
-
-#ifdef HAVE_CVODE
-  #include "evolver/diffeq.h"
-  #include "evolver/cvode.h"
-#endif
 %}
 
 struct ButcherTableau
@@ -94,8 +85,3 @@ void rk_combine_result(
 
 double rk_adjust_stepsize(int order, double h, double eps_abs, double eps_rel, const VectorMatrix &y, const VectorMatrix &y_error);
 
-#ifdef HAVE_CVODE
-  %feature("director") DiffEq;
-  %include "evolver/cvode.h";
-  %include "evolver/diffeq.h";
-#endif

@@ -11,7 +11,6 @@ option(ENABLE_CUDA_64 "Enable CUDA (both 32 and 64 bit support, needs CUDA devic
 
 option(USE_PYTHON2 "Use Python2" OFF)
 option(USE_PYTHON3 "Use Python3" OFF)
-option(USE_CVODE "Use CVode" OFF)
 
 if(ENABLE_CUDA_32 OR ENABLE_CUDA_64)
   set(ENABLE_CUDA ON)
@@ -19,27 +18,6 @@ endif(ENABLE_CUDA_32 OR ENABLE_CUDA_64)
 
 # set cmake module path
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-##############################################################
-###    Macros                                              ###
-##############################################################
-
-# Macro for adding src files from within subdirectories
-macro(append_magneto_src DIR FILES)
-  set(LIST)
-  foreach(FILE ${FILES})
-    list(APPEND LIST ${DIR}/${FILE})
-  endforeach(FILE)
-  set(MAGNETO_SRC ${MAGNETO_SRC};${LIST} PARENT_SCOPE)
-endmacro(append_magneto_src)
-
-# Macro for adding Cuda kernel src files from within subdirectories
-macro(append_magneto_cusrc DIR FILES)
-  set(LIST)
-  foreach(FILE ${FILES})
-    list(APPEND LIST ${DIR}/${FILE})
-  endforeach(FILE)
-  set(MAGNETO_CUSRC ${MAGNETO_CUSRC};${LIST} PARENT_SCOPE)
-endmacro(append_magneto_cusrc)
 
 ##############################################################
 ###    Libraries   TODO: check versions                    ###
@@ -76,109 +54,131 @@ find_package(Python ${USE_PYTHON} REQUIRED)
 # OpenMP support (optional)
 #include(FindOpenMP)
 
-##############################################################
-###    CVode                                               ###
-##############################################################
-
-#add_executable(Cvode cvode/cvode.cpp ${MAGNETO_SRC})
-
-#target_link_libraries(Cvode ${FFTW_LIBRARIES})
-
-# - Try to find sundials_cvode
-# Once done this will define
-#  SUNDIALS_CVODE_FOUND - System has sundials_cvode
-#  SUNDIALS_CVODE_INCLUDE_DIRS - The sundials_cvode include directories
-#  SUNDIALS_CVODE_LIBRARIES - The libraries needed to use sundials_cvode
-#  SUNDIALS_CVODE_DEFINITIONS - Compiler switches required for using sundials_cvode
-
-if(USE_CVODE)
-
-  find_package(PkgConfig)
-  pkg_check_modules(PC_SUNDIALS_CVODE QUIET sundials_cvode)
-  set(SUNDIALS_CVODE_DEFINITIONS ${PC_SUNDIALS_CVODE_CFLAGS_OTHER})
-
-  find_path(SUNDIALS_CVODE_INCLUDE_DIR cvode/cvode.h
-    HINTS ${PC_SUNDIALS_CVODE_INCLUDEDIR} ${PC_SUNDIALS_CVODE_INCLUDE_DIRS}
-    PATH_SUFFIXES sundials_cvode )
-
-  find_library(SUNDIALS_CVODE_LIBRARY NAMES cvode sundials_cvode
-    HINTS ${PC_SUNDIALS_CVODE_LIBDIR} ${PC_SUNDIALS_CVODE_LIBRARY_DIRS} OPTIONAL)
-
-  set(SUNDIALS_CVODE_LIBRARIES ${SUNDIALS_CVODE_LIBRARY} )
-  set(SUNDIALS_CVODE_INCLUDE_DIRS ${SUNDIALS_CVODE_INCLUDE_DIR} )
-
-  set(SUNDIALS_NVECSERIAL ${PC_SUNDIALS_NVECSERIAL_CFLAGS_OTHER})
-
-  find_path(SUNDIALS_NVECSERIAL_INCLUDE_DIR nvector/nvector_serial.h
-    HINTS ${PC_SUNDIALS_NVECSERIAL_INCLUDEDIR} ${PC_SUNDIALS_NVECSERIAL_INCLUDE_DIRS}
-    PATH_SUFFIXES sundials_nvecserial )
-
-  find_library(SUNDIALS_NVECSERIAL_LIBRARY NAMES nvector_serial sundials_nvecserial
-    HINTS ${PC_SUNDIALS_NVECSERIAL_LIBDIR} ${PC_SUNDIALS_NVECSERIAL_LIBRARY_DIRS} OPTIONAL)
-
-  set(SUNDIALS_NVECSERIAL_LIBRARIES ${SUNDIALS_NVECSERIAL_LIBRARY} )
-  set(SUNDIALS_NVECSERIAL_INCLUDE_DIRS ${SUNDIALS_NVECSERIAL_INCLUDE_DIR} )
-
-  include(FindPackageHandleStandardArgs)
-  # handle the QUIETLY and REQUIRED arguments and set SUNDIALS_CVODE_FOUND to TRUE
-  # if all listed variables are TRUE
-  find_package_handle_standard_args(sundials_cvode  DEFAULT_MSG
-    SUNDIALS_CVODE_LIBRARY SUNDIALS_CVODE_INCLUDE_DIR)
-
-  mark_as_advanced(SUNDIALS_CVODE_INCLUDE_DIR SUNDIALS_CVODE_LIBRARY )
-
-endif()
-
-# enable CVode
 ##################### include directories ##################
-if(SUNDIALS_CVODE_FOUND)
-  set(HAVE_CVODE ON) 
-  include_directories(
-    ${PYTHON_INCLUDE_DIRS}
-    ${PROJECT_SOURCE_DIR}/magneto
-    ${PROJECT_SOURCE_DIR}/magneto/matrix
-    ${PROJECT_BINARY_DIR}
-    ${SUNDIALS_CVODE_INCLUDE_DIRS}
-    )
-else(SUNDIALS_CVODE_FOUND)
-  include_directories(
-    ${PYTHON_INCLUDE_DIRS}
-    ${PROJECT_SOURCE_DIR}/magneto
-    ${PROJECT_SOURCE_DIR}/magneto/matrix
-    ${PROJECT_BINARY_DIR}
-    )
-endif(SUNDIALS_CVODE_FOUND)
-
-##############################################################
-###    Boost.python                                        ###
-##############################################################
-
-#FIND_PACKAGE(Boost 1.50.0)
-#IF(Boost_FOUND)
-#  INCLUDE_DIRECTORIES("${Boost_INCLUDE_DIRS}" "/usr/include/python2.7")
-#  SET(Boost_USE_STATIC_LIBS OFF)
-#  SET(Boost_USE_MULTITHREADED ON)
-#  SET(Boost_USE_STATIC_RUNTIME OFF)
-#  FIND_PACKAGE(Boost 1.50.0 COMPONENTS python)
-#
-#ELSEIF(NOT Boost_FOUND)
-#  MESSAGE(FATAL_ERROR "Unable to find correct Boost version. Did you set BOOST_ROOT?")
-#ENDIF()
-
+include_directories(
+  ${PYTHON_INCLUDE_DIRS}
+  ${PROJECT_SOURCE_DIR}/magneto
+  ${PROJECT_SOURCE_DIR}/magneto/matrix
+  ${PROJECT_BINARY_DIR}
+)
 
 ##############################################################
 ###    Subdirectories                                      ###
 ##############################################################
 
-add_subdirectory(magneto)
-add_subdirectory(magneto/bindings)
-add_subdirectory(magneto/matrix)
-add_subdirectory(magneto/math)
-add_subdirectory(magneto/math/conv)
-add_subdirectory(magneto/math/conv/kernels)
-add_subdirectory(magneto/mmm)
-add_subdirectory(magneto/evolver)
-add_subdirectory(magneto/mesh)
+set(MAGNETO_SRC
+  magneto/Magneto.cpp
+  magneto/Benchmark.cpp
+  magneto/Logger.cpp
+
+  magneto/bindings/PythonCallable.cpp
+  magneto/bindings/PythonByteArray.cpp
+
+  magneto/evolver/runge_kutta.cpp
+  magneto/evolver/runge_kutta_cpu.cpp
+
+  magneto/matrix/Shape.cpp
+  magneto/matrix/matty.cpp
+  magneto/matrix/device/Array.cpp
+  magneto/matrix/device/Device.cpp
+  magneto/matrix/device/DeviceManager.cpp
+  magneto/matrix/device/cpu/CPUArray.cpp
+  magneto/matrix/device/cpu/CPUDevice.cpp
+  magneto/matrix/matrix/AbstractMatrix.cpp
+  magneto/matrix/matrix/scalar/Matrix.cpp
+  magneto/matrix/matrix/scalar/Matrix_accessor.cpp
+  magneto/matrix/matrix/vector/Vector3d.cpp
+  magneto/matrix/matrix/vector/VectorMatrix.cpp
+  magneto/matrix/matrix/vector/VectorMatrix_accessor.cpp
+  magneto/matrix/matrix/complex/ComplexMatrix.cpp
+  magneto/matrix/ext/LinearInterpolate.cpp
+  magneto/matrix/ext/Extremum.cpp
+  magneto/matrix/ext/FFT.cpp
+
+  magneto/mmm/anisotropy/anisotropy.cpp
+  magneto/mmm/anisotropy/anisotropy_cpu.cpp
+  magneto/mmm/demag/phi/demag_phi_tensor.cpp
+  magneto/mmm/demag/tensor_round.cpp
+  magneto/mmm/demag/demag_static.cpp
+  magneto/mmm/demag/tensor.cpp
+  magneto/mmm/demag/old/demag_old.cpp
+  magneto/mmm/demag/demag_tensor.cpp
+  magneto/mmm/exchange/exchange.cpp
+  magneto/mmm/exchange/exchange_cpu.cpp
+  magneto/mmm/io/OMFHeader.cpp
+  magneto/mmm/io/OMFExport.cpp
+  magneto/mmm/io/OMFImport.cpp
+  magneto/mmm/llge/llge.cpp
+  magneto/mmm/llge/llge_cpu.cpp
+  magneto/mmm/spintorque/fdm_zhangli.cpp
+  magneto/mmm/spintorque/fdm_zhangli_cpu.cpp
+  magneto/mmm/spintorque/fdm_slonchewski.cpp
+
+  magneto/math/gradient.cpp
+  magneto/math/ScaledAbsMax.cpp
+  magneto/math/conv/MatrixVectorConvolution_FFT.cpp
+  magneto/math/conv/SymmetricMatrixVectorConvolution_Simple.cpp
+  magneto/math/conv/SymmetricMatrixVectorConvolution_FFT.cpp
+  magneto/math/conv/AntisymmetricMatrixVectorConvolution_FFT.cpp
+  magneto/math/conv/TensorFieldSetup.cpp
+  magneto/math/conv/VectorVectorConvolution_FFT.cpp
+  magneto/math/conv/kernels/cpu_copy_pad.cpp
+  magneto/math/conv/kernels/cpu_copy_unpad.cpp
+  magneto/math/conv/kernels/cpu_multiplication.cpp
+  magneto/math/conv/kernels/cpu_transpose_unpad.cpp
+  magneto/math/conv/kernels/cpu_transpose_zeropad.cpp
+  magneto/math/conv/kernels/Transposer_CPU.cpp
+  magneto/math/conv/kernels/Transformer_CPU.cpp
+)
+
+# Add Cuda specific sources
+if(ENABLE_CUDA)
+  set(MAGNETO_SRC ${MAGNETO_SRC}
+    magneto/matrix/device/cuda/CUDADevice.cpp
+    magneto/matrix/device/cuda/CUDAArray.cpp
+    magneto/matrix/device/cuda_tools.cpp
+    magneto/matrix/matrix/scalar/Matrix_cuda_accessor.cpp
+    magneto/matrix/matrix/vector/VectorMatrix_cuda_accessor.cpp
+
+    magneto/mesh/VectorField.cpp
+    magneto/mesh/Field.cpp
+
+    magneto/math/gradient_cuda.cu
+    magneto/math/ScaledAbsMax_cuda.cu
+    magneto/math/conv/kernels/cuda_transpose_unpad.cpp
+    magneto/math/conv/kernels/cuda_transpose_zeropad.cpp
+    magneto/math/conv/kernels/Transformer_CUDA.cpp
+    magneto/math/conv/kernels/Transposer_CUDA.cpp
+  )
+endif(ENABLE_CUDA)
+
+# Add cuda-only sources
+set(MAGNETO_CUSRC
+  magneto/evolver/runge_kutta_cuda.cu
+
+  magneto/matrix/device/cuda/kernels_reduce.cu
+  magneto/matrix/device/cuda/kernels_simple.cu
+
+  magneto/mmm/anisotropy/anisotropy_cuda.cu
+  magneto/mmm/exchange/exchange_cuda.cu
+  magneto/mmm/llge/llge_cuda.cu
+  magneto/mmm/spintorque/fdm_zhangli_cuda.cu
+
+  magneto/math/conv/kernels/cuda_copy_pad.cu
+  magneto/math/conv/kernels/cuda_copy_unpad.cu
+  magneto/math/conv/kernels/cuda_multiplication.cu
+  magneto/math/conv/kernels/cuda_transpose_unpad_2d.cu
+  magneto/math/conv/kernels/cuda_transpose_unpad_3d.cu
+  magneto/math/conv/kernels/cuda_transpose_zeropad_2d.cu
+  magneto/math/conv/kernels/cuda_transpose_zeropad_3d.cu
+)
+
+# Add operating system specific sources
+if(UNIX)
+  set(MAGNETO_SRC ${MAGNETO_SRC} "magneto/os_posix.cpp")
+elseif(WINDOWS)
+  set(MAGNETO_SRC ${MAGNETO_SRC} "magneto/os_windows.cpp")
+endif()
 
 ##############################################################
 ###    Set Compiler Flags                                  ###
@@ -233,12 +233,7 @@ else()
 endif(ENABLE_CUDA)
 set_source_files_properties (${BINDINGS_SOURCE} PROPERTIES SWIG_FLAGS "-O;-module;${SWIG_MODULE_NAME}")
 swig_add_module(${SWIG_MODULE_NAME} python ${PROJECT_SOURCE_DIR}/magneto/bindings/magneto.i ${MAGNETO_SRC})
-if(HAVE_CVODE)
-  swig_link_libraries(${SWIG_MODULE_NAME} ${FFTW_LIBRARIES} ${SUNDIALS_CVODE_LIBRARIES} ${SUNDIALS_NVECSERIAL_LIBRARIES})
-else(HAVE_CVODE)
-  swig_link_libraries(${SWIG_MODULE_NAME} ${FFTW_LIBRARIES})
-endif(HAVE_CVODE)
-#swig_link_libraries(${SWIG_MODULE_NAME} ${FFTW_LIBRARIES} ${SUNDIALS_CVODE_LIBRARIES} ${SUNDIALS_NVECSERIAL_LIBRARIES} ${Boost_LIBRARIES})
+swig_link_libraries(${SWIG_MODULE_NAME} ${FFTW_LIBRARIES})
 
 # Link Cuda Kernels to Swig module
 if(ENABLE_CUDA)
@@ -247,7 +242,7 @@ endif(ENABLE_CUDA)
 
 
 ##############################################################
-###    Don't forget to create config.h                     ###
+###    Create a config.h                                   ###
 ##############################################################
 
 # Add configuration file config.h
@@ -257,18 +252,10 @@ configure_file(
 )
 
 ##############################################################
-###    Tests                                               ###
-##############################################################
-
-#ENABLE_TESTING() # TODO WORKING_DIRECTORY only works with new cmake. Disabled to support the old.
-#add_test(NAME allTests WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/.. COMMAND python${PYTHON_VERSION} run-all-tests.py)
-
-##############################################################
 ###    Install rule                                        ###
 ##############################################################
 
 # set PYTHON_SITE_MODULES path
-#execute_process ( COMMAND python${PYTHON_VERSION} -c "import sys; from distutils.sysconfig import get_python_lib; d0 = get_python_lib(0,0,'/usr/local'); d1 = get_python_lib(); print(d0 if d0 in sys.path else d1)" OUTPUT_VARIABLE PYTHON_SITE_MODULES OUTPUT_STRIP_TRAILING_WHITESPACE)
 message ("-- Found Python ${PYTHON_VERSION}, will install at ${PYTHON_SITE_MODULES}")
 
 # install directory magnum, exclude the symlinks
@@ -278,6 +265,7 @@ install(DIRECTORY magnum DESTINATION "${PYTHON_SITE_MODULES}" PATTERN "magnum/ma
 if(ENABLE_CUDA)
   install(FILES build/magneto_cuda.py build/_magneto_cuda.so DESTINATION "${PYTHON_SITE_MODULES}/magnum")
 else(ENABLE_CUDA)
-  # copy builded destinations of cpu symlinks
+  # copy built destinations of cpu symlinks
   install(FILES build/magneto_cpu.py build/_magneto_cpu.so DESTINATION "${PYTHON_SITE_MODULES}/magnum")
 endif(ENABLE_CUDA)
+
