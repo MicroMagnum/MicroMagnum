@@ -31,7 +31,7 @@ public:
             )
           
           def interpolate(self, mesh):
-            # Get matrix with interpolated values in 'interp_mat'   
+            # %{ get matrix with interpolated values in 'interp_mat' %}
             import magnum.magneto as magneto
             need_interpolate = (self.mesh.num_nodes != mesh.num_nodes)
             if need_interpolate:
@@ -40,7 +40,7 @@ public:
             else:
               interp_mat = self # no need to interpolate..
           
-            # Create interpolated vector field from matrix 'interp_mat'
+            # %{ Create interpolated vector field from matrix 'interp_mat' %}
             result = VectorField(mesh)
             result.assign(interp_mat)
             return result
