@@ -16,9 +16,6 @@
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
 class StepHandler(object):
-    def __init__(self):
-        pass
-
     def handle(self, state):
         """
         This method is called by the solver when a new simulation step

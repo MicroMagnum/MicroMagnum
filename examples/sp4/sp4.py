@@ -1,4 +1,4 @@
-#!/usr/bin/python 
+#!/usr/bin/python
 from magnum import *
 from math import pi, cos, sin
 
@@ -8,9 +8,9 @@ from math import pi, cos, sin
 
 # 500 x 125 x 3 nm^3
 #world = World(RectangularMesh((512, 512, 1), (500.0/256*1e-9, 125.0/256*1e-9, 3e-9)), Body("all", Material.Py(alpha=0.02)))
-#world = World(RectangularMesh((200, 100, 1), (2.5e-9, 1.25e-9, 3.0e-9)), Body("all", Material.Py(alpha=0.02)))
+world = World(RectangularMesh((200, 100, 1), (2.5e-9, 1.25e-9, 3.0e-9)), Body("all", Material.Py(alpha=0.02)))
 #world = World(RectangularMesh((200,  50, 1), (2.5e-9, 2.50e-9, 3.0e-9)), Body("all", Material.Py(alpha=0.02)))
-world = World(RectangularMesh((100,  25, 1), (  5e-9,    5e-9, 3.0e-9)), Body("all", Material.Py(alpha=0.02)))
+#world = World(RectangularMesh((100,  25, 1), (  5e-9,    5e-9, 3.0e-9)), Body("all", Material.Py(alpha=0.02)))
 
 ############################################################
 # Relax an s-state as the initial magnetization of the SP4 #
@@ -18,11 +18,12 @@ world = World(RectangularMesh((100,  25, 1), (  5e-9,    5e-9, 3.0e-9)), Body("a
 
 def make_initial_sp4_state():
   # Specify an s-state-like starting state
-  def state0(field, pos): 
+  def state0(field, pos):
     u = abs(pi*(pos[0]/field.mesh.size[0]-0.5)) / 2.0
     return 8e5 * cos(u), 8e5 * sin(u), 0
   # Relax to get initial state for SP4
   solver = create_solver(world, [StrayField, ExchangeField], log=True, do_precess=False, evolver="rkf45", eps_abs=1e-4, eps_rel=1e-2)
+  #solver.addStepHandler(WebStepHandler(open_browser=True), Always())
   solver.state.M = state0
   solver.state.alpha = 0.5
   solver.relax(1.0)

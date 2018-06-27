@@ -15,8 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .system import System
-from .module import Module
-from .assign import assign
+from magnum.module.system import System
+from magnum.module.module import Module
+from magnum.module.assign import assign
 
-__all__ = ["System", "Module"]
+__all__ = ["System", "Module", "assign"]

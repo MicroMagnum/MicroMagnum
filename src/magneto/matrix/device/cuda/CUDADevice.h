@@ -32,7 +32,7 @@ namespace matty {
 
 class Array;
 
-class CU32Device : private CUDADeviceMixin<CU32Array>, virtual public Device
+class CU32Device : virtual public Device, private CUDADeviceMixin<CU32Array>
 {
 public:
 	CU32Device(int cuda_device);
@@ -59,7 +59,7 @@ public:
 };
 
 #ifdef HAVE_CUDA_64
-class CU64Device : private CUDADeviceMixin<CU64Array>, virtual public Device
+class CU64Device : virtual public Device, private CUDADeviceMixin<CU64Array>
 {
 public:
 	CU64Device(int cuda_device);

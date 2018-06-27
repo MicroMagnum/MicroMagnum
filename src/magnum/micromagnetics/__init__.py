@@ -15,10 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-## module system and solver for micromagnetics
-from .micro_magnetics import MicroMagnetics
-from .micro_magnetics_solver import MicroMagneticsSolver
-from .create_solver import create_solver
+## solver for micromagnetics
+from magnum.micromagnetics.create_solver import create_solver
 
 ## constants and modules
 from .constants import MU0, H_BAR, ELECTRON_CHARGE, MU_BOHR, GYROMAGNETIC_RATIO, BOLTZMANN_CONSTANT
@@ -32,23 +30,20 @@ from .spin_torque import SpinTorque
 from .alternating_field import AlternatingField
 from .alternating_current import AlternatingCurrent
 from .simple_field import SimpleExternalField, SimpleVectorField
+from .current_path import CurrentPath
 
 __all__ = [
-    "MicroMagnetics", "MicroMagneticsSolver", "create_solver",
+    "create_solver",
     "MU0", "H_BAR", "ELECTRON_CHARGE", "MU_BOHR", "GYROMAGNETIC_RATIO", "BOLTZMANN_CONSTANT",
-    "LandauLifshitzGilbert", "ExchangeField", "StrayField", "StrayFieldCalculator",
-    "ExternalField", "AnisotropyField", "HomogeneousField", "HomogeneousCurrent",
-    "SpinTorque", "AlternatingField", "AlternatingCurrent", "SimpleExternalField", "SimpleVectorField"
+
+    "LandauLifshitzGilbert",
+    "ExchangeField",
+    "StrayField", "StrayFieldCalculator",
+    "AnisotropyField",
+    "AlternatingExternalField", "StaticExternalField", "ExternalField",
+    "SpinTorque",
+    "AlternatingCurrent", "StaticCurrent",
+    "AlternatingField",
+    "StaticField",
+    "CurrentPath"
 ]
-
-## submodules
-from . import io
-from . import world
-from . import stephandler
-from . import toolbox
-
-__all__.extend(world.__all__ + stephandler.__all__ + toolbox.__all__ + io.__all__)
-from .world import *
-from .stephandler import *
-from .toolbox import *
-from .io import *

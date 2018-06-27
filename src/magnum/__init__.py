@@ -15,35 +15,56 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-__version__ = "0.2rc3"
+__author__ = "The MicroMagnum team"
+__version__ = "0.2rc4"
+__license__ = 'GPL3'
 
-# I. Import extension lib
-from . import magneto
 
-# II. Import config & tools
-from . import tools
-from . import config
-from . import module
-from . import evolver
+# I. Import public API of modules in this package
+from magnum.tools import flush, frange, irange, range_3d
+__all__ = ["flush", "frange", "irange", "range_3d"]
 
-# III. Import submodules
-from . import controller
-from . import mesh
-from . import solver
-from . import micromagnetics
 
-# V. Prepare exports for "from magnum import *"
-__all__ = controller.__all__ + mesh.__all__ + solver.__all__ + micromagnetics.__all__
-from .controller import *
-from .mesh import *
-from .solver import *
-from .micromagnetics import *
+# II. Import subpackages
+import magnum.controller
+import magnum.mesh
+import magnum.module
+import magnum.solver
+import magnum.evolver
+import magnum.micromagnetics
+import magnum.micromagnetics.io
+import magnum.micromagnetics.world
+import magnum.micromagnetics.stephandler
+import magnum.micromagnetics.toolbox
 
-# VI. Initialize micromagnum via the main config object
-def do_initialize():
-    import sys
+
+# III. Merge public API into magnum namespace.
+def merge_package(src):
+    for var in src.__all__:
+        magnum.__all__.append(var)
+        setattr(magnum, var, getattr(src, var))
+
+merge_package(magnum.controller)
+merge_package(magnum.mesh)
+merge_package(magnum.solver)
+merge_package(magnum.micromagnetics)
+merge_package(magnum.micromagnetics.io)
+merge_package(magnum.micromagnetics.world)
+merge_package(magnum.micromagnetics.stephandler)
+merge_package(magnum.micromagnetics.toolbox)
+
+del merge_package
+
+
+# III. Initialize MicroMagnum via the configuration object
+import sys
+import atexit
+if 'sphinx-build' in sys.argv[0]:
     # No nothing when magnum is imported for documentation generation
-    if 'sphinx-build' in sys.argv[0]: return
-    config.cfg.initialize(sys.argv)
-do_initialize()
-del do_initialize
+    pass
+else:
+    import magnum.config
+    magnum.config.initialize(sys.argv)
+    atexit.register(magnum.config.deinitialize)
+del sys
+del atexit

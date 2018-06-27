@@ -123,40 +123,6 @@ You can then enter the examples directory in the MicroMagnum base directory and 
    ./sp4 -l0           # add -g0 to run on GPU 
                        #(this works only when GPU support was enabled at compile time)
 
-Building with CVode evolver
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-If you want to use MicroMagnum with the implicit CVode evolver you can get it on the sundials download page.
-http://computation.llnl.gov/casc/sundials/download/download.html
-
-Or get the package directly:
-
-.. code-block:: bash
-
-   wget http://computation.llnl.gov/casc/sundials/download/code/cvode-2.7.0.tar.gz
-   tar -xvf cvode-2.7.0.tar.gz
-
-To build and install you can use:
-
-.. code-block:: bash
-
-  cd cvode-2.7.0          # change to the source directory
-  ./configure --with-pic  # the PIC option is important to use it with MicroMagnum.
-  make                    # build
-  sudo make install       # and install cvode
-
-Now you can build MicroMagnum and activate CVode with the toggle:
-
-.. code-block:: bash
-
-  cmake .. -DUSE_CVODE=on   # to enable CVode
-
-If you do not have the permission to install globally, use these Cmake parameters:
-
-.. code-block:: bash
-
-  cmake .. -DUSE_CVODE=on -DCMAKE_INCLUDE_PATH=/INSTALLPATH/include -DCMAKE_LIBRARY_PATH=/INSTALLPATH/lib
-
-
 FFTW download and building
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 

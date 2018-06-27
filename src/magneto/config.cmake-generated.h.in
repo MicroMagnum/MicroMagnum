@@ -1,0 +1,14 @@
+#ifndef MAGNUM_CONFIG_CMAKE_H
+#define MAGNUM_CONFIG_CMAKE_H
+
+// Enable CUDA support?
+#cmakedefine HAVE_CUDA
+
+// Additionally, compile 64-bit CUDA code?
+#cmakedefine HAVE_CUDA_64
+
+//#define ENABLE_CUDA_THREAD_SYNCHRONIZE 1
+#define HAVE_FFTW_THREADS 1
+
+#endif
+

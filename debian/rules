@@ -24,7 +24,7 @@ override_dh_auto_build:
 	# cd doc/build/latex; pdflatex Magneto.tex; pdflatex Magneto.tex; pdflatex Magneto.tex
 
 override_dh_auto_test:
-	 cd src; #./run-all-tests.py #TODO integrate tests again
+	cd src/tests; ./run-all-tests.py
 
 override_dh_auto_install:
 	cd src/build; make install DESTDIR=../../debian/micromagnum 

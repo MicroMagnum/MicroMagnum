@@ -19,10 +19,9 @@ from __future__ import print_function
 
 import magnum.tools as tools
 import magnum.solver as solver
-import magnum.evolver as evolver
 
-from .micro_magnetics import MicroMagnetics
-from .io import writeOMF
+from magnum.micromagnetics.io import writeOMF
+from magnum.micromagnetics.stephandler import ScreenLog
 
 class MicroMagneticsSolver(solver.Solver):
     def __init__(self, system, evolver, world):
@@ -35,13 +34,9 @@ class MicroMagneticsSolver(solver.Solver):
     world = property(lambda self: self.__world)
 
     def relax(self, *args, **kwargs):
-        # catch CVode, when using relax condition
-        if self.evolver.__class__.__name__ == "Cvode":
-          raise Exception("CVode is not usable to relax a system, yet. Please use rkf45.")
-
         return self.solve(solver.condition.Relaxed(*args, **kwargs))
 
-    def handle_interrupt(self):
+    def handle_sigint(self):
         print()
 
         text = ""
@@ -55,21 +50,20 @@ class MicroMagneticsSolver(solver.Solver):
         text += "\n"
         text += "Options:"
 
-        from .stephandler import ScreenLog
         loggers = [h for (h, _) in self.step_handlers if isinstance(h, ScreenLog)]
 
         answer = tools.interactive_menu(
-          header = "Solver interrupted by signal SIGINT (ctrl-c)",
-          text = text,
-          options = [
-            "Continue",
-            "Stop solver and return the current state as the result",
-            "Save current magnetization to .omf file, then continue",
-            "Raise KeyboardInterrupt",
-            "Kill program",
-            "Start debugger",
-            "Toggle console log (now:%s)" % ("enabled" if loggers else "disabled")
-          ]
+            header="Solver interrupted by signal SIGINT (ctrl-c)",
+            text=text,
+            options=[
+                "Continue",
+                "Stop solver and return the current state as the result",
+                "Save current magnetization to .omf file, then continue",
+                "Raise KeyboardInterrupt",
+                "Kill program",
+                "Start debugger",
+                "Toggle console log (now:%s)" % ("enabled" if loggers else "disabled")
+            ]
         )
         if answer == 1:
             return
@@ -90,7 +84,8 @@ class MicroMagneticsSolver(solver.Solver):
             raise solver.Solver.StartDebugger()
         elif answer == 7:
             if loggers:
-                for logger in loggers: self.removeStepHandler(logger)
+                for logger in loggers:
+                    self.removeStepHandler(logger)
                 print("Disabled console log.")
             else:
                 from magnum.solver.condition import EveryNthStep

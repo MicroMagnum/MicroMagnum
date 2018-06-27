@@ -85,7 +85,7 @@ namespace demag_coeff_magneto
 				real result = 0;
 				for (int i=0; i<coeff_len; i+=4)
 					result += coeff[i] * newell_f(x + coeff[i+1] * dx, y + coeff[i+2] * dy, z + coeff[i+3] * dz);
-				return result / (4 * PI * dx * dy * dz);
+				return result / (4 * MY_PI * dx * dy * dz);
 			}
 			case 4: // Nyy
 				return getN(0, y, x, z, dy, dx, dz);
@@ -95,7 +95,7 @@ namespace demag_coeff_magneto
 				real result = 0;
 				for (int i=0; i<coeff_len; i+=4)
 					result += coeff[i] * newell_g(x + coeff[i+1] * dx, y + coeff[i+2] * dy, z + coeff[i+3] * dz);
-				return result / (4 * PI * dx * dy * dz);
+				return result / (4 * MY_PI * dx * dy * dz);
 			}
 			case 2: case 6: // Nxz, Nzx
 				return getN(1, x, z, y, dx, dz, dy);
@@ -144,7 +144,7 @@ namespace demag_coeff_OOMMF
 		Nxx +=  12 * y*mpxz*std::log(diag+y);
 		Nxx +=  -6 * y*mpxz*std::log(xsq+zsq);
 
-		return Nxx / (12*PI*x*y*z);
+		return Nxx / (12*MY_PI*x*y*z);
 	}
 
 	template <class real>
@@ -264,7 +264,7 @@ namespace demag_coeff_OOMMF
 	{ 
 		// Self demag term. The base routine can handle x==y==z==0, but this should be more accurate.
 		if (x == 0.0 && y == 0.0 && z == 0.0) {
-			return selfDemagNx(dx,dy,dz) * (4*PI*dx*dy*dz);
+			return selfDemagNx(dx,dy,dz) * (4*MY_PI*dx*dy*dz);
 		}
 
 		real result = 0.0;
@@ -348,7 +348,7 @@ namespace demag_coeff_OOMMF
 		switch (n) {
 			case 0: { // Nxx
 				real result = CalculateSDA00<real>(x, y, z, dx, dy, dz);
-				return result / (4 * PI * dx * dy * dz);
+				return result / (4 * MY_PI * dx * dy * dz);
 			}
 			case 4: // Nyy
 				return getN(0, y, x, z, dy, dx, dz);
@@ -356,7 +356,7 @@ namespace demag_coeff_OOMMF
 				return getN(0, z, y, x, dz, dy, dx);
 			case 1: case 3:	{ // Nxy, Nyx
 				real result = CalculateSDA01<real>(x, y, z, dx, dy, dz);
-				return result / (4 * PI * dx * dy * dz);
+				return result / (4 * MY_PI * dx * dy * dz);
 			}
 			case 2: case 6: // Nxz, Nzx
 				return getN(1, x, z, y, dx, dz, dy);

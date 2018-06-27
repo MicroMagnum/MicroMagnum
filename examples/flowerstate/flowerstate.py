@@ -2,7 +2,7 @@
 from magnum import *
 
 world = World(
-  RectangularMesh((40, 40, 1), (2e-9, 2e-9, 8e-9)),
+  RectangularMesh((100, 100, 1), (2e-9, 2e-9, 1e-8)),
   Material.Py()
 )
 

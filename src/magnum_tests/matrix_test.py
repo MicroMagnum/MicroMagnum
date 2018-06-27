@@ -17,11 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from magnum import *
+import unittest
+
 from magnum.magneto import Matrix, Shape
 
-import unittest
-import itertools
 
 class MatrixTest(unittest.TestCase):
 
@@ -39,14 +38,14 @@ class MatrixTest(unittest.TestCase):
     #   double getUniformValue() const;
 
     def test_fill(self):
-        m1 = Matrix(Shape(10, 10, 10));
+        m1 = Matrix(Shape(10, 10, 10))
 
         m1.fill(1.0)
         self.assertEqual(m1.get(4, 4, 4), 1.0)
         self.assertEqual(m1.uniform_value, 1.0)
         self.assertTrue(m1.isUniform())
 
-        m1.set(4, 4, 4, 2.0);
+        m1.set(4, 4, 4, 2.0)
         self.assertEqual(m1.get(4, 4, 4), 2.0)
         self.assertFalse(m1.isUniform())
 

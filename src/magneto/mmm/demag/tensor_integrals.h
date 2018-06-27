@@ -555,7 +555,7 @@ namespace tensor_integrals
 		if (p % 2 == 1 && j == 0) return 0;
 		if (q % 2 == 1 && k == 0) return 0;
 
-		const T prefactor = Power(lxp, 5-o-p-q)/(4*PI*lxp*lyp*lzp);
+		const T prefactor = Power(lxp, 5-o-p-q)/(4*MY_PI*lxp*lyp*lzp);
 
 		T lz = lzp/lxp;
 		T ly = lyp/lxp;

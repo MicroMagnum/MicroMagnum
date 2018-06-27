@@ -4,7 +4,7 @@ List of examples:
 System tests:
   sp0                   simple larmor precession test
   sp1                   muMAG standard problem #1 (hysteresis loop)
-  sp2                   (does not work yet)
+  sp2                   muMAG standard problem #2 (compute remanence, coercivity)
   sp3                   muMAG standard problem #3 (static energies)
   sp4                   muMAG standard problem #4 (dynamics) [0]
   sp5                   proposed spin torque problem [1]

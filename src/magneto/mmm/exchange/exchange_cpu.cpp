@@ -129,7 +129,7 @@ static double exchange_cpu_nonperiodic(
 				H_acc.set(i, H_i);
 
 				// Exchange energy sum
-				energy += dot(M_i, H_i);
+				energy += dot(M_i*Ms, H_i);
 			}
 		}
 	}
@@ -225,7 +225,7 @@ static double exchange_cpu_periodic(
 				H_acc.set(i, H_i);
 
 				// Exchange energy sum
-				energy += dot(M_i, H_i);
+				energy += dot(M_i*Ms, H_i);
 			}
 		}
 	}

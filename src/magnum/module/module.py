@@ -15,9 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .assign import assign
+from magnum.module.assign import assign
 
 class Module(object):
+
+    # These methods return information about the module:
+
     def calculates(self):
         return []
 
@@ -27,11 +30,13 @@ class Module(object):
     def params(self):
         return []
 
-    def initialize(self, system):
-        pass
-
     def properties(self):
         return {}
+
+    def name(self):
+        return self.__class__.__name__
+
+    # Default implementation to set/get parameters via setattr/getattr on the module instance:
 
     def set_param(self, id, value, mask=None):
         p = getattr(self, id)
@@ -44,5 +49,13 @@ class Module(object):
     def on_param_update(self, id):
         pass
 
-    def name(self):
-        return self.__class__.__name__
+    # Methods that have to be implemented:
+
+    def initialize(self, system):
+        raise NotImplementedError("Module.initialize")
+
+    def calculate(self, state, id):
+        raise NotImplementedError("Module.calculate")
+
+    def update(self, state, id, val):
+        raise NotImplementedError("Module.update")

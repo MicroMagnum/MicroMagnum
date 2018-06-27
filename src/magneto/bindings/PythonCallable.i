@@ -18,8 +18,8 @@
  */
 
 %typemap(in) PythonCallable {
-        if (!PyCallable_Check($input)) {
-                PyErr_SetString(PyExc_TypeError, "Need a callable object!");
+        if (!(PyCallable_Check($input) || ($input == Py_None))) {
+                PyErr_SetString(PyExc_TypeError, "Need a callable object or None!");
                 return 0;
         }
         {
