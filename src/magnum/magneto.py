@@ -16,6 +16,9 @@
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
 try:
-    from .magneto_cuda import *
-except ImportError:
-    from .magneto_cpu import *
+    from magnum.magneto_cuda import *
+except Exception as e:
+    if isinstance(e, (SyntaxError, ImportError)):
+        from magnum.magneto_cpu import *
+    else:
+        raise e

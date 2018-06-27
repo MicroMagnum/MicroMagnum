@@ -15,10 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .shape import Shape
-from .transformation import Transformation
+from magnum.micromagnetics.world.shape import Shape
+from magnum.micromagnetics.world.transformation import Transformation
 
 from math import sqrt, acos
+
 
 class Prism(Shape):
     def __init__(self, p1, p2, poly):

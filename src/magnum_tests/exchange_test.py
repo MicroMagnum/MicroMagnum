@@ -17,14 +17,15 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from magnum import *
-import magnum.magneto as magneto
-
-from .helpers import MyTestCase, right_rotate_vector_field, right_rotate_field, left_rotate_vector_field
-
 import unittest
 import random
 import itertools
+
+from magnum import readOMF, Field, VectorField, RectangularMesh, Material
+import magnum.magneto as magneto
+
+from magnum_tests.helpers import MyTestCase, right_rotate_vector_field, right_rotate_field, left_rotate_vector_field
+
 
 class ExchangeTest(MyTestCase):
 
@@ -66,7 +67,7 @@ class ExchangeTest(MyTestCase):
             #M.fill((8e5, 8e5, -8e5))
             magneto.exchange(nx, ny, nz, dx, dy, dz, bcx, bcy, bcz, Ms, A, M, H)
             for i in range(nx*ny*nz):
-                self.assertEquals(H.get(i), (0.0, 0.0, 0.0))
+                self.assertEqual(H.get(i), (0.0, 0.0, 0.0))
 
     def test_pbc_exchange_3d(self):
         self.pbc_exchange(64, 64, 64) # mod 8 == 0 (cuda thread block size)

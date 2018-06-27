@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Magneto documentation build configuration file, created by
+# MicroMagnum documentation build configuration file, created by
 # sphinx-quickstart on Sat Feb 12 19:20:58 2011.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -37,8 +37,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Magneto'
-copyright = u'2011, Claas Abert, Gunnar Selke, Andre Drews'
+project = u'MicroMagnum'
+copyright = u'2010-2013, Claas Abert, Andre Drews, Benjamin Krueger, Gunnar Selke'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -158,7 +158,7 @@ html_theme = 'default'
 #html_file_suffix = ''
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Magnetodoc'
+htmlhelp_basename = 'MicroMagnumdoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -172,8 +172,7 @@ latex_font_size = '11pt'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'Magneto.tex', u'Magneto Documentation',
-   u'Claas Abert, Gunnar Selke, Andre Drews', 'manual'),
+    ('index', 'MicroMagnum.tex', u'MicroMagnum Documentation', u'Claas Abert, Gunnar Selke, Andre Drews', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

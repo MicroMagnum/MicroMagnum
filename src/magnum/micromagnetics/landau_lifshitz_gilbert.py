@@ -15,15 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
+import math
+
 import magnum.module as module
 import magnum.magneto as magneto
 
 from magnum.logger import logger
 from magnum.mesh import VectorField, Field
 
-from .constants import GYROMAGNETIC_RATIO
-
-import math
+from magnum.micromagnetics.constants import GYROMAGNETIC_RATIO
 
 class LandauLifshitzGilbert(module.Module):
     def __init__(self, do_precess=True):
@@ -64,14 +64,15 @@ class LandauLifshitzGilbert(module.Module):
         logger.info(" - H_tot = %s", " + ".join(self.field_terms) or "0")
         logger.info(" - E_tot = %s", " + ".join(self.field_energies) or "0")
         logger.info(" - dM/dt = %s", " + ".join(["LLGE(M, H_tot)"] + self.llge_terms) or "0")
-        if not self.__do_precess: logger.info(" - Precession term is disabled")
+        if not self.__do_precess:
+            logger.info(" - Precession term is disabled")
 
     def calculate(self, state, id):
         if id == "M":
             return state.y
-        elif id == "H_tot" or id == "H_eff":
+        elif id == "H_tot":
             return self.calculate_H_tot(state)
-        elif id == "E_tot" or id == "E_eff":
+        elif id == "E_tot":
             return self.calculate_E_tot(state)
         elif id == "dMdt":
             return self.calculate_dMdt(state)
@@ -84,7 +85,7 @@ class LandauLifshitzGilbert(module.Module):
         if id == "M":
             logger.info("Assigning new magnetic state M")
             module.assign(state.y, value)
-            state.y.normalize(self.system.Ms)   # XXX: Is this a good idea? (Solution: Use unit magnetization everywhere.)
+            state.y.normalize(state.Ms)   # XXX: Is this a good idea? (Solution: Use unit magnetization everywhere.)
             state.flush_cache()
         else:
             raise KeyError(id)
@@ -102,11 +103,12 @@ class LandauLifshitzGilbert(module.Module):
 
     def calculate_E_tot(self, state):
         if hasattr(state.cache, "E_tot"): return state.cache.E_tot
-        state.cache.E_tot = sum(getattr(state, E_id) for E_id in self.field_energies) # calculate sum of all registered energy terms
+        state.cache.E_tot = sum(getattr(state, E_id) for E_id in self.field_energies)  # calculate sum of all registered energy terms
         return state.cache.E_tot
 
     def calculate_dMdt(self, state):
-        if not self.__valid_factors: self.__initFactors()
+        if not self.__valid_factors:
+            self.__initFactors()
 
         if hasattr(state.cache, "dMdt"): return state.cache.dMdt
         dMdt = state.cache.dMdt = VectorField(self.system.mesh)
@@ -126,22 +128,22 @@ class LandauLifshitzGilbert(module.Module):
 
     def calculate_deg_per_ns(self, state):
         if hasattr(state.cache, "deg_per_ns"): return state.cache.deg_per_ns
-        deg_per_timestep = (180.0 / math.pi) * math.atan2(state.dMdt.absMax() * state.h, state.M.absMax()) # we assume a<b at atan(a/b).
+        deg_per_timestep = (180.0 / math.pi) * math.atan2(state.dMdt.absMax() * state.h, state.M.absMax())  # we assume a<b at atan(a/b).
         deg_per_ns = state.cache.deg_per_ns = 1e-9 * deg_per_timestep / state.h
         return deg_per_ns
 
     def __initFactors(self):
-        self.__f1 = f1 = Field(self.system.mesh) # precession factors of llge
-        self.__f2 = f2 = Field(self.system.mesh) # damping factors of llge
+        self.__f1 = f1 = Field(self.system.mesh)  # precession factors of llge
+        self.__f2 = f2 = Field(self.system.mesh)  # damping factors of llge
 
         alpha, Ms = self.alpha, self.Ms
 
         # Prepare factors
-        for x,y,z in self.system.mesh.iterateCellIndices():
-            alpha_i, Ms_i = alpha.get(x,y,z), Ms.get(x,y,z)
+        for x, y, z in self.system.mesh.iterateCellIndices():
+            alpha_i, Ms_i = alpha.get(x, y, z), Ms.get(x, y, z)
 
             if Ms_i != 0.0:
-                gamma_prime = GYROMAGNETIC_RATIO / (1.0 + alpha_i**2)
+                gamma_prime = GYROMAGNETIC_RATIO / (1.0 + alpha_i ** 2)
                 f1_i = -gamma_prime
                 f2_i = -alpha_i * gamma_prime / Ms_i
             else:

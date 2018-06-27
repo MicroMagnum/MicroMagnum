@@ -15,14 +15,17 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from magnum.mesh import VectorField
+import magnum.logger as logger
 
-from .evolver import Evolver
+from magnum.evolver.evolver import Evolver
+
 
 class Euler(Evolver):
     def __init__(self, mesh, step_size):
         super(Euler, self).__init__(mesh)
         self.step_size = float(step_size)
+
+        logger.warn("Euler evolver: Performance hint: Don't use me.")
 
     def evolve(self, state, t_max):
         dydt = state.differentiate()
@@ -30,7 +33,6 @@ class Euler(Evolver):
         state.t += self.step_size
         state.h = self.step_size
         state.step += 1
-        state.substep = 0
         state.flush_cache()
         state.finish_step()
         return state

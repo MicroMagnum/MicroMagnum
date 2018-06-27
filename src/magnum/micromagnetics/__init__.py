@@ -15,40 +15,34 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-## module system and solver for micromagnetics
-from .micro_magnetics import MicroMagnetics
-from .micro_magnetics_solver import MicroMagneticsSolver
-from .create_solver import create_solver
+## solver for micromagnetics
+from magnum.micromagnetics.create_solver import create_solver
 
-## constants and modules
-from .constants import MU0, H_BAR, ELECTRON_CHARGE, MU_BOHR, GYROMAGNETIC_RATIO, BOLTZMANN_CONSTANT
-from .landau_lifshitz_gilbert import LandauLifshitzGilbert
-from .exchange_field import ExchangeField
-from .stray_field import StrayField, StrayFieldCalculator
-from .external_field import ExternalField
-from .anisotropy_field import AnisotropyField
-from .homogeneous_field import HomogeneousField, HomogeneousCurrent
-from .spin_torque import SpinTorque
-from .alternating_field import AlternatingField
-from .alternating_current import AlternatingCurrent
-from .simple_field import SimpleExternalField, SimpleVectorField
+## constants
+from magnum.micromagnetics.constants import MU0, H_BAR, ELECTRON_CHARGE, MU_BOHR, GYROMAGNETIC_RATIO, BOLTZMANN_CONSTANT
+
+## modules
+from magnum.micromagnetics.landau_lifshitz_gilbert import LandauLifshitzGilbert
+from magnum.micromagnetics.exchange_field import ExchangeField
+from magnum.micromagnetics.stray_field import StrayField, StrayFieldCalculator
+from magnum.micromagnetics.anisotropy_field import AnisotropyField
+from magnum.micromagnetics.external_field import AlternatingExternalField, StaticExternalField, ExternalField
+from magnum.micromagnetics.spin_torque import SpinTorque
+from magnum.micromagnetics.current import AlternatingCurrent, StaticCurrent
+from magnum.micromagnetics.alternating_field import AlternatingField
+from magnum.micromagnetics.static_field import StaticField
 
 __all__ = [
-    "MicroMagnetics", "MicroMagneticsSolver", "create_solver",
+    "create_solver",
     "MU0", "H_BAR", "ELECTRON_CHARGE", "MU_BOHR", "GYROMAGNETIC_RATIO", "BOLTZMANN_CONSTANT",
-    "LandauLifshitzGilbert", "ExchangeField", "StrayField", "StrayFieldCalculator",
-    "ExternalField", "AnisotropyField", "HomogeneousField", "HomogeneousCurrent",
-    "SpinTorque", "AlternatingField", "AlternatingCurrent", "SimpleExternalField", "SimpleVectorField"
+
+    "LandauLifshitzGilbert",
+    "ExchangeField",
+    "StrayField", "StrayFieldCalculator",
+    "AnisotropyField",
+    "AlternatingExternalField", "StaticExternalField", "ExternalField",
+    "SpinTorque",
+    "AlternatingCurrent", "StaticCurrent",
+    "AlternatingField",
+    "StaticField"
 ]
-
-## submodules
-from . import io
-from . import world
-from . import stephandler
-from . import toolbox
-
-__all__.extend(world.__all__ + stephandler.__all__ + toolbox.__all__ + io.__all__)
-from .world import *
-from .stephandler import *
-from .toolbox import *
-from .io import *

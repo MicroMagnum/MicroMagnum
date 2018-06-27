@@ -20,8 +20,9 @@ class Condition(object):
         """
         Construct a new Condition object.
 
-        :param fn: a function of the form 'lambda state: ...' that checks whether the condition
-                   is true for a magnetic state. *The function should have no side-effects*.
+        :param fn: a function of the form 'lambda state: ...' that checks
+                   whether the condition is true for a magnetic
+                   state. *The function should have no side-effects*.
         """
         self.fn = fn
 
@@ -29,7 +30,7 @@ class Condition(object):
         """
         Returns whether this condition applies to a given magnetic state.
 
-        :param state: the magnetic state that the condition is being checked against.
+        :param state: the magnetic state to be checked.
         :rtype: bool
         """
         return self.fn(state)
@@ -42,7 +43,7 @@ class Condition(object):
         """
         return None
 
-    def __and__(self, other): # &
+    def __and__(self, other):
         """
         Combines this condition with the other condition.
         The returned condition is true when both conditions yield true.
@@ -55,10 +56,10 @@ class Condition(object):
         """
         return AndCondition(self, other)
 
-    def __or__(self, other): # |
+    def __or__(self, other):
         """
-        Combines this condition with the other condition.
-        The returned condition is true when at least one condition yields true.
+        Combines this condition with the other condition.  The returned
+        condition is true when at least one condition yields true.
         This operator is invoked with the '|' operator.
 
         :param other: the other condition
@@ -68,10 +69,11 @@ class Condition(object):
         """
         return OrCondition(self, other)
 
-    def __invert__(self): # ~
+    def __invert__(self):
         """
-        Creates a new condition, which is true if and only if this conditon is false.
-        This operator is invoked with the '~' operator.
+        Creates a new condition, which is true if and only if this
+        conditon is false. This operator is invoked with the '~'
+        operator.
 
         :param other: the condition to invert
         :type other: :class:`magneto.Condition`
@@ -167,11 +169,11 @@ class TimeBetween(Condition):
         return super(TimeBetween, self).__init__(lambda state: state.t >= t0 and state.t < t1)
 
 class Relaxed(Condition):
-    def __init__(self, max_degree_per_ns = 1, check_every_nth_step = 100):
+    def __init__(self, max_deg_per_ns = 1, check_every_nth_step = 100):
         """
         Returns condition that is true when the time deriviative of the magnetization is small, i.e.
         when the magnetic state is relaxed.
-        :param max_degree_per_ns: Maximum allowed magnetization change in degrees per nanosecond to consider the state relaxed.
+        :param max_deg_per_ns: Maximum allowed magnetization change in degrees per nanosecond to consider the state relaxed.
         :param check_every_nth_step: Check only every nth step (to save computation time)
         """
         def test(state):
@@ -189,12 +191,12 @@ class Relaxed(Condition):
                 last_deg_per_ns = None
             setattr(state, "last_deg_per_ns_%s" % id(self), deg_per_ns)
 
-            if last_deg_per_ns is None: return False # Not enough data? Bail out.
+            if last_deg_per_ns is None: return False  # Not enough data? Bail out.
 
             # Now we have valid values in 'deg_per_ns' and 'last_deg_per_ns'.
-            # The state is considered relaxed if degrees per ns is small enough (< max_degree_per_ns)
+            # The state is considered relaxed if degrees per ns is small enough (< max_deg_per_ns)
             # and became smaller during the last time step (< last_deg_per_ns).
-            is_relaxed = deg_per_ns < last_deg_per_ns and deg_per_ns <= max_degree_per_ns
+            is_relaxed = deg_per_ns < last_deg_per_ns and deg_per_ns <= max_deg_per_ns
             return is_relaxed
 
         super(Relaxed, self).__init__(test)
@@ -216,10 +218,10 @@ class Never(Condition):
 class Once(Condition):
     def __init__(self, cond):
         self.__cond = cond
+        self.__tag = "_Condition_once_%s" % id(self)  # Generate a (hopefully) unique tag to attach to state.
 
-        tag = "_Condition_once_%s" % id(self) # Generate a (hopefully) unique tag to attach to state.
         def test(state):
-            if hasattr(state, self.__tag): return False # we already triggered
+            if hasattr(state, self.__tag): return False  # we already triggered
             x = cond.check(state)
             if x: setattr(state, self.__tag, True)
             return x

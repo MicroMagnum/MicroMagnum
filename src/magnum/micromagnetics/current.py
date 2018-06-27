@@ -15,21 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .shape import Shape
+from magnum.micromagnetics.alternating_field import AlternatingField
+from magnum.micromagnetics.static_field import StaticField
 
-class Everywhere(Shape):
-    """
-    This shape describes the whole simulation volume, i.e. *isPointInside* always returns true.
-    """
+class AlternatingCurrent(AlternatingField):
+    def __init__(self, var_id = "j"):
+        super(AlternatingCurrent, self).__init__(var_id)
 
-    def __init__(self):
-        super(Everywhere, self).__init__()
-
-    def getCellIndices(self, mesh):
-        return range(0, mesh.total_nodes)
-
-    def isPointInside(self, pt):
-        return True
-
-    def __repr__(self):
-        return "Everywhere()"
+class StaticCurrent(AlternatingField):
+    def __init__(self, var_id = "j"):
+        super(StaticCurrent, self).__init__(var_id)

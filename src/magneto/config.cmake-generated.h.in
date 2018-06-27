@@ -1,5 +1,5 @@
-#ifndef MAGNUM_CONFIG_H
-#define MAGNUM_CONFIG_H
+#ifndef MAGNUM_CONFIG_CMAKE_H
+#define MAGNUM_CONFIG_CMAKE_H
 
 // Enable CUDA support?
 #cmakedefine HAVE_CUDA

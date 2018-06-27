@@ -1,0 +1,13 @@
+Basic model:
+  LandauLifshitzGilbert
+  ExchangeField
+  StrayField
+  AnisotropyField
+  AlternatingExternalField (= ExternalField), StaticExternalField
+
+Extensions for currents:
+  SpinTorque 
+  AlternatingCurrent, StaticCurrent
+
+Custom modules:
+  AlternatingField, StaticField

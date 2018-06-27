@@ -26,6 +26,7 @@ def readOMF(path):
     mat = magneto.readOMF(path, header)
 
     # Convert (header, mat) to VectorField.
+    # TODO: Generate a VectorField in C++.
     mesh = RectangularMesh((header.xnodes, header.ynodes, header.znodes), (header.xstepsize, header.ystepsize, header.zstepsize))
     vector_field = VectorField(mesh)
     vector_field.assign(mat)

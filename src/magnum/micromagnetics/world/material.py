@@ -17,26 +17,14 @@
 
 from magnum.logger import logger
 
+
 class Material(object):
     def __init__(self, params):
         """
         Create a new material object. 'params' must be a dict that maps
         material parameter string-ids to their values.
         """
-        self.__params = params
-
-    def get(self, key):
-        """
-        Return the material parameter with id-string 'key'. The material parameter
-        is usually a scalar value.
-        """
-        return self.__params[key]
-
-    def __getattr__(self, key):
-        try:
-            return self.__params[key]
-        except:
-            return super(Material, self).__getattr__(key)
+        self.__dict__.update(params)
 
     def __repr__(self):
         return "Material(" + repr(self.__params) + ")"

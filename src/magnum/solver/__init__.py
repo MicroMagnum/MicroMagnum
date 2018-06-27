@@ -15,8 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .step_handler import StepHandler
-from .solver import Solver
-from . import condition
+from magnum.solver.step_handler import StepHandler
+from magnum.solver.solver import Solver
+from magnum.solver.condition import Condition, EveryNthStep, EveryNthSecond, AfterNthStep, TimeGreaterEq, TimeBetween, Relaxed, Always, Never, Once
 
-__all__ = ["StepHandler", "Solver", "condition"]
+__all__ = [
+    "StepHandler", "Solver", "condition",
+    "Condition", "EveryNthStep", "EveryNthSecond", "AfterNthStep", "TimeGreaterEq", "TimeBetween", "Relaxed", "Always", "Never", "Once",
+]

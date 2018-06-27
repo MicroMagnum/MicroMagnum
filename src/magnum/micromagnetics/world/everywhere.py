@@ -15,15 +15,22 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .shape       import Shape
-from .everywhere  import Everywhere
-from .cuboid      import Cuboid
-from .sphere      import Sphere
-from .cylinder    import Cylinder
-from .prism       import Prism
-from .image_shape import ImageShape, ImageShapeCreator
+from magnum.micromagnetics.world.shape import Shape
 
-__all__ = [
-        "Shape", "Everywhere", "Cuboid", "Sphere", "Cylinder", "Prism",
-        "ImageShape", "ImageShapeCreator"
-]
+
+class Everywhere(Shape):
+    """
+    This shape describes the whole simulation volume, i.e. *isPointInside* always returns true.
+    """
+
+    def __init__(self):
+        super(Everywhere, self).__init__()
+
+    def getCellIndices(self, mesh):
+        return range(0, mesh.total_nodes)
+
+    def isPointInside(self, pt):
+        return True
+
+    def __repr__(self):
+        return "Everywhere()"

@@ -15,8 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from .material import Material
-from .shape import Shape, Everywhere
+from magnum.micromagnetics.world.everywhere import Everywhere
 
 class Body(object):
     """
@@ -25,24 +24,22 @@ class Body(object):
     volume.
     """
 
-    def __init__(self, id, material, shape = None):
+    def __init__(self, id, material, shape=None):
         """
         Create a body object with an ID, a material, and a shape. If no
-        shape is given, the Everywhere() shape, which encompasses the whole
+        shape is given, the Everywhere shape, which encompasses the whole
         simulation volume, is used as a default.
         """
+
+        assert isinstance(id, str)
 
         self.__id       = id
         self.__material = material
         self.__shape    = shape or Everywhere()
 
-        assert isinstance(self.id, str)
-        assert isinstance(self.material, Material)
-        assert isinstance(self.shape, Shape)
-
     material = property(lambda self: self.__material)
-    shape = property(lambda self: self.__shape)
-    id = property(lambda self: self.__id)
+    shape    = property(lambda self: self.__shape)
+    id       = property(lambda self: self.__id)
 
     def __repr__(self):
         return "Body(" + repr(self.id) + ", " + repr(self.material) + ", " + repr(self.shape) + ")"

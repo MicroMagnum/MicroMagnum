@@ -53,7 +53,7 @@ namespace demag_phi_coeff
         	                    - f(x + dx/2, y + dy/2, z - dz/2)
         	                    + f(x - dx/2, y + dy/2, z - dz/2)
         	                    + f(x + dx/2, y - dy/2, z - dz/2);
-		return - result / (4.0 * PI);
+		return - result / (4.0 * MY_PI);
 	}
 
 	template <class real>
@@ -65,6 +65,7 @@ namespace demag_phi_coeff
 			case 2: return g(x, y, z, dx, dy, dz);
 		}
 		assert(0);
+		return 0; // supress compiler warning
 	}
 
 } // namespace PotentialCoeff

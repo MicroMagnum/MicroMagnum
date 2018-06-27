@@ -15,12 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-import magnum.module as module
-from magnum.mesh import VectorField, Field
-from magnum.logger import logger
 from math import sin
 
-# AlternatingHomogeneousField
+import magnum.module as module
+import magnum.logger as logger
+
+from magnum.mesh import VectorField, Field
+
 class AlternatingField(module.Module):
     def __init__(self, var_id):
         super(AlternatingField, self).__init__()

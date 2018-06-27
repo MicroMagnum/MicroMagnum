@@ -50,7 +50,7 @@ for ratio in range(4,40+1):
     if abs(h) < 1e-10:
       m_rem = m
 
-    # find coercitivity
+    # find coercivity
     if h < 0 and sum(m) < 1000/Ms:
       h_coerc = abs(h)
       break # exit hysteresis loop

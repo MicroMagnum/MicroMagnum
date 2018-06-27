@@ -17,8 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from magnum import Body, Material, Cuboid, Everywhere
 import unittest
+
+from magnum import Body, Material, Cuboid, Everywhere
+
 
 class BodyTest(unittest.TestCase):
 

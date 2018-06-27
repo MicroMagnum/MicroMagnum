@@ -17,17 +17,19 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-from magnum import RectangularMesh, World, Body, Material, Everywhere, Cylinder
 import unittest
+
+from magnum import RectangularMesh, World, Body, Material, Everywhere, Cylinder
+
 
 class WorldTest(unittest.TestCase):
 
     def setUp(self):
         self.mesh = RectangularMesh((100, 100, 1), (1e-9, 1e-9, 1e-9))
         self.world = World(
-          self.mesh,
-          Body("body1", Material.Py(), Everywhere()),
-          Body("body2", Material.Py(), Cylinder((0,0,0), (0,50e-9,0), 20e-9))
+            self.mesh,
+            Body("body1", Material.Py(), Everywhere()),
+            Body("body2", Material.Py(), Cylinder((0, 0, 0), (0, 50e-9, 0), 20e-9))
         )
 
     def test_findBody(self):
@@ -37,7 +39,8 @@ class WorldTest(unittest.TestCase):
         try:
             self.world.findBody("body3")
             self.fail()
-        except: pass
+        except:
+            pass
 
     def test_getters(self):
         self.assertEqual(len(self.world.bodies), 2)
@@ -69,6 +72,5 @@ class WorldTest(unittest.TestCase):
         except:
             pass
 
-# start tests
 if __name__ == '__main__':
     unittest.main()

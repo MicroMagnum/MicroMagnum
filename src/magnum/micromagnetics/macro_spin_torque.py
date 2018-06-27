@@ -17,6 +17,7 @@
 
 import magnum.module as module
 import magnum.magneto as magneto
+
 from magnum.mesh import VectorField, Field
 
 # void fdm_slonchewski(
@@ -33,7 +34,7 @@ from magnum.mesh import VectorField, Field
 class MacroSpinTorque(module.Module):
     def __init__(self, do_precess = True):
         super(SpinTorque, self).__init__()
-        self.__do_precess = do_precess
+        self.do_precess = do_precess
         raise NotImplementedError("The MacroSpinTorque module does not work yet.")
 
     def calculates(self):
@@ -61,7 +62,7 @@ class MacroSpinTorque(module.Module):
             nx, ny, nz = self.system.mesh.num_nodes
             dx, dy, dz = self.system.mesh.delta
             magneto.fdm_slonchewski(
-              nx, ny, nz, dx, dy, dz, #self.__do_precess,
+              nx, ny, nz, dx, dy, dz, #self.do_precess,
               a_j, p, state.Ms, state.alpha,
               state.M, dMdt_ST
             )

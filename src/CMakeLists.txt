@@ -2,52 +2,46 @@
 ###    General                                             ###
 ##############################################################
 
-# general settings
 cmake_minimum_required (VERSION 2.8.0)
 project (Magneto)
 
 option(ENABLE_CUDA_32 "Enable CUDA (only 32 bit support)" OFF)
 option(ENABLE_CUDA_64 "Enable CUDA (both 32 and 64 bit support, needs CUDA device capability of 2.0 or higher)" OFF)
 
-option(USE_PYTHON2 "Use Python2" OFF)
+option(USE_PYTHON2 "Use Python2" ON)
 option(USE_PYTHON3 "Use Python3" OFF)
 
 if(ENABLE_CUDA_32 OR ENABLE_CUDA_64)
   set(ENABLE_CUDA ON)
-endif(ENABLE_CUDA_32 OR ENABLE_CUDA_64)
+endif()
 
 # set cmake module path
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 ##############################################################
-###    Libraries   TODO: check versions                    ###
+###    Libraries                                           ###
 ##############################################################
 
-# Boost
-# (currently unused)
-#find_package (Boost REQUIRED)
-
 # FFTW
-find_library(FFTW   fftw3 REQUIRED)
-find_library(FFTWF  fftw3f REQUIRED)
-find_library(FFTWT  fftw3_threads REQUIRED)
-find_library(FFTWFT fftw3f_threads REQUIRED)
-set(FFTW_LIBRARIES "${FFTW};${FFTWF};${FFTWT};${FFTWFT}")
+find_library(FFTW fftw3 REQUIRED)
+find_library(FFTWT fftw3_threads REQUIRED)
+set(FFTW_LIBRARIES "${FFTW};${FFTWT}")
 
-# SWIG + Python
+# SWIG
 find_package(SWIG REQUIRED)
 include(${SWIG_USE_FILE})
-
 
 ##############################################################
 ###    Find Python                                         ###
 ##############################################################
 
+# CMake version 2.8.8+ will select the highest Python version including Python 3.
+# CMake version 2.8.7- will always choose Python 2.x.
 if(USE_PYTHON2)
   set (USE_PYTHON 2)
 elseif(USE_PYTHON3)
   set (USE_PYTHON 3)
-endif(USE_PYTHON2)
+endif()
 
 find_package(Python ${USE_PYTHON} REQUIRED)
 
@@ -140,8 +134,8 @@ if(ENABLE_CUDA)
     magneto/matrix/matrix/scalar/Matrix_cuda_accessor.cpp
     magneto/matrix/matrix/vector/VectorMatrix_cuda_accessor.cpp
 
-    magneto/mesh/VectorField.cpp
     magneto/mesh/Field.cpp
+    magneto/mesh/VectorField.cpp
 
     magneto/math/gradient_cuda.cu
     magneto/math/ScaledAbsMax_cuda.cu
@@ -207,7 +201,7 @@ if(ENABLE_CUDA)
   set(HAVE_CUDA ON)
   if(ENABLE_CUDA_64)
     set(HAVE_CUDA_64 ON)
-  endif(ENABLE_CUDA_64)
+  endif()
 
   # Setup nvcc command line args
   set(CUDA_PROPAGATE_HOST_FLAGS OFF)
@@ -216,12 +210,12 @@ if(ENABLE_CUDA)
     set(CUDA_NVCC_FLAGS --gpu-architecture=compute_20;-Xcompiler;-fpic;-O6;--use_fast_math)
   else(ENABLE_CUDA_64)
     set(CUDA_NVCC_FLAGS -Xcompiler;-fpic;-O6;--use_fast_math)
-  endif(ENABLE_CUDA_64)
+  endif()
 
   cuda_add_library(magneto_cu_parts ${MAGNETO_CUSRC})
   cuda_add_cufft_to_target(magneto_cu_parts)
   cuda_add_cublas_to_target(magneto_cu_parts)
-endif(ENABLE_CUDA)
+endif()
 
 # Compile Swig module
 set(BINDINGS_SOURCE ${PROJECT_SOURCE_DIR}/magneto/bindings/magneto.i)
@@ -230,15 +224,20 @@ if(ENABLE_CUDA)
   set(SWIG_MODULE_NAME "magneto_cuda")
 else()
   set(SWIG_MODULE_NAME "magneto_cpu")
-endif(ENABLE_CUDA)
-set_source_files_properties (${BINDINGS_SOURCE} PROPERTIES SWIG_FLAGS "-O;-module;${SWIG_MODULE_NAME}")
+endif()
+set_source_files_properties (${BINDINGS_SOURCE} PROPERTIES SWIG_FLAGS "-O;-threads;-module;${SWIG_MODULE_NAME}")
 swig_add_module(${SWIG_MODULE_NAME} python ${PROJECT_SOURCE_DIR}/magneto/bindings/magneto.i ${MAGNETO_SRC})
 swig_link_libraries(${SWIG_MODULE_NAME} ${FFTW_LIBRARIES})
+
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  # Mac OS X: Need to link Python libs explicitely (?)
+  swig_link_libraries(${SWIG_MODULE_NAME} ${PYTHON_LIBRARIES})
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 # Link Cuda Kernels to Swig module
 if(ENABLE_CUDA)
   swig_link_libraries(${SWIG_MODULE_NAME} magneto_cu_parts)
-endif(ENABLE_CUDA)
+endif()
 
 
 ##############################################################
@@ -247,8 +246,8 @@ endif(ENABLE_CUDA)
 
 # Add configuration file config.h
 configure_file(
-  "${PROJECT_SOURCE_DIR}/magneto/config.h.in"
-  "${PROJECT_BINARY_DIR}/config.h"
+  "${PROJECT_SOURCE_DIR}/magneto/config.cmake-generated.h.in"
+  "${PROJECT_BINARY_DIR}/config.cmake-generated.h"
 )
 
 ##############################################################
@@ -263,9 +262,9 @@ install(DIRECTORY magnum DESTINATION "${PYTHON_SITE_MODULES}" PATTERN "magnum/ma
 
 # copy cuda files, if used
 if(ENABLE_CUDA)
-  install(FILES build/magneto_cuda.py build/_magneto_cuda.so DESTINATION "${PYTHON_SITE_MODULES}/magnum")
-else(ENABLE_CUDA)
-  # copy built destinations of cpu symlinks
-  install(FILES build/magneto_cpu.py build/_magneto_cpu.so DESTINATION "${PYTHON_SITE_MODULES}/magnum")
-endif(ENABLE_CUDA)
+  install(FILES build/magneto_cuda.py build/_magneto_cuda.so DESTINATION "${PYTHON_SITE_PACKAGES}/magnum")
+else()
+  # copy builded destinations of cpu symlinks
+  install(FILES build/magneto_cpu.py build/_magneto_cpu.so DESTINATION "${PYTHON_SITE_PACKAGES}/magnum")
+endif()
 

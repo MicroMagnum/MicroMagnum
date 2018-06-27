@@ -17,12 +17,14 @@
 
 from __future__ import print_function
 
+import signal
+import pdb
+
 import magnum.module as module
 import magnum.evolver as evolver
-import magnum.tools as tools
 
-from .step_handler import StepHandler
-from .condition import Condition
+from magnum.solver.step_handler import StepHandler
+from magnum.solver.condition import Condition
 
 class Solver(object):
     class FinishSolving(Exception): pass
@@ -89,25 +91,22 @@ class Solver(object):
 
     def solve(self, stop_condition):
         self.state.flush_cache()
-        #tools.flush()
 
         # Run solver loop.
         # Also, custom sigint handler while loop is running.
-        import signal
         self.__interrupted = False
         def my_int_handler(signum, frame):
             assert signum == signal.SIGINT
             self.__interrupted = True
         old_sigint_handler = signal.getsignal(signal.SIGINT)
-        signal.signal(signal.SIGINT, my_int_handler) # install sigint handler
+        signal.signal(signal.SIGINT, my_int_handler)  # install sigint handler
         try:
-            self.__solve_loop(stop_condition) # run solver loop
+            self.__solve_loop(stop_condition)  # run solver loop
         finally:
-            signal.signal(signal.SIGINT, old_sigint_handler) # uninstall sigint handler
+            signal.signal(signal.SIGINT, old_sigint_handler)  # uninstall sigint handler
             del self.__interrupted
 
         self.state.flush_cache()
-        #tools.flush()
 
     def __call_step_handlers(self):
         for step_handler, condition in self.__step_handlers:
@@ -115,7 +114,7 @@ class Solver(object):
                 step_handler.handle(self.__state)
 
     def __solve_loop(self, stop_condition):
-        self.__call_step_handlers() # Because this makes sense.
+        self.__call_step_handlers()  # because this makes sense.
 
         while not stop_condition.check(self.__state):
             # Evolve..
@@ -125,7 +124,7 @@ class Solver(object):
             if self.__interrupted:
                 do_finish = False
                 try:
-                    self.handle_interrupt()
+                    self.handle_sigint()
                 except Solver.FinishSolving:
                     do_finish = True
                 except Solver.StartDebugger:
@@ -133,10 +132,11 @@ class Solver(object):
                     print("Entering Python debugger. Type 'c' to exit debugging, 'h' for help.")
                     print("The current state can be accessed with 'self.state'.")
                     print()
-                    import pdb; pdb.set_trace()
+                    pdb.set_trace()
                 finally:
                     self.__interrupted = False
-                if do_finish: break # pretend that stop_condition is true.
+                if do_finish:
+                    break  # pretend that stop_condition is true.
 
-    def handle_interrupt(self):
+    def handle_sigint(self):
         raise KeyboardInterrupt()

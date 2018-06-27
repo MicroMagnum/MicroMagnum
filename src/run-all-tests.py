@@ -17,11 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with MicroMagnum.  If not, see <http://www.gnu.org/licenses/>.
 
-import magnum
 from magnum_tests import *
-from magnum.config import cfg
 
 import sys, os
-
 os.chdir("magnum_tests")
 unittest.main(argv=[sys.argv[0]])

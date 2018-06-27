@@ -18,8 +18,8 @@
 from magnum.mesh import VectorField
 from magnum.module import Module
 
-from .stray_field_calculator import DemagTensorField, StrayFieldCalculator
-from .constants import MU0
+from magnum.micromagnetics.stray_field_calculator import DemagTensorField, StrayFieldCalculator
+from magnum.micromagnetics.constants import MU0
 
 class StrayField(Module):
     def __init__(self, method = "tensor"):
@@ -31,7 +31,8 @@ class StrayField(Module):
         return ["H_stray", "E_stray"]
 
     def properties(self):
-        return {'EFFECTIVE_FIELD_TERM': "H_stray", 'EFFECTIVE_FIELD_ENERGY': "E_stray"}
+        return {'EFFECTIVE_FIELD_TERM': "H_stray",
+                'EFFECTIVE_FIELD_ENERGY': "E_stray"}
 
     def initialize(self, system):
         self.system = system
@@ -48,7 +49,7 @@ class StrayField(Module):
 
         elif id == "E_stray":
             if hasattr(cache, "E_stray"): return cache.E_stray
-            E_stray = cache.E_stray = -MU0/2.0 * self.system.mesh.cell_volume * state.M.dotSum(state.H_stray)
+            E_stray = cache.E_stray = -MU0 / 2.0 * self.system.mesh.cell_volume * state.M.dotSum(state.H_stray)
             return E_stray
 
         else:

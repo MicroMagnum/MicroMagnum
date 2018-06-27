@@ -166,7 +166,7 @@ void initialize(const std::string &config_path)
 		while (std::getline(f, line)) ss << line << "\n";
 		// and import wisdom from string
 		if (fftw_import_wisdom_from_string(ss.str().c_str())) {
-			LOG_INFO << "Imported FFTW wisdom from file";
+			LOG_DEBUG << "Imported FFTW wisdom from file";
 		} else {
 			LOG_ERROR << "FFTW wisdom file seems to be invalid.";
 		}
@@ -187,6 +187,10 @@ void deinitialize(const std::string &config_path)
 #ifdef HAVE_FFTW_THREADS
 	fftw_cleanup_threads();
 #endif
+
+	// just to be sure
+	PythonCallable empty_callback;
+	setDebugCallback(empty_callback);
 }
 
 void flush()

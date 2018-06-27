@@ -56,7 +56,7 @@ void rk_combine_result(
 	if (   s != y_error.size()
 	    || s != k1.size()
 	    || s != k2.size()) throw std::runtime_error("rk_combine_result: Input matrix size mismatch.");
-	if (!tab.num_steps == 3) throw std::runtime_error("Need num_steps == 3 in rk_combine_result");
+	if (tab.num_steps != 3) throw std::runtime_error("Need num_steps == 3 in rk_combine_result");
 
 	if (isCudaEnabled()) {
 #ifdef HAVE_CUDA
@@ -82,7 +82,7 @@ void rk_combine_result(
 	    || s != k3.size()
 	    || s != k4.size()
 	    || s != k5.size()) throw std::runtime_error("rk_combine_result: Input matrix size mismatch.");
-	if (!tab.num_steps == 6) throw std::runtime_error("Need num_steps == 6 in rk_combine_result");
+	if (tab.num_steps != 6) throw std::runtime_error("Need num_steps == 6 in rk_combine_result");
 
 	if (isCudaEnabled()) {
 #ifdef HAVE_CUDA
